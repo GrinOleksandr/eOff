@@ -1,6 +1,7 @@
 import { TelegramClient } from 'telegram'
 import { parseMessage }   from './parser.js'
 import config             from '../../config.js'
+import { getTelegramClient } from './utils.js'
 
 const daysScheduleData = {}
 
@@ -20,9 +21,8 @@ const tomorrowDate = getFormattedDate(tomorrow)
 
 const getDataForCherkOE = async () => {
   console.log('Processing data for CHERKOE')
-  const client = new TelegramClient(config.telegram.stringSession, config.telegram.apiId, config.telegram.apiHash, { connectionRetries: 5 })
+  const client = getTelegramClient()
 
-  console.log('Connecting to telegram')
   await client.connect()
   console.log('You should now be connected.')
   //ToDo create separate telegram account for this Software(SCV)
