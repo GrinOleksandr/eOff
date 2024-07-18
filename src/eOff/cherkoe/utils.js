@@ -53,10 +53,9 @@ function getTodayDate() {
   return dateString
 }
 
-let tgClient
 
-//ToDo create separate telegram account for this Software(SCV)
-// console.log(client.session.save()); // Save this string for future logins
+
+let tgClient
 
 const getTelegramClient = async () => {
   if (tgClient) {

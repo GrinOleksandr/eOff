@@ -1,7 +1,7 @@
-import { TelegramClient } from 'telegram'
 import { parseMessage }   from './parser.js'
 import config             from '../../config.js'
 import { getTelegramClient } from './utils.js'
+
 
 const daysScheduleData = {}
 
@@ -21,7 +21,7 @@ const tomorrowDate = getFormattedDate(tomorrow)
 
 const getDataForCherkOE = async () => {
   console.log('Processing data for CHERKOE')
-  const client = getTelegramClient()
+  const client = await getTelegramClient()
 
   // Getting the channel entity
   const channel = await client.getEntity(config.telegram.channelUsername)
