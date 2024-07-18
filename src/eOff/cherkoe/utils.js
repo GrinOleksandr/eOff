@@ -55,6 +55,9 @@ function getTodayDate() {
 
 let tgClient
 
+//ToDo create separate telegram account for this Software(SCV)
+// console.log(client.session.save()); // Save this string for future logins
+
 const getTelegramClient = async () => {
   if (tgClient) {
     console.log('Returning existing client')
@@ -67,6 +70,9 @@ const getTelegramClient = async () => {
 
   console.log('Connecting to telegram')
   await tgClient.connect()
+
+  console.log('You should now be connected.')
+  return tgClient
 }
 
 export { getCurrentMonth, getNextMonth, formatDateFromObject, getTodayDate, getTelegramClient }

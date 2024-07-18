@@ -23,11 +23,6 @@ const getDataForCherkOE = async () => {
   console.log('Processing data for CHERKOE')
   const client = getTelegramClient()
 
-  await client.connect()
-  console.log('You should now be connected.')
-  //ToDo create separate telegram account for this Software(SCV)
-  // console.log(client.session.save()); // Save this string for future logins
-
   // Getting the channel entity
   const channel = await client.getEntity(config.telegram.channelUsername)
   console.log('Channel ID:', channel.id.toString())
