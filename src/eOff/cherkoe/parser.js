@@ -56,11 +56,12 @@ const parseSchedule = (message) => {
 
   const offlineHours = []
 
-  filteredSchedule.forEach((line, lineNumber) => {
+  filteredSchedule.forEach((line) => {
     const queues = parseQueueNumbers(line)
+    const timeZoneIndex = line.split(':')[0]
 
     queues.forEach((queue) => {
-      offlineHours.push({ queue, timeZoneIndex: lineNumber })
+      offlineHours.push({ queue, timeZoneIndex })
     })
   })
 
@@ -87,35 +88,39 @@ const groupByQueue = (data) => data.reduce((acc, { queue, timeZoneIndex }) => {
 
 const convertToEvents = (scheduleData, date) => {
   // Convert grouped data to events
-  return Object.entries(scheduleData).flatMap(([ queue, timeZones ]) => {
-    let currentStartIndex = timeZones[ 0 ]
-    let currentEndIndex   = timeZones[ 0 ]
-    const result          = []
+  return Object.entries(scheduleData).flatMap(([queue, timeZones]) => {
+    if (timeZones.length === 0) return [];
 
-    const defaultValuesObj = { queue, date, electricity: 'off', provider: config.providerName }
+    timeZones.sort((a, b) => a - b); // Ensure the timeZones are sorted
+    let currentStartIndex = parseInt(timeZones[0], 10);
+    let currentEndIndex = parseInt(timeZones[0], 10);
+    const result = [];
+
+    const defaultValuesObj = { queue, date, electricity: 'off', provider: config.providerName };
 
     for (let i = 1; i < timeZones.length; i++) {
-      if (timeZones[ i ] === currentEndIndex + 1) {
-        currentEndIndex = timeZones[ i ]
+      const currentZone = parseInt(timeZones[i], 10);
+
+      if (currentZone === currentEndIndex + 1) {
+        currentEndIndex = currentZone;
       } else {
-        const { startHour, endHour }   = indexToHours(currentStartIndex)
-        const { endHour: realEndHour } = indexToHours(currentEndIndex)
-        result.push({
-          ...defaultValuesObj, startTime: startHour, endTime: realEndHour
-        })
-        currentStartIndex = timeZones[ i ]
-        currentEndIndex   = timeZones[ i ]
+        const { startHour: startTime } = indexToHours(currentStartIndex);
+        const { endHour: endTime } = indexToHours(currentEndIndex);
+        result.push({ ...defaultValuesObj, startTime, endTime });
+
+        currentStartIndex = currentZone;
+        currentEndIndex = currentZone;
       }
     }
 
     // Add last range
-    const { startHour, endHour }   = indexToHours(currentStartIndex)
-    const { endHour: realEndHour } = indexToHours(currentEndIndex)
-    result.push({ ...defaultValuesObj, startTime: startHour, endTime: realEndHour })
+    const { startHour: startTime } = indexToHours(currentStartIndex);
+    const { endHour: endTime } = indexToHours(currentEndIndex);
+    result.push({ ...defaultValuesObj, startTime, endTime });
 
-    return result
-  })
-}
+    return result;
+  });
+};
 
 const parseMessage = message => {
   const targetDate = getTargetDate(message)
