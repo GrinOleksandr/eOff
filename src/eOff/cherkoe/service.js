@@ -21,6 +21,9 @@ const tomorrowDate = getFormattedDate(tomorrow)
 
 const getDataForCherkOE = async () => {
   console.log('Processing data for CHERKOE')
+  console.log('todayDate', todayDate)
+  console.log('tomorrowDate', tomorrowDate)
+
   const client = await getTelegramClient()
 
   // Getting the channel entity

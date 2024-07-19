@@ -65,7 +65,7 @@ const getTelegramClient = async () => {
 
   console.log('Creating new Telegram client')
   tgClient =
-    new TelegramClient(config.telegram.stringSession, config.telegram.apiId, config.telegram.apiHash, { connectionRetries: 5 })
+    new TelegramClient(config.telegram.stringSession, config.telegram.apiId, config.telegram.apiHash, { connectionRetries: 10 })
 
   console.log('Connecting to telegram')
   await tgClient.connect()

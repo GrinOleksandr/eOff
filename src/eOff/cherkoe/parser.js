@@ -52,7 +52,7 @@ const parseSchedule = (message) => {
 
   const stringedSchedule = schedule.split('\n\n')
 
-  const filteredSchedule = stringedSchedule.filter(line => line.includes('черг'))[ 0 ].split('\n')
+  const filteredSchedule = stringedSchedule.filter(line => line.includes('черг')).join('\n').split('\n')
 
   const offlineHours = []
 
