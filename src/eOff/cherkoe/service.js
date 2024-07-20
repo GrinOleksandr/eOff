@@ -11,18 +11,26 @@ const getFormattedDate = (date) => {
   const day   = date.getDate().toString().padStart(2, '0') // Pad single-digit days with a leading zero
   return `${year}-${month}-${day}`
 }
-
-const today     = new Date()
-const todayDate = getFormattedDate(today)
-
-const tomorrow = new Date()
-tomorrow.setDate(today.getDate() + 1)
-const tomorrowDate = getFormattedDate(tomorrow)
+const debugFunc = ()=> {
+  const currentDate = new Date();
+  console.log('Current Date and Time:', currentDate.toString());
+  console.log('UTC Date and Time:', currentDate.toUTCString());
+  console.log('ISO Date and Time:', currentDate.toISOString());
+}
 
 const getDataForCherkOE = async () => {
+  const today     = new Date()
+  const todayDate = getFormattedDate(today)
+
+  const tomorrow = new Date()
+  tomorrow.setDate(today.getDate() + 1)
+  const tomorrowDate = getFormattedDate(tomorrow)
+
+
   console.log('Processing data for CHERKOE')
-  console.log('todayDate', todayDate)
-  console.log('tomorrowDate', tomorrowDate)
+  console.log('todayDate', todayDate, today)
+
+  debugFunc()
 
   const client = await getTelegramClient()
 
@@ -37,7 +45,7 @@ const getDataForCherkOE = async () => {
 
   lastMessages.forEach(message => {
     if (message.message) {
-      console.log(`Message from ${config.telegram.channelUsername}: ${message.message}`)
+      // console.log(`Message from ${config.telegram.channelUsername}: ${message.message}`)
       const parsedMessage = parseMessage(message.message)
       if (!parsedMessage) {
         return
@@ -45,6 +53,8 @@ const getDataForCherkOE = async () => {
       daysScheduleData[ parsedMessage.targetDate ] = parsedMessage.eventsList
     }
   })
+
+  console.log('daysScheduleData', daysScheduleData)
 
   const result = { events: [], hasTodayData: false, hasTomorrowData: false }
   if (daysScheduleData[ todayDate ]) {
