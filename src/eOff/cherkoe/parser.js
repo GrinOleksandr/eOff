@@ -52,7 +52,8 @@ const parseSchedule = (message) => {
 
   const stringedSchedule = schedule.split('\n\n')
 
-  const filteredSchedule = stringedSchedule.filter(line => line.includes('черг')).join('\n').split('\n')
+  const stringFilterPattern = /\d+:00-\d+:00.*черг.*/
+  const filteredSchedule = stringedSchedule.filter(line => stringFilterPattern.test(line)).join('\n').split('\n')
 
   const offlineHours = []
 
@@ -61,7 +62,7 @@ const parseSchedule = (message) => {
     const timeZoneIndex = line.split(':')[0]
 
     queues.forEach((queue) => {
-      offlineHours.push({ queue, timeZoneIndex })
+        offlineHours.push({ queue, timeZoneIndex })
     })
   })
 
