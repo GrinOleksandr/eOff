@@ -1,7 +1,10 @@
+/** this file is run manually on a local machine to generate telegram session string,
+ * then this string is taken and saved to .env file and used for authorization */
+
 import { TelegramClient } from 'telegram';
 import { StringSession } from 'telegram/sessions/index.js';
 import input from 'input';
-import config from '../config.js'
+import config from '../config.js';
 
 const apiId = 'YOUR_API_ID'; // Replace with your actual api_id
 const apiHash = 'YOUR_API_HASH'; // Replace with your actual api_hash
