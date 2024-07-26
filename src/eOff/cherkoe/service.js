@@ -1,72 +1,75 @@
-import { parseMessage }   from './parser.js'
-import config             from '../../config.js'
-import { getTelegramClient } from './utils.js'
+import { parseMessage } from './parser.js';
+import config from '../../config.js';
+import { getTelegramClient } from './utils.js';
 
-
-const daysScheduleData = {}
+const daysScheduleData = {};
 
 const getFormattedDate = (date) => {
-  const year  = date.getFullYear()
-  const month = (date.getMonth() + 1).toString().padStart(2, '0') // Months are zero-based, so add 1
-  const day   = date.getDate().toString().padStart(2, '0') // Pad single-digit days with a leading zero
-  return `${year}-${month}-${day}`
-}
-const debugFunc = ()=> {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based, so add 1
+  const day = date.getDate().toString().padStart(2, '0'); // Pad single-digit days with a leading zero
+  return `${year}-${month}-${day}`;
+};
+
+const debugFunc = () => {
   const currentDate = new Date();
   console.log('Current Date and Time:', currentDate.toString());
   console.log('UTC Date and Time:', currentDate.toUTCString());
   console.log('ISO Date and Time:', currentDate.toISOString());
-}
+};
 
 const getDataForCherkOE = async () => {
-  const today     = new Date()
-  const todayDate = getFormattedDate(today)
+  const today = new Date();
+  const todayDate = getFormattedDate(today);
 
-  const tomorrow = new Date()
-  tomorrow.setDate(today.getDate() + 1)
-  const tomorrowDate = getFormattedDate(tomorrow)
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
+  const tomorrowDate = getFormattedDate(tomorrow);
 
+  console.log('Processing data for CHERKOE');
+  console.log('todayDate', todayDate, today);
 
-  console.log('Processing data for CHERKOE')
-  console.log('todayDate', todayDate, today)
+  debugFunc();
 
-  debugFunc()
-
-  const client = await getTelegramClient()
+  const client = await getTelegramClient();
 
   // Getting the channel entity
-  const channel = await client.getEntity(config.telegram.channelUsername)
-  console.log('Channel ID:', channel.id.toString())
+  const channel = await client.getEntity(config.telegram.channelUsername);
+  console.log('Channel ID:', channel.id.toString());
 
   // Fetching the last 20 messages from the channel
-  const lastMessages = await client.getMessages(channel, { limit: config.telegram.MESSAGES_LIMIT })
+  const lastMessages = await client.getMessages(channel, { limit: config.telegram.MESSAGES_LIMIT });
 
-  lastMessages.reverse()
+  lastMessages.reverse();
 
-  lastMessages.forEach(message => {
+  lastMessages.forEach((message) => {
     if (message.message) {
       // console.log(`Message from ${config.telegram.channelUsername}: ${message.message}`)
-      const parsedMessage = parseMessage(message.message)
+      const parsedMessage = parseMessage(message.message);
+
       if (!parsedMessage) {
-        return
+        return;
       }
-      daysScheduleData[ parsedMessage.targetDate ] = parsedMessage.eventsList
+
+      daysScheduleData[parsedMessage.targetDate] = parsedMessage.eventsList;
     }
-  })
+  });
 
-  console.log('daysScheduleData', daysScheduleData)
+  console.log('daysScheduleData', daysScheduleData);
 
-  const result = { events: [], hasTodayData: false, hasTomorrowData: false }
-  if (daysScheduleData[ todayDate ]) {
-    result.events       = [ ...result.events, ...daysScheduleData[ todayDate ] ]
-    result.hasTodayData = true
-  }
-  if (daysScheduleData[ tomorrowDate ]) {
-    result.events          = [ ...result.events, ...daysScheduleData[ tomorrowDate ] ]
-    result.hasTomorrowData = true
+  const result = { events: [], hasTodayData: false, hasTomorrowData: false };
+
+  if (daysScheduleData[todayDate]) {
+    result.events = [...result.events, ...daysScheduleData[todayDate]];
+    result.hasTodayData = true;
   }
 
-  return result
-}
+  if (daysScheduleData[tomorrowDate]) {
+    result.events = [...result.events, ...daysScheduleData[tomorrowDate]];
+    result.hasTomorrowData = true;
+  }
 
-export { getDataForCherkOE }
+  return result;
+};
+
+export { getDataForCherkOE };
