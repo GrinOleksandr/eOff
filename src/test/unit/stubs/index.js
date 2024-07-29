@@ -969,11 +969,51 @@ export const testMessages = [
       targetDate: '2024-07-19',
     },
   },
-  // {
-  //   messageNumber: 8,
-  //   message: ``,
-  //   expectedResult: [],
-  // },
+  {
+    messageNumber: 8,
+    message: `Оновлені графіки погодинних відключень на 29 липня 
+ 
+29 липня з 18:00 до 23:00 по Черкаській області будуть застосовані графіки погодинних відключень (ГПВ). 
+ 
+Години відсутності електропостачання: 
+ 
+18:00-19:00 2 черга 
+19:00-20:00 2 черга 
+20:00-21:00 5 черга 
+21:00-22:00 5 черга 
+22:00-23:00 3 черга 
+ 
+Сторінка у Telegram: t.me/pat_cherkasyoblenergo`,
+    expectedResult: {
+      eventsList: [
+        {
+          date: '2024-07-29',
+          electricity: 'off',
+          endTime: '20:00',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '18:00',
+        },
+        {
+          date: '2024-07-29',
+          electricity: 'off',
+          endTime: '23:00',
+          provider: 'CHERKOE',
+          queue: '3',
+          startTime: '22:00',
+        },
+        {
+          date: '2024-07-29',
+          electricity: 'off',
+          endTime: '22:00',
+          provider: 'CHERKOE',
+          queue: '5',
+          startTime: '20:00',
+        },
+      ],
+      targetDate: '2024-07-29',
+    },
+  },
   // {
   //   messageNumber: 9,
   //   message: ``,

@@ -64,10 +64,12 @@ const parseSchedule = (message) => {
     const queues = parseQueueNumbers(line);
     const timeZoneIndex = line.split(':')[0];
 
-    queues.forEach((queue) => {
-      offlineHours.push({ queue, timeZoneIndex });
+      if (!queues) return;
+
+      queues.forEach((queue) => {
+        offlineHours.push({ queue, timeZoneIndex });
+      });
     });
-  });
 
   return offlineHours;
 };
