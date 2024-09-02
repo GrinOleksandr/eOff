@@ -6,7 +6,7 @@ export class CherkoeController {
 
   constructor() {
     this.router.get('/', this.healthCheck);
-    this.router.post('/cherkoe', this.getSchedule);
+    this.router.get('/cherkoe', this.getSchedule);
   }
 
   async healthCheck(req: Request, res: Response) {
