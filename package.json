@@ -2,12 +2,12 @@
 	"name": "eoff-cherkoe-api",
 	"version": "1.0.0",
 	"description": "API to get electricity cut-offs data for eOff app",
-	"main": "src/index.js",
+	"main": "src/bootstrap.ts",
 	"scripts": {
 		"build": "rm -rf ./dist && tsc",
 		"installAndBuild": "npm install && npm run build",
-		"start": "node ./dist/main.js",
-		"dev": "ts-node-dev ./src/main.ts",
+		"start": "node ./dist/bootstrap.js",
+		"dev": "ts-node-dev src/bootstrap.ts",
 		"test": "npx jest"
 	},
 	"author": "Sasha Grin",
