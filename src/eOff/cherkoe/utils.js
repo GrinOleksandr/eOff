@@ -1,5 +1,6 @@
 import { TelegramClient } from 'telegram';
 import config from '../../config.js';
+import moment from 'moment-timezone';
 
 const MONTH_NAMES = [
   'січня',
@@ -92,12 +93,8 @@ const getFormattedDate = (date) => {
   return `${year}-${month}-${day}`;
 };
 
-const convertToKyivTime = (date) => {
-  // Convert the date to Kyiv timezone
-  return new Date(date.toLocaleString('en-US', { timeZone: 'Europe/Kyiv' }));
-};
-
-const getNewKyivDate = () => convertToKyivTime(new Date());
+// Get the current date and time in Kyiv timezone
+const getNewKyivDate = () => moment.tz('Europe/Kyiv')
 
 export {
   getCurrentMonth,
@@ -106,6 +103,5 @@ export {
   getTodayDate,
   getTelegramClient,
   getFormattedDate,
-  convertToKyivTime,
   getNewKyivDate,
 };

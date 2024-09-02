@@ -6,6 +6,7 @@ const daysScheduleData = {};
 
 const debugFunc = () => {
   const currentDate = getNewKyivDate();
+  console.log('currentDate:', currentDate);
   console.log('Current Date and Time:', currentDate.toString());
   console.log('UTC Date and Time:', currentDate.toUTCString());
   console.log('ISO Date and Time:', currentDate.toISOString());
@@ -15,8 +16,7 @@ const getDataForCherkOE = async () => {
   const today = getNewKyivDate();
   const todayDate = getFormattedDate(today);
 
-  const tomorrow = getNewKyivDate();
-  tomorrow.setDate(today.getDate() + 1);
+  const tomorrow = today.clone().add(1, 'day');
   const tomorrowDate = getFormattedDate(tomorrow);
 
   console.log('Processing data for CHERKOE');
