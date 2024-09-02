@@ -1,29 +1,25 @@
-/**
- * @typedef {Object} TestMessageData
- * @property {Number} messageNumber
- * @property {String} message
- * @property {ParsedMessage} expectedResult
- *
- */
+import { ISchedule } from '../../../services/cherkoe';
+import { IParsedTgMessage } from '../../../services/cherkoe-tg-parser';
 
-/**
- * @type {TestMessageData}
- */
-const example = {
+type TestMessageData = {
+  messageNumber: number;
+  message: string;
+  expectedResult: IParsedTgMessage | null;
+};
+
+const example: TestMessageData = {
   messageNumber: 1,
   message: ``,
+  //@ts-ignore
   expectedResult: {},
 };
 
-/**
- * @type {Array<TestMessageData>}
- */
-export const testMessages = [
+export const testMessages: TestMessageData[] = [
   {
     // schedule update
     messageNumber: 1,
     message: `
-    Оновлені графіки погодинних відключень на 26 липня
+    Оновлені графіки погодинних відключень на 26 вересня
 
 З 16:00 до 18:00 зменшено кількість черг.
 
@@ -43,7 +39,7 @@ export const testMessages = [
     expectedResult: {
       eventsList: [
         {
-          date: '2024-07-26',
+          date: '2024-09-26',
           electricity: 'off',
           endTime: '22:00',
           provider: 'CHERKOE',
@@ -51,7 +47,7 @@ export const testMessages = [
           startTime: '20:00',
         },
         {
-          date: '2024-07-26',
+          date: '2024-09-26',
           electricity: 'off',
           endTime: '23:00',
           provider: 'CHERKOE',
@@ -59,7 +55,7 @@ export const testMessages = [
           startTime: '21:00',
         },
         {
-          date: '2024-07-26',
+          date: '2024-09-26',
           electricity: 'off',
           endTime: '17:00',
           provider: 'CHERKOE',
@@ -67,7 +63,7 @@ export const testMessages = [
           startTime: '16:00',
         },
         {
-          date: '2024-07-26',
+          date: '2024-09-26',
           electricity: 'off',
           endTime: '19:00',
           provider: 'CHERKOE',
@@ -75,7 +71,7 @@ export const testMessages = [
           startTime: '17:00',
         },
         {
-          date: '2024-07-26',
+          date: '2024-09-26',
           electricity: 'off',
           endTime: '24:00',
           provider: 'CHERKOE',
@@ -83,7 +79,7 @@ export const testMessages = [
           startTime: '22:00',
         },
         {
-          date: '2024-07-26',
+          date: '2024-09-26',
           electricity: 'off',
           endTime: '21:00',
           provider: 'CHERKOE',
@@ -91,7 +87,7 @@ export const testMessages = [
           startTime: '19:00',
         },
       ],
-      targetDate: '2024-07-26',
+      targetDate: '2024-09-26',
     },
   },
   {
@@ -106,12 +102,13 @@ export const testMessages = [
 ПАТ «Черкасиобленерго» розміщує Додаток до Протоколу узгоджувальної наради щодо визначення порядку обладнання побутовими споживачами житлових будинків електроопалювальними установками № 77/1-П від 21.06.2024 та відповідно сам алгоритм дій, які має виконати споживач, аби скористатися можливістю платити менше за електроенергію взимку. 
 
 Ознайомитися з Додатком до Протоколу можна на сайті Товариства за посиланням ➡️ https://cherkasyoblenergo.com/news/3416`,
+
     expectedResult: null,
   },
   {
     // message with queue hours stats
     messageNumber: 3,
-    message: `Відповідно до команди НЕК «Укренерго», 26 липня з 05:00 до 24:00 по Черкаській області будуть застосовані графіки погодинних відключень (ГПВ).
+    message: `Відповідно до команди НЕК «Укренерго», 26 вересня з 05:00 до 24:00 по Черкаській області будуть застосовані графіки погодинних відключень (ГПВ).
 
 Години відсутності електропостачання:
 
@@ -148,7 +145,7 @@ export const testMessages = [
     expectedResult: {
       eventsList: [
         {
-          date: '2024-07-26',
+          date: '2024-09-26',
           electricity: 'off',
           endTime: '07:00',
           provider: 'CHERKOE',
@@ -156,7 +153,7 @@ export const testMessages = [
           startTime: '05:00',
         },
         {
-          date: '2024-07-26',
+          date: '2024-09-26',
           electricity: 'off',
           endTime: '22:00',
           provider: 'CHERKOE',
@@ -164,7 +161,7 @@ export const testMessages = [
           startTime: '20:00',
         },
         {
-          date: '2024-07-26',
+          date: '2024-09-26',
           electricity: 'off',
           endTime: '09:00',
           provider: 'CHERKOE',
@@ -172,7 +169,7 @@ export const testMessages = [
           startTime: '07:00',
         },
         {
-          date: '2024-07-26',
+          date: '2024-09-26',
           electricity: 'off',
           endTime: '17:00',
           provider: 'CHERKOE',
@@ -180,7 +177,7 @@ export const testMessages = [
           startTime: '15:00',
         },
         {
-          date: '2024-07-26',
+          date: '2024-09-26',
           electricity: 'off',
           endTime: '23:00',
           provider: 'CHERKOE',
@@ -188,7 +185,7 @@ export const testMessages = [
           startTime: '21:00',
         },
         {
-          date: '2024-07-26',
+          date: '2024-09-26',
           electricity: 'off',
           endTime: '11:00',
           provider: 'CHERKOE',
@@ -196,7 +193,7 @@ export const testMessages = [
           startTime: '09:00',
         },
         {
-          date: '2024-07-26',
+          date: '2024-09-26',
           electricity: 'off',
           endTime: '17:00',
           provider: 'CHERKOE',
@@ -204,7 +201,7 @@ export const testMessages = [
           startTime: '15:00',
         },
         {
-          date: '2024-07-26',
+          date: '2024-09-26',
           electricity: 'off',
           endTime: '13:00',
           provider: 'CHERKOE',
@@ -212,7 +209,7 @@ export const testMessages = [
           startTime: '11:00',
         },
         {
-          date: '2024-07-26',
+          date: '2024-09-26',
           electricity: 'off',
           endTime: '19:00',
           provider: 'CHERKOE',
@@ -220,7 +217,7 @@ export const testMessages = [
           startTime: '17:00',
         },
         {
-          date: '2024-07-26',
+          date: '2024-09-26',
           electricity: 'off',
           endTime: '15:00',
           provider: 'CHERKOE',
@@ -228,7 +225,7 @@ export const testMessages = [
           startTime: '13:00',
         },
         {
-          date: '2024-07-26',
+          date: '2024-09-26',
           electricity: 'off',
           endTime: '18:00',
           provider: 'CHERKOE',
@@ -236,7 +233,7 @@ export const testMessages = [
           startTime: '17:00',
         },
         {
-          date: '2024-07-26',
+          date: '2024-09-26',
           electricity: 'off',
           endTime: '24:00',
           provider: 'CHERKOE',
@@ -244,7 +241,7 @@ export const testMessages = [
           startTime: '22:00',
         },
         {
-          date: '2024-07-26',
+          date: '2024-09-26',
           electricity: 'off',
           endTime: '15:00',
           provider: 'CHERKOE',
@@ -252,7 +249,7 @@ export const testMessages = [
           startTime: '13:00',
         },
         {
-          date: '2024-07-26',
+          date: '2024-09-26',
           electricity: 'off',
           endTime: '21:00',
           provider: 'CHERKOE',
@@ -260,13 +257,13 @@ export const testMessages = [
           startTime: '19:00',
         },
       ],
-      targetDate: '2024-07-26',
+      targetDate: '2024-09-26',
     },
   },
   {
     //message with schedule update
     messageNumber: 4,
-    message: `Відповідно до команди НЕК «Укренерго», 24 липня по Черкаській області до 16:00 скасовано графіки погодинних відключень. Графік діятиме з 16:00.
+    message: `Відповідно до команди НЕК «Укренерго», 24 вересня по Черкаській області до 16:00 скасовано графіки погодинних відключень. Графік діятиме з 16:00.
 
 Години відсутності електропостачання
 
@@ -283,7 +280,7 @@ export const testMessages = [
     expectedResult: {
       eventsList: [
         {
-          date: '2024-07-24',
+          date: '2024-09-24',
           electricity: 'off',
           endTime: '20:00',
           provider: 'CHERKOE',
@@ -291,7 +288,7 @@ export const testMessages = [
           startTime: '18:00',
         },
         {
-          date: '2024-07-24',
+          date: '2024-09-24',
           electricity: 'off',
           endTime: '22:00',
           provider: 'CHERKOE',
@@ -299,7 +296,7 @@ export const testMessages = [
           startTime: '20:00',
         },
         {
-          date: '2024-07-24',
+          date: '2024-09-24',
           electricity: 'off',
           endTime: '22:00',
           provider: 'CHERKOE',
@@ -307,7 +304,7 @@ export const testMessages = [
           startTime: '20:00',
         },
         {
-          date: '2024-07-24',
+          date: '2024-09-24',
           electricity: 'off',
           endTime: '24:00',
           provider: 'CHERKOE',
@@ -315,7 +312,7 @@ export const testMessages = [
           startTime: '22:00',
         },
         {
-          date: '2024-07-24',
+          date: '2024-09-24',
           electricity: 'off',
           endTime: '18:00',
           provider: 'CHERKOE',
@@ -323,13 +320,13 @@ export const testMessages = [
           startTime: '16:00',
         },
       ],
-      targetDate: '2024-07-24',
+      targetDate: '2024-09-24',
     },
   },
   {
     // regular message
     messageNumber: 5,
-    message: `Графіки погодинних відключень на 24 липня
+    message: `Графіки погодинних відключень на 24 вересня
 
 Години відсутності електропостачання
 
@@ -362,7 +359,7 @@ export const testMessages = [
     expectedResult: {
       eventsList: [
         {
-          date: '2024-07-24',
+          date: '2024-09-24',
           electricity: 'off',
           endTime: '02:00',
           provider: 'CHERKOE',
@@ -370,7 +367,7 @@ export const testMessages = [
           startTime: '00:00',
         },
         {
-          date: '2024-07-24',
+          date: '2024-09-24',
           electricity: 'off',
           endTime: '08:00',
           provider: 'CHERKOE',
@@ -378,7 +375,7 @@ export const testMessages = [
           startTime: '06:00',
         },
         {
-          date: '2024-07-24',
+          date: '2024-09-24',
           electricity: 'off',
           endTime: '20:00',
           provider: 'CHERKOE',
@@ -386,7 +383,7 @@ export const testMessages = [
           startTime: '18:00',
         },
         {
-          date: '2024-07-24',
+          date: '2024-09-24',
           electricity: 'off',
           endTime: '04:00',
           provider: 'CHERKOE',
@@ -394,7 +391,7 @@ export const testMessages = [
           startTime: '02:00',
         },
         {
-          date: '2024-07-24',
+          date: '2024-09-24',
           electricity: 'off',
           endTime: '10:00',
           provider: 'CHERKOE',
@@ -402,7 +399,7 @@ export const testMessages = [
           startTime: '08:00',
         },
         {
-          date: '2024-07-24',
+          date: '2024-09-24',
           electricity: 'off',
           endTime: '22:00',
           provider: 'CHERKOE',
@@ -410,7 +407,7 @@ export const testMessages = [
           startTime: '20:00',
         },
         {
-          date: '2024-07-24',
+          date: '2024-09-24',
           electricity: 'off',
           endTime: '04:00',
           provider: 'CHERKOE',
@@ -418,7 +415,7 @@ export const testMessages = [
           startTime: '02:00',
         },
         {
-          date: '2024-07-24',
+          date: '2024-09-24',
           electricity: 'off',
           endTime: '12:00',
           provider: 'CHERKOE',
@@ -426,7 +423,7 @@ export const testMessages = [
           startTime: '10:00',
         },
         {
-          date: '2024-07-24',
+          date: '2024-09-24',
           electricity: 'off',
           endTime: '22:00',
           provider: 'CHERKOE',
@@ -434,7 +431,7 @@ export const testMessages = [
           startTime: '20:00',
         },
         {
-          date: '2024-07-24',
+          date: '2024-09-24',
           electricity: 'off',
           endTime: '06:00',
           provider: 'CHERKOE',
@@ -442,7 +439,7 @@ export const testMessages = [
           startTime: '04:00',
         },
         {
-          date: '2024-07-24',
+          date: '2024-09-24',
           electricity: 'off',
           endTime: '14:00',
           provider: 'CHERKOE',
@@ -450,7 +447,7 @@ export const testMessages = [
           startTime: '12:00',
         },
         {
-          date: '2024-07-24',
+          date: '2024-09-24',
           electricity: 'off',
           endTime: '06:00',
           provider: 'CHERKOE',
@@ -458,7 +455,7 @@ export const testMessages = [
           startTime: '04:00',
         },
         {
-          date: '2024-07-24',
+          date: '2024-09-24',
           electricity: 'off',
           endTime: '16:00',
           provider: 'CHERKOE',
@@ -466,7 +463,7 @@ export const testMessages = [
           startTime: '14:00',
         },
         {
-          date: '2024-07-24',
+          date: '2024-09-24',
           electricity: 'off',
           endTime: '24:00',
           provider: 'CHERKOE',
@@ -474,7 +471,7 @@ export const testMessages = [
           startTime: '22:00',
         },
         {
-          date: '2024-07-24',
+          date: '2024-09-24',
           electricity: 'off',
           endTime: '02:00',
           provider: 'CHERKOE',
@@ -482,7 +479,7 @@ export const testMessages = [
           startTime: '00:00',
         },
         {
-          date: '2024-07-24',
+          date: '2024-09-24',
           electricity: 'off',
           endTime: '08:00',
           provider: 'CHERKOE',
@@ -490,7 +487,7 @@ export const testMessages = [
           startTime: '06:00',
         },
         {
-          date: '2024-07-24',
+          date: '2024-09-24',
           electricity: 'off',
           endTime: '18:00',
           provider: 'CHERKOE',
@@ -498,13 +495,13 @@ export const testMessages = [
           startTime: '16:00',
         },
       ],
-      targetDate: '2024-07-24',
+      targetDate: '2024-09-24',
     },
   },
   {
     // message with a line break in between the queues lines
     messageNumber: 6,
-    message: `20 липня з 00:00 до 02:00 та 05:00 до 24:00 по Черкаській області будуть застосовані графіки погодинних відключень (ГПВ). 
+    message: `20 вересня з 00:00 до 02:00 та 05:00 до 24:00 по Черкаській області будуть застосовані графіки погодинних відключень (ГПВ). 
 
 З 02:00 до 05:00 графіки погодинних відключень (ГПВ) застосовуватися не будуть.
 
@@ -535,7 +532,7 @@ export const testMessages = [
     expectedResult: {
       eventsList: [
         {
-          date: '2024-07-20',
+          date: '2024-09-20',
           electricity: 'off',
           endTime: '09:00',
           provider: 'CHERKOE',
@@ -543,7 +540,7 @@ export const testMessages = [
           startTime: '07:00',
         },
         {
-          date: '2024-07-20',
+          date: '2024-09-20',
           electricity: 'off',
           endTime: '17:00',
           provider: 'CHERKOE',
@@ -551,7 +548,7 @@ export const testMessages = [
           startTime: '15:00',
         },
         {
-          date: '2024-07-20',
+          date: '2024-09-20',
           electricity: 'off',
           endTime: '23:00',
           provider: 'CHERKOE',
@@ -559,7 +556,7 @@ export const testMessages = [
           startTime: '21:00',
         },
         {
-          date: '2024-07-20',
+          date: '2024-09-20',
           electricity: 'off',
           endTime: '02:00',
           provider: 'CHERKOE',
@@ -567,7 +564,7 @@ export const testMessages = [
           startTime: '00:00',
         },
         {
-          date: '2024-07-20',
+          date: '2024-09-20',
           electricity: 'off',
           endTime: '11:00',
           provider: 'CHERKOE',
@@ -575,7 +572,7 @@ export const testMessages = [
           startTime: '09:00',
         },
         {
-          date: '2024-07-20',
+          date: '2024-09-20',
           electricity: 'off',
           endTime: '19:00',
           provider: 'CHERKOE',
@@ -583,7 +580,7 @@ export const testMessages = [
           startTime: '17:00',
         },
         {
-          date: '2024-07-20',
+          date: '2024-09-20',
           electricity: 'off',
           endTime: '24:00',
           provider: 'CHERKOE',
@@ -591,7 +588,7 @@ export const testMessages = [
           startTime: '23:00',
         },
         {
-          date: '2024-07-20',
+          date: '2024-09-20',
           electricity: 'off',
           endTime: '13:00',
           provider: 'CHERKOE',
@@ -599,7 +596,7 @@ export const testMessages = [
           startTime: '11:00',
         },
         {
-          date: '2024-07-20',
+          date: '2024-09-20',
           electricity: 'off',
           endTime: '19:00',
           provider: 'CHERKOE',
@@ -607,7 +604,7 @@ export const testMessages = [
           startTime: '17:00',
         },
         {
-          date: '2024-07-20',
+          date: '2024-09-20',
           electricity: 'off',
           endTime: '24:00',
           provider: 'CHERKOE',
@@ -615,7 +612,7 @@ export const testMessages = [
           startTime: '23:00',
         },
         {
-          date: '2024-07-20',
+          date: '2024-09-20',
           electricity: 'off',
           endTime: '15:00',
           provider: 'CHERKOE',
@@ -623,7 +620,7 @@ export const testMessages = [
           startTime: '13:00',
         },
         {
-          date: '2024-07-20',
+          date: '2024-09-20',
           electricity: 'off',
           endTime: '21:00',
           provider: 'CHERKOE',
@@ -631,7 +628,7 @@ export const testMessages = [
           startTime: '19:00',
         },
         {
-          date: '2024-07-20',
+          date: '2024-09-20',
           electricity: 'off',
           endTime: '15:00',
           provider: 'CHERKOE',
@@ -639,7 +636,7 @@ export const testMessages = [
           startTime: '13:00',
         },
         {
-          date: '2024-07-20',
+          date: '2024-09-20',
           electricity: 'off',
           endTime: '21:00',
           provider: 'CHERKOE',
@@ -647,7 +644,7 @@ export const testMessages = [
           startTime: '19:00',
         },
         {
-          date: '2024-07-20',
+          date: '2024-09-20',
           electricity: 'off',
           endTime: '07:00',
           provider: 'CHERKOE',
@@ -655,7 +652,7 @@ export const testMessages = [
           startTime: '05:00',
         },
         {
-          date: '2024-07-20',
+          date: '2024-09-20',
           electricity: 'off',
           endTime: '17:00',
           provider: 'CHERKOE',
@@ -663,7 +660,7 @@ export const testMessages = [
           startTime: '15:00',
         },
         {
-          date: '2024-07-20',
+          date: '2024-09-20',
           electricity: 'off',
           endTime: '23:00',
           provider: 'CHERKOE',
@@ -671,13 +668,13 @@ export const testMessages = [
           startTime: '21:00',
         },
       ],
-      targetDate: '2024-07-20',
+      targetDate: '2024-09-20',
     },
   },
   {
     // regular message
     messageNumber: 7,
-    message: `Графіки погодинних відключень на 19 липня
+    message: `Графіки погодинних відключень на 19 вересня
 
 Години відсутності електропостачання
 
@@ -710,7 +707,7 @@ export const testMessages = [
     expectedResult: {
       eventsList: [
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '02:00',
           provider: 'CHERKOE',
@@ -718,7 +715,7 @@ export const testMessages = [
           startTime: '00:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '11:00',
           provider: 'CHERKOE',
@@ -726,7 +723,7 @@ export const testMessages = [
           startTime: '09:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '15:00',
           provider: 'CHERKOE',
@@ -734,7 +731,7 @@ export const testMessages = [
           startTime: '13:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '19:00',
           provider: 'CHERKOE',
@@ -742,7 +739,7 @@ export const testMessages = [
           startTime: '17:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '23:00',
           provider: 'CHERKOE',
@@ -750,7 +747,7 @@ export const testMessages = [
           startTime: '21:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '04:00',
           provider: 'CHERKOE',
@@ -758,7 +755,7 @@ export const testMessages = [
           startTime: '02:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '13:00',
           provider: 'CHERKOE',
@@ -766,7 +763,7 @@ export const testMessages = [
           startTime: '11:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '17:00',
           provider: 'CHERKOE',
@@ -774,7 +771,7 @@ export const testMessages = [
           startTime: '15:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '21:00',
           provider: 'CHERKOE',
@@ -782,7 +779,7 @@ export const testMessages = [
           startTime: '19:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '24:00',
           provider: 'CHERKOE',
@@ -790,7 +787,7 @@ export const testMessages = [
           startTime: '23:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '08:00',
           provider: 'CHERKOE',
@@ -798,7 +795,7 @@ export const testMessages = [
           startTime: '06:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '12:00',
           provider: 'CHERKOE',
@@ -806,7 +803,7 @@ export const testMessages = [
           startTime: '10:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '16:00',
           provider: 'CHERKOE',
@@ -814,7 +811,7 @@ export const testMessages = [
           startTime: '14:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '20:00',
           provider: 'CHERKOE',
@@ -822,7 +819,7 @@ export const testMessages = [
           startTime: '18:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '24:00',
           provider: 'CHERKOE',
@@ -830,7 +827,7 @@ export const testMessages = [
           startTime: '22:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '04:00',
           provider: 'CHERKOE',
@@ -838,7 +835,7 @@ export const testMessages = [
           startTime: '02:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '08:00',
           provider: 'CHERKOE',
@@ -846,7 +843,7 @@ export const testMessages = [
           startTime: '06:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '12:00',
           provider: 'CHERKOE',
@@ -854,7 +851,7 @@ export const testMessages = [
           startTime: '10:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '16:00',
           provider: 'CHERKOE',
@@ -862,7 +859,7 @@ export const testMessages = [
           startTime: '14:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '20:00',
           provider: 'CHERKOE',
@@ -870,7 +867,7 @@ export const testMessages = [
           startTime: '18:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '23:00',
           provider: 'CHERKOE',
@@ -878,7 +875,7 @@ export const testMessages = [
           startTime: '22:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '06:00',
           provider: 'CHERKOE',
@@ -886,7 +883,7 @@ export const testMessages = [
           startTime: '04:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '10:00',
           provider: 'CHERKOE',
@@ -894,7 +891,7 @@ export const testMessages = [
           startTime: '08:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '14:00',
           provider: 'CHERKOE',
@@ -902,7 +899,7 @@ export const testMessages = [
           startTime: '12:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '18:00',
           provider: 'CHERKOE',
@@ -910,7 +907,7 @@ export const testMessages = [
           startTime: '16:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '22:00',
           provider: 'CHERKOE',
@@ -918,7 +915,7 @@ export const testMessages = [
           startTime: '20:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '02:00',
           provider: 'CHERKOE',
@@ -926,7 +923,7 @@ export const testMessages = [
           startTime: '00:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '06:00',
           provider: 'CHERKOE',
@@ -934,7 +931,7 @@ export const testMessages = [
           startTime: '04:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '10:00',
           provider: 'CHERKOE',
@@ -942,7 +939,7 @@ export const testMessages = [
           startTime: '08:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '14:00',
           provider: 'CHERKOE',
@@ -950,7 +947,7 @@ export const testMessages = [
           startTime: '12:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '18:00',
           provider: 'CHERKOE',
@@ -958,7 +955,7 @@ export const testMessages = [
           startTime: '16:00',
         },
         {
-          date: '2024-07-19',
+          date: '2024-09-19',
           electricity: 'off',
           endTime: '22:00',
           provider: 'CHERKOE',
@@ -966,14 +963,14 @@ export const testMessages = [
           startTime: '20:00',
         },
       ],
-      targetDate: '2024-07-19',
+      targetDate: '2024-09-19',
     },
   },
   {
     messageNumber: 8,
-    message: `Оновлені графіки погодинних відключень на 29 липня 
+    message: `Оновлені графіки погодинних відключень на 29 вересня 
  
-29 липня з 18:00 до 23:00 по Черкаській області будуть застосовані графіки погодинних відключень (ГПВ). 
+29 вересня з 18:00 до 23:00 по Черкаській області будуть застосовані графіки погодинних відключень (ГПВ). 
  
 Години відсутності електропостачання: 
  
@@ -987,7 +984,7 @@ export const testMessages = [
     expectedResult: {
       eventsList: [
         {
-          date: '2024-07-29',
+          date: '2024-09-29',
           electricity: 'off',
           endTime: '20:00',
           provider: 'CHERKOE',
@@ -995,7 +992,7 @@ export const testMessages = [
           startTime: '18:00',
         },
         {
-          date: '2024-07-29',
+          date: '2024-09-29',
           electricity: 'off',
           endTime: '23:00',
           provider: 'CHERKOE',
@@ -1003,7 +1000,7 @@ export const testMessages = [
           startTime: '22:00',
         },
         {
-          date: '2024-07-29',
+          date: '2024-09-29',
           electricity: 'off',
           endTime: '22:00',
           provider: 'CHERKOE',
@@ -1011,7 +1008,7 @@ export const testMessages = [
           startTime: '20:00',
         },
       ],
-      targetDate: '2024-07-29',
+      targetDate: '2024-09-29',
     },
   },
   // {

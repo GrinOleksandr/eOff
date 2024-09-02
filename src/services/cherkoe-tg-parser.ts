@@ -105,9 +105,8 @@ export class CherkoeTgParser {
       return acc;
     }, {});
 
-  private convertToEvents = (scheduleData: GroupByQueueResult, date: string | null): EoffEvent[] | void => {
+  private convertToEvents = (scheduleData: GroupByQueueResult, date: string | null): EoffEvent[] => {
     // Convert grouped data to events
-    if (!date) throw new Error('Invalid date');
     return Object.entries(scheduleData).flatMap(([queue, timeZones]) => {
       if (timeZones.length === 0) return [];
 
@@ -116,7 +115,7 @@ export class CherkoeTgParser {
       let currentEndIndex = parseInt(timeZones[0], 10);
       const result = [];
 
-      const defaultValuesObj = { queue, date, electricity: 'off', provider: config.providerName };
+      const defaultValuesObj = { queue, date: date || '', electricity: 'off', provider: config.providerName };
 
       for (let i = 1; i < timeZones.length; i++) {
         const currentZone = parseInt(timeZones[i], 10);
@@ -142,17 +141,17 @@ export class CherkoeTgParser {
     });
   };
 
-  parseMessage = (message: string): IParsedTgMessage => {
+  parseMessage = (message: string): IParsedTgMessage | null => {
     const targetDate: string | null = this.getTargetDate(message);
 
     const parsedSchedule: ParsedScheduleString[] | null = this.parseSchedule(message);
 
-    if (!parsedSchedule) throw new Error('Error during parsing a schedule');
+    if (!parsedSchedule) return null;
 
     const groupedByQueue: GroupByQueueResult = this.groupByQueue(parsedSchedule);
 
     const eventsList: EoffEvent[] | void = this.convertToEvents(groupedByQueue, targetDate);
-    if (!eventsList || !targetDate) throw new Error('No events found.');
+    if (!eventsList || !targetDate) return null;
     return { targetDate, eventsList };
   };
 }

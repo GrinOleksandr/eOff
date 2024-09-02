@@ -59,7 +59,7 @@ export class CherkoeService {
     lastMessages.forEach((message) => {
       if (message.message) {
         // console.log(`Message from ${config.telegram.channelUsername}: ${message.message}`)
-        const parsedMessage: IParsedTgMessage = cherkoeTgParser.parseMessage(message.message);
+        const parsedMessage: IParsedTgMessage | null = cherkoeTgParser.parseMessage(message.message);
 
         if (!parsedMessage?.targetDate) {
           return;
