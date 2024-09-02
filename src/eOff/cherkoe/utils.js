@@ -87,9 +87,9 @@ const getTelegramClient = async () => {
 };
 
 const getFormattedDate = (date) => {
-  const year = date.getFullYear();
-  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based, so add 1
-  const day = date.getDate().toString().padStart(2, '0'); // Pad single-digit days with a leading zero
+  const year = date.year();
+  const month = (date.month() + 1).toString().padStart(2, '0'); // Months are zero-based, so add 1
+  const day = date.date().toString().padStart(2, '0'); // Day of the month
   return `${year}-${month}-${day}`;
 };
 

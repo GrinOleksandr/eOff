@@ -7,9 +7,9 @@ const daysScheduleData = {};
 const debugFunc = () => {
   const currentDate = getNewKyivDate();
   console.log('currentDate:', currentDate);
-  console.log('Current Date and Time:', currentDate.toString());
-  console.log('UTC Date and Time:', currentDate.toUTCString());
-  console.log('ISO Date and Time:', currentDate.toISOString());
+  // console.log('Current Date and Time:', currentDate.toString());
+  // console.log('UTC Date and Time:', currentDate.toUTCString());
+  // console.log('ISO Date and Time:', currentDate.toISOString());
 };
 
 const getDataForCherkOE = async () => {
