@@ -94,7 +94,7 @@ const getFormattedDate = (date) => {
 };
 
 // Get the current date and time in Kyiv timezone
-const getNewKyivDate = () => moment.tz('Europe/Kyiv')
+const getNewKyivDate = () => moment.tz('Europe/Kyiv');
 
 export {
   getCurrentMonth,
