@@ -3,8 +3,8 @@
 
 import { TelegramClient } from 'telegram';
 import { StringSession } from 'telegram/sessions/index.js';
-import input from 'input';
-import config from '../config.js';
+import input  from 'input';
+import config from '../config.ts';
 
 const apiId = 'YOUR_API_ID'; // Replace with your actual api_id
 const apiHash = 'YOUR_API_HASH'; // Replace with your actual api_hash

@@ -1,5 +1,5 @@
 import { TelegramClient } from 'telegram';
-import config from '../../config.js';
+import config from '../config';
 import moment from 'moment-timezone';
 
 const MONTH_NAMES = [
@@ -41,7 +41,7 @@ const getNextMonth = () => {
   return { index: nextMonthIndex + 1, name: MONTH_NAMES[nextMonthIndex], year };
 };
 
-function formatDateFromObject(obj) {
+function formatDateFromObject(obj: { day: any; index: any; name?: string; year?: number }) {
   const year = new Date().getFullYear(); // Get the current year
   const monthIndex = obj.index - 1; // Convert month index to zero-based
   const month = (monthIndex + 1).toString().padStart(2, '0'); // Convert to one-based index and pad to two digits
@@ -66,7 +66,7 @@ function getTodayDate() {
   return dateString;
 }
 
-let tgClient;
+let tgClient: TelegramClient;
 
 const getTelegramClient = async () => {
   if (tgClient) {
@@ -86,7 +86,7 @@ const getTelegramClient = async () => {
   return tgClient;
 };
 
-const getFormattedDate = (date) => {
+const getFormattedDate = (date: moment.Moment) => {
   const year = date.year();
   const month = (date.month() + 1).toString().padStart(2, '0'); // Months are zero-based, so add 1
   const day = date.date().toString().padStart(2, '0'); // Day of the month
