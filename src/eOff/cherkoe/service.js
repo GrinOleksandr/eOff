@@ -28,6 +28,7 @@ const getDataForCherkOE = async () => {
 
   console.log('Processing data for CHERKOE');
   console.log('todayDate', todayDate, today);
+  console.log('tomorrowDate', tomorrowDate, tomorrow);
 
   debugFunc();
 
@@ -55,7 +56,7 @@ const getDataForCherkOE = async () => {
     }
   });
 
-  console.log('daysScheduleData', daysScheduleData);
+  // console.log('daysScheduleData', daysScheduleData);
 
   const result = { events: [], hasTodayData: false, hasTomorrowData: false };
 
