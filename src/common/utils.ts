@@ -2,7 +2,7 @@ import { TelegramClient } from 'telegram';
 import config from '../config';
 import moment from 'moment-timezone';
 
-const MONTH_NAMES = [
+export const MONTH_NAMES: string[] = [
   'січня',
   'лютого',
   'березня',
@@ -17,14 +17,14 @@ const MONTH_NAMES = [
   'грудня',
 ];
 
-const getCurrentMonth = () => {
+const getCurrentMonth = (): { year: number; name: string; index: number } => {
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth(); // Returns a number (0-11)
 
   return { index: currentMonth + 1, name: MONTH_NAMES[currentMonth], year: currentDate.getFullYear() };
 };
 
-const getNextMonth = () => {
+const getNextMonth = (): { year: number; name: string; index: number } => {
   const currentDate = new Date();
   let nextMonthIndex = currentDate.getMonth() + 1; // Increment to get next month
   const currentYear = currentDate.getFullYear();
@@ -41,19 +41,17 @@ const getNextMonth = () => {
   return { index: nextMonthIndex + 1, name: MONTH_NAMES[nextMonthIndex], year };
 };
 
-function formatDateFromObject(obj: { day: any; index: any; name?: string; year?: number }) {
+function formatDateFromObject(obj: { day: any; index: any; name?: string; year?: number }): string {
   const year = new Date().getFullYear(); // Get the current year
   const monthIndex = obj.index - 1; // Convert month index to zero-based
   const month = (monthIndex + 1).toString().padStart(2, '0'); // Convert to one-based index and pad to two digits
   const day = obj.day.toString().padStart(2, '0'); // Ensure day is two digits with leading zero if necessary
 
   // Create date string in YYYY-MM-DD format
-  const dateString = `${year}-${month}-${day}`;
-
-  return dateString;
+  return `${year}-${month}-${day}`;
 }
 
-function getTodayDate() {
+function getTodayDate(): string {
   const today = new Date();
   const year = today.getFullYear(); // Get the year (YYYY)
   const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Get the month (MM) and pad with leading zero if
@@ -61,14 +59,12 @@ function getTodayDate() {
   const day = today.getDate().toString().padStart(2, '0'); // Get the day (DD) and pad with leading zero if necessary
 
   // Construct date string in YYYY-MM-DD format
-  const dateString = `${year}-${month}-${day}`;
-
-  return dateString;
+  return `${year}-${month}-${day}`;
 }
 
 let tgClient: TelegramClient;
 
-const getTelegramClient = async () => {
+const getTelegramClient = async (): Promise<TelegramClient> => {
   if (tgClient) {
     console.log('Returning existing client');
     return tgClient;
@@ -86,7 +82,7 @@ const getTelegramClient = async () => {
   return tgClient;
 };
 
-const getFormattedDate = (date: moment.Moment) => {
+const getFormattedDate = (date: moment.Moment): string => {
   const year = date.year();
   const month = (date.month() + 1).toString().padStart(2, '0'); // Months are zero-based, so add 1
   const day = date.date().toString().padStart(2, '0'); // Day of the month
@@ -94,7 +90,7 @@ const getFormattedDate = (date: moment.Moment) => {
 };
 
 // Get the current date and time in Kyiv timezone
-const getNewKyivDate = () => moment.tz('Europe/Kyiv');
+const getNewKyivDate = (): moment.Moment => moment.tz('Europe/Kyiv');
 
 export {
   getCurrentMonth,

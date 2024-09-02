@@ -3,12 +3,29 @@
 
 import { TelegramClient } from 'telegram';
 import { StringSession } from 'telegram/sessions/index.js';
-import input  from 'input';
-import config from '../config.ts';
+import config from '../config';
 
 const apiId = 'YOUR_API_ID'; // Replace with your actual api_id
 const apiHash = 'YOUR_API_HASH'; // Replace with your actual api_hash
 const stringSession = new StringSession(''); // Empty string to start with a new session
+
+import * as readline from 'readline';
+
+const input = {
+  text: (question: string): Promise<string> => {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+
+    return new Promise((resolve) => {
+      rl.question(question, (answer) => {
+        rl.close();
+        resolve(answer);
+      });
+    });
+  },
+};
 
 (async () => {
   const client = new TelegramClient(config.telegram.stringSession, config.telegram.apiId, config.telegram.apiHash, {
