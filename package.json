@@ -5,6 +5,7 @@
 	"main": "src/index.js",
 	"scripts": {
 		"build": "rm -rf ./dist && tsc",
+		"installAndBuild": "npm install && npm run build",
 		"start": "node ./dist/main.js",
 		"dev": "ts-node-dev ./src/main.ts",
 		"test": "npx jest"
