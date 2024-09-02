@@ -1,21 +1,21 @@
 import { parseMessage } from './parser.js';
 import config from '../../config.js';
-import { convertToKyivTime, getFormattedDate, getTelegramClient } from './utils.js';
+import { getFormattedDate, getNewKyivDate, getTelegramClient } from './utils.js';
 
 const daysScheduleData = {};
 
 const debugFunc = () => {
-  const currentDate = new Date();
+  const currentDate = getNewKyivDate();
   console.log('Current Date and Time:', currentDate.toString());
   console.log('UTC Date and Time:', currentDate.toUTCString());
   console.log('ISO Date and Time:', currentDate.toISOString());
 };
 
 const getDataForCherkOE = async () => {
-  const today = convertToKyivTime(new Date());
+  const today = getNewKyivDate();
   const todayDate = getFormattedDate(today);
 
-  const tomorrow = convertToKyivTime(new Date());
+  const tomorrow = getNewKyivDate();
   tomorrow.setDate(today.getDate() + 1);
   const tomorrowDate = getFormattedDate(tomorrow);
 

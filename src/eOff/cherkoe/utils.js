@@ -97,6 +97,8 @@ const convertToKyivTime = (date) => {
   return new Date(date.toLocaleString('en-US', { timeZone: 'Europe/Kyiv' }));
 };
 
+const getNewKyivDate = () => convertToKyivTime(new Date());
+
 export {
   getCurrentMonth,
   getNextMonth,
@@ -105,4 +107,5 @@ export {
   getTelegramClient,
   getFormattedDate,
   convertToKyivTime,
+  getNewKyivDate,
 };
