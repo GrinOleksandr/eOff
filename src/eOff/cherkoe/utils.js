@@ -85,4 +85,24 @@ const getTelegramClient = async () => {
   return tgClient;
 };
 
-export { getCurrentMonth, getNextMonth, formatDateFromObject, getTodayDate, getTelegramClient };
+const getFormattedDate = (date) => {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based, so add 1
+  const day = date.getDate().toString().padStart(2, '0'); // Pad single-digit days with a leading zero
+  return `${year}-${month}-${day}`;
+};
+
+const convertToKyivTime = (date) => {
+  // Convert the date to Kyiv timezone
+  return new Date(date.toLocaleString('en-US', { timeZone: 'Europe/Kyiv' }));
+};
+
+export {
+  getCurrentMonth,
+  getNextMonth,
+  formatDateFromObject,
+  getTodayDate,
+  getTelegramClient,
+  getFormattedDate,
+  convertToKyivTime,
+};

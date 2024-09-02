@@ -1,15 +1,8 @@
 import { parseMessage } from './parser.js';
 import config from '../../config.js';
-import { getTelegramClient } from './utils.js';
+import { convertToKyivTime, getFormattedDate, getTelegramClient } from './utils.js';
 
 const daysScheduleData = {};
-
-const getFormattedDate = (date) => {
-  const year = date.getFullYear();
-  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based, so add 1
-  const day = date.getDate().toString().padStart(2, '0'); // Pad single-digit days with a leading zero
-  return `${year}-${month}-${day}`;
-};
 
 const debugFunc = () => {
   const currentDate = new Date();
@@ -19,10 +12,10 @@ const debugFunc = () => {
 };
 
 const getDataForCherkOE = async () => {
-  const today = new Date();
+  const today = convertToKyivTime(new Date());
   const todayDate = getFormattedDate(today);
 
-  const tomorrow = new Date();
+  const tomorrow = convertToKyivTime(new Date());
   tomorrow.setDate(today.getDate() + 1);
   const tomorrowDate = getFormattedDate(tomorrow);
 
