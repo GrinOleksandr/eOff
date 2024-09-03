@@ -1,16 +1,6 @@
 import config from '../config';
-import { getFormattedDate, getNewKyivDate, getTelegramClient } from '../common/utils';
+import { getFormattedDate, getNewKyivDate, getTelegramClient, MONTH_NAMES } from '../common/utils';
 import { cherkoeTgParser, IParsedTgMessage } from './cherkoe-tg-parser';
-
-// const daysScheduleData = {};
-
-const debugFunc = () => {
-  const currentDate = getNewKyivDate();
-  console.log('currentDate:', currentDate);
-  // console.log('Current Date and Time:', currentDate.toString());
-  // console.log('UTC Date and Time:', currentDate.toUTCString());
-  // console.log('ISO Date and Time:', currentDate.toISOString());
-};
 
 export interface EoffEvent {
   startTime: string; // e.g. "18:00"
@@ -32,7 +22,7 @@ export class CherkoeService {
 
   constructor() {}
 
-  async getSchedule(): Promise<ISchedule> {
+  getTodayAndTomorrowDate(): { todayDate: string; tomorrowDate: string } {
     const today = getNewKyivDate();
     const todayDate = getFormattedDate(today);
 
@@ -43,8 +33,13 @@ export class CherkoeService {
     console.log('todayDate', todayDate, today);
     console.log('tomorrowDate', tomorrowDate, tomorrow);
 
-    debugFunc();
+    const currentDate = getNewKyivDate();
+    console.log('currentDate:', currentDate);
 
+    return { todayDate, tomorrowDate };
+  }
+
+  async getSchedule(): Promise<ISchedule> {
     const client = await getTelegramClient();
 
     // Getting the channel entity
@@ -71,6 +66,7 @@ export class CherkoeService {
 
     // console.log('daysScheduleData', daysScheduleData);
 
+    const { todayDate, tomorrowDate } = this.getTodayAndTomorrowDate();
     const result: ISchedule = { events: [], hasTodayData: false, hasTomorrowData: false };
 
     if (this.daysScheduleData[todayDate]) {
@@ -84,6 +80,29 @@ export class CherkoeService {
     }
 
     return result;
+  }
+
+  async getMessage(type: string, queue: string, day: string): Promise<string> {
+    const schedule: ISchedule = await this.getSchedule();
+
+    const { todayDate, tomorrowDate } = this.getTodayAndTomorrowDate();
+
+    const targetDate = day === 'today' ? todayDate : tomorrowDate;
+
+    const filteredSchedule: EoffEvent[] = schedule.events.filter(
+      (event) => event.queue === queue && event.date === targetDate
+    );
+
+    const preparedSchedule = filteredSchedule.map((item) => `${item.startTime} - ${item.endTime}`);
+
+    const monthNumber: number = parseInt(targetDate.split('-')[1]);
+    const month = MONTH_NAMES[monthNumber - 1];
+
+    const dayNumber = targetDate.split('-')[2];
+
+    return type === 'update'
+      ? `(!)Оновлений графік на ${dayNumber} ${month}:<br>${preparedSchedule.join('</br>')}`
+      : `(lightening)${dayNumber} ${month} відключення:<br>${preparedSchedule.join('</br>')}`;
   }
 }
 

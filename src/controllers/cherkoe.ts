@@ -7,6 +7,7 @@ export class CherkoeController {
   constructor() {
     this.router.get('/', this.healthCheck);
     this.router.get('/cherkoe', this.getSchedule);
+    this.router.get('/cherkoe/message', this.getMessage);
   }
 
   async healthCheck(req: Request, res: Response) {
@@ -16,6 +17,18 @@ export class CherkoeController {
   async getSchedule(req: Request, res: Response) {
     console.log('Getting electricity schedule for cherkoe');
     res.send(await cherkoeService.getSchedule());
+  }
+
+  async getMessage(req: Request, res: Response) {
+    console.log('Getting electricity schedule for cherkoe');
+    console.log(req.query);
+    res.send(
+      await cherkoeService.getMessage(
+        req.query?.type?.toString() || 'new',
+        req.query.queue?.toString() || '1',
+        req.query?.day?.toString() || 'today'
+      )
+    );
   }
 }
 
