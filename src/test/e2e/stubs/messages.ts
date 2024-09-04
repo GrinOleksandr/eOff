@@ -14,7 +14,7 @@ const example: TestMessageData = {
   expectedResult: {},
 };
 
-export const testMessages: TestMessageData[] = [
+export const regularMessages: TestMessageData[] = [
   {
     // schedule update
     messageNumber: 1,
@@ -1021,4 +1021,288 @@ export const testMessages: TestMessageData[] = [
   //   message: ``,
   //   expectedResult: [],
   // },
+];
+
+export const messagesWithMinutes: TestMessageData[] = [
+  {
+    messageNumber: 1,
+    message: `Графіки погодинних відключень на 19 вересня
+
+Години відсутності електропостачання
+
+00:03-01:13  1 та 6 черги
+01:13-02:22  1 та 6 черги
+02:22-03:59  2 та 4 черги
+03:59-04:59  2 та 4 черги
+04:59-05:08  5 та 6 черги
+05:08-06:30  5 та 6 черги
+06:30-07:00  3 та 4 черги
+07:00-08:21  3 та 4 черги
+08:21-09:00  5 та 6 черги
+09:00-09:59  1, 5 та 6 черги
+09:59-11:03  1, 4 та 3 черги
+11:03-12:00  2, 3 та 4 черги
+12:00-13:00  2, 5 та 6 черги
+
+Сторінка у Telegram: t.me/pat_cherkasyoblenergo`,
+    expectedResult: {
+      eventsList: [
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '02:22',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '00:03',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '11:03',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '09:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '04:59',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '02:22',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '13:00',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '11:03',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '08:21',
+          provider: 'CHERKOE',
+          queue: '3',
+          startTime: '06:30',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '12:00',
+          provider: 'CHERKOE',
+          queue: '3',
+          startTime: '09:59',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '04:59',
+          provider: 'CHERKOE',
+          queue: '4',
+          startTime: '02:22',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '08:21',
+          provider: 'CHERKOE',
+          queue: '4',
+          startTime: '06:30',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '12:00',
+          provider: 'CHERKOE',
+          queue: '4',
+          startTime: '09:59',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '06:30',
+          provider: 'CHERKOE',
+          queue: '5',
+          startTime: '04:59',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '09:59',
+          provider: 'CHERKOE',
+          queue: '5',
+          startTime: '08:21',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '13:00',
+          provider: 'CHERKOE',
+          queue: '5',
+          startTime: '12:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '02:22',
+          provider: 'CHERKOE',
+          queue: '6',
+          startTime: '00:03',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '06:30',
+          provider: 'CHERKOE',
+          queue: '6',
+          startTime: '04:59',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '09:59',
+          provider: 'CHERKOE',
+          queue: '6',
+          startTime: '08:21',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '13:00',
+          provider: 'CHERKOE',
+          queue: '6',
+          startTime: '12:00',
+        },
+      ],
+      targetDate: '2024-09-19',
+    },
+  },
+  {
+    messageNumber: 2,
+    message: `Оновлені графіки погодинних відключень на 19 вересня
+
+Відповідно до команди НЕК «Укренерго», 19 вересня графіки погодинних відключень (ГПВ) будуть застосовані з 17:30 до 21:30.
+
+Години відсутності електропостачання:
+
+17:30-18:30 1 черга
+18:30-19:30 1 черга
+19:30-20:30 2 черга
+20:30-21:30 2 черга
+
+Сторінка у Telegram: t.me/pat_cherkasyoblenergo`,
+    expectedResult: {
+      eventsList: [
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '19:30',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '17:30',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '21:30',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '19:30',
+        },
+      ],
+      targetDate: '2024-09-19',
+    },
+  },
+  {
+    messageNumber: 3,
+    message: `Оновлені графіки погодинних відключень
+
+Відповідно до команди НЕК «Укренерго», 19 вересня графіки погодинних відключень (ГПВ) будуть застосовані з 18:00 до 21:30.
+
+Години відсутності електропостачання
+
+18:00-19:00 1 черга
+19:00-20:00 1 черга
+20:00-21:00 2 черга
+21:00-21:30 2 черга
+
+Сторінка у Telegram: t.me/pat_cherkasyoblenergo`,
+    expectedResult: {
+      eventsList: [
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '20:00',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '18:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '21:30',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '20:00',
+        },
+      ],
+      targetDate: '2024-09-19',
+    },
+  },
+  {
+    // with gaps
+    messageNumber: 4,
+    message: `Оновлені графіки погодинних відключень
+
+Відповідно до команди НЕК «Укренерго», 19 вересня графіки погодинних відключень (ГПВ) будуть застосовані з 18:00 до 21:30.
+
+Години відсутності електропостачання
+
+18:00-19:00 1 черга
+19:00-20:00 1 черга
+20:00-21:00 2 черга
+21:00-21:30 2 черга
+21:33-22:10 3 та 4 черги
+
+Сторінка у Telegram: t.me/pat_cherkasyoblenergo`,
+    expectedResult: {
+      eventsList: [
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '20:00',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '18:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '21:30',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '20:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '22:10',
+          provider: 'CHERKOE',
+          queue: '3',
+          startTime: '21:33',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '22:10',
+          provider: 'CHERKOE',
+          queue: '4',
+          startTime: '21:33',
+        },
+      ],
+      targetDate: '2024-09-19',
+    },
+  },
 ];

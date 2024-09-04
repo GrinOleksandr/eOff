@@ -1,32 +1,28 @@
 import config from '../config';
-import { formatDateFromObject, getCurrentMonth, getNewKyivDate, getNextMonth } from '../common/utils';
+import { DateObj, formatDateFromObject, getCurrentMonth, getNextMonth } from '../common/utils';
 import { EoffEvent } from './cherkoe';
 
-type ParsedScheduleString = { queue: any; timeZoneIndex: string };
+interface ParsedScheduleString {
+  queue: string;
+  startTime: string;
+  endTime: string;
+}
 
-type GroupByQueueResult = {
-  [key: string]: string[];
-};
+interface GroupByQueueResult {
+  [queue: string]: { startTime: string; endTime: string }[];
+}
 
 export interface IParsedTgMessage {
   targetDate: string | null;
   eventsList: void | EoffEvent[];
 }
 
-const debugFunc = () => {
-  const currentDate = getNewKyivDate();
-  console.log('currentDate:', currentDate);
-  // console.log('Current Date and Time:', currentDate.toString());
-  // console.log('UTC Date and Time:', currentDate.toUTCString());
-  // console.log('ISO Date and Time:', currentDate.toISOString());
-};
-
 export class CherkoeTgParser {
   constructor() {}
 
   getTargetDate = (message: string) => {
-    const currentMonth = getCurrentMonth();
-    const nextMonth = getNextMonth();
+    const currentMonth: DateObj = getCurrentMonth();
+    const nextMonth: DateObj = getNextMonth();
 
     let target;
     if (message.toUpperCase().includes(currentMonth.name.toUpperCase())) {
@@ -37,16 +33,25 @@ export class CherkoeTgParser {
       return null;
     }
 
-    const targetDayString = message.toUpperCase().split(` ${target.name.toUpperCase()}`)[0].trim();
+    const targetDayString: string = message.toUpperCase().split(` ${target.name.toUpperCase()}`)[0].trim();
     const targetDayMatch = targetDayString.match(/\d+$/);
-    const targetDay = targetDayMatch ? parseInt(targetDayMatch[0]) : null;
+    const targetDay: number | null = targetDayMatch ? parseInt(targetDayMatch[0]) : null;
 
     return formatDateFromObject({ ...target, day: targetDay });
   };
 
-  private parseQueueNumbers = (line: string) => {
-    const splittedLine = line.split('00');
-    return splittedLine[splittedLine.length - 1].match(/\d+/g);
+  public parseQueueNumbers = (line: string): string[] | null => {
+    // Use regex to split the line by time intervals and capture queue numbers
+    const parts: string[] = line.split(/(?:\d{2}:\d{2}-\d{2}:\d{2}\s*)+/);
+
+    // Extract the last part (which should contain queue numbers)
+    const queuePart: string = parts[parts.length - 1];
+
+    // Use regex to match queue numbers
+    const queueNumbers = queuePart.match(/\d+(?:,\d+)?/g);
+
+    // Return the matched queue numbers or null if none found
+    return queueNumbers ? queueNumbers.filter((queue) => /^\d+$/.test(queue)) : null;
   };
 
   private parseSchedule = (message: string): ParsedScheduleString[] | null => {
@@ -63,10 +68,10 @@ export class CherkoeTgParser {
       return null;
     }
 
-    const stringedSchedule = schedule.split('\n\n');
+    const stringedSchedule: string[] = schedule.split('\n\n');
 
-    const stringFilterPattern = /\d+:00-\d+:00.*черг.*/;
-    const filteredSchedule = stringedSchedule
+    const stringFilterPattern: RegExp = /\d{2}:\d{2}-\d{2}:\d{2}.*черг.*/;
+    const filteredSchedule: string[] = stringedSchedule
       .filter((line) => stringFilterPattern.test(line))
       .join('\n')
       .split('\n');
@@ -74,68 +79,75 @@ export class CherkoeTgParser {
     const offlineHours: ParsedScheduleString[] = [];
 
     filteredSchedule.forEach((line) => {
-      const queues = this.parseQueueNumbers(line);
-      const timeZoneIndex = line.split(':')[0];
+      const queues: string[] | null = this.parseQueueNumbers(line);
+      console.log('scv_queues', queues);
+      const timeMatch = line.match(/(\d{2}:\d{2})-(\d{2}:\d{2})/);
 
-      if (!queues) return;
+      if (!queues || !timeMatch) return;
+
+      const [_, startTime, endTime] = timeMatch;
 
       queues.forEach((queue) => {
-        offlineHours.push({ queue, timeZoneIndex });
+        offlineHours.push({ queue, startTime, endTime });
       });
     });
 
     return offlineHours;
   };
 
-  private indexToHours(timeZoneIndex: number) {
-    const startHour = timeZoneIndex; // 1 hour per timezoneIndex
-    const endHour = startHour + 1; // Each timezoneIndex is 1 hour duration
-    return {
-      startHour: `${startHour.toString().padStart(2, '0')}:00`,
-      endHour: `${endHour.toString().padStart(2, '0')}:00`,
-    };
-  }
+  // private indexToHours(timeZoneIndex: number) {
+  //   const startHour = timeZoneIndex; // 1 hour per timezoneIndex
+  //   const endHour = startHour + 1; // Each timezoneIndex is 1 hour duration
+  //   return {
+  //     startHour: `${startHour.toString().padStart(2, '0')}:00`,
+  //     endHour: `${endHour.toString().padStart(2, '0')}:00`,
+  //   };
+  // }
 
   private groupByQueue = (data: ParsedScheduleString[]): GroupByQueueResult =>
-    data.reduce((acc: GroupByQueueResult, { queue, timeZoneIndex }) => {
+    data.reduce((acc: GroupByQueueResult, { queue, startTime, endTime }) => {
       if (!acc[queue]) {
         acc[queue] = [];
       }
-      acc[queue].push(timeZoneIndex);
+      acc[queue].push({ startTime, endTime });
       return acc;
     }, {});
 
   private convertToEvents = (scheduleData: GroupByQueueResult, date: string | null): EoffEvent[] => {
-    // Convert grouped data to events
-    return Object.entries(scheduleData).flatMap(([queue, timeZones]) => {
-      if (timeZones.length === 0) return [];
+    return Object.entries(scheduleData).flatMap(([queue, timeIntervals]) => {
+      if (timeIntervals.length === 0) return [];
 
-      timeZones.sort((a, b) => parseInt(a) - parseInt(b)); // Ensure the timeZones are sorted
-      let currentStartIndex = parseInt(timeZones[0], 10);
-      let currentEndIndex = parseInt(timeZones[0], 10);
+      timeIntervals.sort((a, b) => {
+        const startA = a.startTime.split(':').map(Number);
+        const startB = b.startTime.split(':').map(Number);
+        return startA[0] - startB[0] || startA[1] - startB[1];
+      });
+
       const result = [];
-
       const defaultValuesObj = { queue, date: date || '', electricity: 'off', provider: config.providerName };
 
-      for (let i = 1; i < timeZones.length; i++) {
-        const currentZone = parseInt(timeZones[i], 10);
+      let currentStartTime: string = timeIntervals[0].startTime;
+      let currentEndTime: string = timeIntervals[0].endTime;
 
-        if (currentZone === currentEndIndex + 1) {
-          currentEndIndex = currentZone;
+      for (let i = 1; i < timeIntervals.length; i++) {
+        const previousEndTime: string = currentEndTime;
+        const { startTime, endTime } = timeIntervals[i];
+
+        if (startTime === previousEndTime) {
+          // If the current interval starts when the previous one ends, merge them
+          currentEndTime = endTime;
         } else {
-          const { startHour: startTime } = this.indexToHours(currentStartIndex);
-          const { endHour: endTime } = this.indexToHours(currentEndIndex);
-          result.push({ ...defaultValuesObj, startTime, endTime });
+          // Push the previous merged interval to result
+          result.push({ ...defaultValuesObj, startTime: currentStartTime, endTime: currentEndTime });
 
-          currentStartIndex = currentZone;
-          currentEndIndex = currentZone;
+          // Start a new interval
+          currentStartTime = startTime;
+          currentEndTime = endTime;
         }
       }
 
-      // Add last range
-      const { startHour: startTime } = this.indexToHours(currentStartIndex);
-      const { endHour: endTime } = this.indexToHours(currentEndIndex);
-      result.push({ ...defaultValuesObj, startTime, endTime });
+      // Push the last interval
+      result.push({ ...defaultValuesObj, startTime: currentStartTime, endTime: currentEndTime });
 
       return result;
     });
@@ -145,12 +157,13 @@ export class CherkoeTgParser {
     const targetDate: string | null = this.getTargetDate(message);
 
     const parsedSchedule: ParsedScheduleString[] | null = this.parseSchedule(message);
-
+    console.log('scv_parsedSchedule', parsedSchedule);
     if (!parsedSchedule) return null;
 
     const groupedByQueue: GroupByQueueResult = this.groupByQueue(parsedSchedule);
 
     const eventsList: EoffEvent[] | void = this.convertToEvents(groupedByQueue, targetDate);
+    console.log('scv_eventlist', targetDate, eventsList);
     if (!eventsList || !targetDate) return null;
     return { targetDate, eventsList };
   };
