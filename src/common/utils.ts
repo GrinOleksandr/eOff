@@ -23,6 +23,8 @@ export const MONTH_NAMES: string[] = [
   'грудня',
 ];
 
+const KYIV_TIMEZONE = 'Europe/Kiev'; // Adjust timezone as needed
+
 const getCurrentMonth = (): DateObj => {
   const currentDate = getNewKyivDate();
   const currentMonth = currentDate.month(); // Returns a number (0-11)
@@ -57,17 +59,6 @@ function formatDateFromObject(obj: { day: any; index: any; name?: string; year?:
   return `${year}-${month}-${day}`;
 }
 
-// function getTodayDate(): string {
-//   const today = getNewKyivDate();
-//   const year = today.year(); // Get the year (YYYY)
-//   const month = (today.month() + 1).toString().padStart(2, '0'); // Get the month (MM) and pad with leading zero if
-//   // necessary
-//   const day = today.date().toString().padStart(2, '0'); // Get the day (DD) and pad with leading zero if necessary
-//
-//   // Construct date string in YYYY-MM-DD format
-//   return `${year}-${month}-${day}`;
-// }
-
 let tgClient: TelegramClient;
 
 const getTelegramClient = async (): Promise<TelegramClient> => {
@@ -96,14 +87,35 @@ const getFormattedDate = (date: moment.Moment): string => {
 };
 
 // Get the current date and time in Kyiv timezone
-const getNewKyivDate = (): moment.Moment => moment.tz('Europe/Kyiv');
+const getNewKyivDate = (): moment.Moment => moment.tz(KYIV_TIMEZONE);
+
+const toKyivDate = (date: any): moment.Moment => moment.tz(date, KYIV_TIMEZONE);
+
+const now = moment().tz(KYIV_TIMEZONE); // Current time using moment
+
+const getTodayAndTomorrowDate = (): { todayDate: string; tomorrowDate: string } => {
+  const today: moment.Moment = getNewKyivDate();
+  const todayDate: string = getFormattedDate(today);
+
+  const tomorrow: moment.Moment = today.clone().add(1, 'day');
+  const tomorrowDate: string = getFormattedDate(tomorrow);
+
+  console.log('todayDate', todayDate, today);
+  console.log('tomorrowDate', tomorrowDate, tomorrow);
+
+  const currentDate = getNewKyivDate();
+  console.log('currentDate:', currentDate);
+
+  return { todayDate, tomorrowDate };
+};
 
 export {
   getCurrentMonth,
   getNextMonth,
   formatDateFromObject,
-  // getTodayDate,
   getTelegramClient,
   getFormattedDate,
   getNewKyivDate,
+  getTodayAndTomorrowDate,
+  toKyivDate,
 };
