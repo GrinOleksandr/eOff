@@ -57,34 +57,19 @@ function formatDateFromObject(obj: { day: any; index: any; name?: string; year?:
   return `${year}-${month}-${day}`;
 }
 
-// function getTodayDate(): string {
-//   const today = getNewKyivDate();
-//   const year = today.year(); // Get the year (YYYY)
-//   const month = (today.month() + 1).toString().padStart(2, '0'); // Get the month (MM) and pad with leading zero if
-//   // necessary
-//   const day = today.date().toString().padStart(2, '0'); // Get the day (DD) and pad with leading zero if necessary
-//
-//   // Construct date string in YYYY-MM-DD format
-//   return `${year}-${month}-${day}`;
-// }
-
 let tgClient: TelegramClient;
 
 const getTelegramClient = async (): Promise<TelegramClient> => {
   if (tgClient) {
-    console.log('Returning existing client');
     return tgClient;
   }
 
-  console.log('Creating new Telegram client');
   tgClient = new TelegramClient(config.telegram.stringSession, config.telegram.apiId, config.telegram.apiHash, {
     connectionRetries: 10,
   });
 
-  console.log('Connecting to telegram');
   await tgClient.connect();
 
-  console.log('You should now be connected.');
   return tgClient;
 };
 
@@ -98,12 +83,4 @@ const getFormattedDate = (date: moment.Moment): string => {
 // Get the current date and time in Kyiv timezone
 const getNewKyivDate = (): moment.Moment => moment.tz('Europe/Kyiv');
 
-export {
-  getCurrentMonth,
-  getNextMonth,
-  formatDateFromObject,
-  // getTodayDate,
-  getTelegramClient,
-  getFormattedDate,
-  getNewKyivDate,
-};
+export { getCurrentMonth, getNextMonth, formatDateFromObject, getTelegramClient, getFormattedDate, getNewKyivDate };
