@@ -80,7 +80,7 @@ export class CherkoeTgParser {
 
     filteredSchedule.forEach((line) => {
       const queues: string[] | null = this.parseQueueNumbers(line);
-      console.log('scv_queues', queues);
+
       const timeMatch = line.match(/(\d{2}:\d{2})-(\d{2}:\d{2})/);
 
       if (!queues || !timeMatch) return;
@@ -157,13 +157,13 @@ export class CherkoeTgParser {
     const targetDate: string | null = this.getTargetDate(message);
 
     const parsedSchedule: ParsedScheduleString[] | null = this.parseSchedule(message);
-    console.log('scv_parsedSchedule', parsedSchedule);
+
     if (!parsedSchedule) return null;
 
     const groupedByQueue: GroupByQueueResult = this.groupByQueue(parsedSchedule);
 
     const eventsList: EoffEvent[] | void = this.convertToEvents(groupedByQueue, targetDate);
-    console.log('scv_eventlist', targetDate, eventsList);
+
     if (!eventsList || !targetDate) return null;
     return { targetDate, eventsList };
   };
