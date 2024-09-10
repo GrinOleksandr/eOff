@@ -29,13 +29,6 @@ export class CherkoeService {
     const tomorrow = today.clone().add(1, 'day');
     const tomorrowDate = getFormattedDate(tomorrow);
 
-    console.log('Processing data for CHERKOE');
-    console.log('todayDate', todayDate, today);
-    console.log('tomorrowDate', tomorrowDate, tomorrow);
-
-    const currentDate = getNewKyivDate();
-    console.log('currentDate:', currentDate);
-
     return { todayDate, tomorrowDate };
   }
 
@@ -44,7 +37,6 @@ export class CherkoeService {
 
     // Getting the channel entity
     const channel = await client.getEntity(config.telegram.channelUsername);
-    console.log('Channel ID:', channel.id.toString());
 
     // Fetching the last 20 messages from the channel
     const lastMessages = await client.getMessages(channel, { limit: config.telegram.MESSAGES_LIMIT });
