@@ -15,12 +15,10 @@ export class CherkoeController {
   }
 
   async getSchedule(req: Request, res: Response) {
-    console.log('Getting electricity schedule for cherkoe');
     res.send(await cherkoeService.getSchedule());
   }
 
   async getMessage(req: Request, res: Response) {
-    console.log('Getting electricity schedule for cherkoe');
     console.log(req.query);
     res.send(
       await cherkoeService.getMessage(
