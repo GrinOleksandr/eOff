@@ -23,6 +23,8 @@ export const MONTH_NAMES: string[] = [
   'грудня',
 ];
 
+const KYIV_TIMEZONE = 'Europe/Kiev'; // Adjust timezone as needed
+
 const getCurrentMonth = (): DateObj => {
   const currentDate = getNewKyivDate();
   const currentMonth = currentDate.month(); // Returns a number (0-11)
@@ -81,6 +83,20 @@ const getFormattedDate = (date: moment.Moment): string => {
 };
 
 // Get the current date and time in Kyiv timezone
-const getNewKyivDate = (): moment.Moment => moment.tz('Europe/Kyiv');
+const getNewKyivDate = (): moment.Moment => moment.tz(KYIV_TIMEZONE);
 
-export { getCurrentMonth, getNextMonth, formatDateFromObject, getTelegramClient, getFormattedDate, getNewKyivDate };
+const toKyivDate = (date: any): moment.Moment => moment.tz(date, KYIV_TIMEZONE);
+
+const now = moment().tz(KYIV_TIMEZONE); // Current time using moment
+
+const getTodayAndTomorrowDate = (): { todayDate: string; tomorrowDate: string } => {
+  const today: moment.Moment = getNewKyivDate();
+  const todayDate: string = getFormattedDate(today);
+
+  const tomorrow: moment.Moment = today.clone().add(1, 'day');
+  const tomorrowDate: string = getFormattedDate(tomorrow);
+
+  return { todayDate, tomorrowDate };
+};
+
+export { getCurrentMonth, getNextMonth, formatDateFromObject, getTelegramClient, getFormattedDate, getNewKyivDate, getTodayAndTomorrowDate, toKyivDate };
