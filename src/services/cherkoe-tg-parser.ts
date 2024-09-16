@@ -1,6 +1,8 @@
 import config from '../config';
-import { DateObj, formatDateFromObject, getCurrentMonth, getNextMonth } from '../common/utils';
-import { EoffEvent } from './cherkoe';
+import { DateObj, formatDateFromObject, getCurrentMonth, getNextMonth, getTodayAndTomorrowDate } from '../common/utils';
+import { EoffEvent, ISchedule } from './cherkoe';
+import { TotalList } from 'telegram/Helpers';
+import { Api } from 'telegram';
 
 interface ParsedScheduleString {
   queue: string;
@@ -18,7 +20,7 @@ export interface IParsedTgMessage {
 }
 
 export class CherkoeTgParser {
-  constructor() {}
+  private daysScheduleData: { [index: string]: EoffEvent[] } = {};
 
   getTargetDate = (message: string) => {
     const currentMonth: DateObj = getCurrentMonth();
@@ -95,15 +97,6 @@ export class CherkoeTgParser {
     return offlineHours;
   };
 
-  // private indexToHours(timeZoneIndex: number) {
-  //   const startHour = timeZoneIndex; // 1 hour per timezoneIndex
-  //   const endHour = startHour + 1; // Each timezoneIndex is 1 hour duration
-  //   return {
-  //     startHour: `${startHour.toString().padStart(2, '0')}:00`,
-  //     endHour: `${endHour.toString().padStart(2, '0')}:00`,
-  //   };
-  // }
-
   private groupByQueue = (data: ParsedScheduleString[]): GroupByQueueResult =>
     data.reduce((acc: GroupByQueueResult, { queue, startTime, endTime }) => {
       if (!acc[queue]) {
@@ -167,6 +160,42 @@ export class CherkoeTgParser {
     if (!eventsList || !targetDate) return null;
     return { targetDate, eventsList };
   };
+
+  convertMessagesToEvents(messages: TotalList<Api.Message>): ISchedule {
+    messages.forEach((message) => {
+      if (message.message) {
+        // console.log(`Message from ${config.telegram.channelUsername}: ${message.message}`)
+        const parsedMessage: IParsedTgMessage | null = cherkoeTgParser.parseMessage(message.message);
+
+        if (!parsedMessage?.targetDate) {
+          return;
+        }
+
+        this.daysScheduleData[parsedMessage.targetDate] = parsedMessage.eventsList || [];
+      }
+    });
+
+    const { todayDate, tomorrowDate } = getTodayAndTomorrowDate();
+
+    const result: ISchedule = {
+      events: [],
+      hasTodayData: false,
+      hasTomorrowData: false,
+    };
+
+    // Filter events for today and tomorrow
+    if (this.daysScheduleData[todayDate]) {
+      result.events = [...result.events, ...this.daysScheduleData[todayDate]];
+      result.hasTodayData = true;
+    }
+
+    if (this.daysScheduleData[tomorrowDate]) {
+      result.events = [...result.events, ...this.daysScheduleData[tomorrowDate]];
+      result.hasTomorrowData = true;
+    }
+
+    return result;
+  }
 }
 
 export const cherkoeTgParser = new CherkoeTgParser();

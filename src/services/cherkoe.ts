@@ -1,6 +1,14 @@
 import config from '../config';
-import { getFormattedDate, getNewKyivDate, getTelegramClient, MONTH_NAMES } from '../common/utils';
+import {
+  getFormattedDate,
+  getNewKyivDate,
+  getTelegramClient,
+  getTodayAndTomorrowDate,
+  MONTH_NAMES,
+} from '../common/utils';
 import { cherkoeTgParser, IParsedTgMessage } from './cherkoe-tg-parser';
+import { TotalList } from 'telegram/Helpers';
+import { Api } from 'telegram';
 
 export interface EoffEvent {
   startTime: string; // e.g. "18:00"
@@ -22,62 +30,26 @@ export class CherkoeService {
 
   constructor() {}
 
-  getTodayAndTomorrowDate(): { todayDate: string; tomorrowDate: string } {
-    const today = getNewKyivDate();
-    const todayDate = getFormattedDate(today);
-
-    const tomorrow = today.clone().add(1, 'day');
-    const tomorrowDate = getFormattedDate(tomorrow);
-
-    return { todayDate, tomorrowDate };
-  }
-
   async getSchedule(): Promise<ISchedule> {
     const client = await getTelegramClient();
 
     // Getting the channel entity
     const channel = await client.getEntity(config.telegram.channelUsername);
 
-    // Fetching the last 20 messages from the channel
-    const lastMessages = await client.getMessages(channel, { limit: config.telegram.MESSAGES_LIMIT });
+    // Fetching the last N messages from the channel
+    const lastMessages: TotalList<Api.Message> = await client.getMessages(channel, {
+      limit: config.telegram.MESSAGES_LIMIT,
+    });
 
     lastMessages.reverse();
 
-    lastMessages.forEach((message) => {
-      if (message.message) {
-        // console.log(`Message from ${config.telegram.channelUsername}: ${message.message}`)
-        const parsedMessage: IParsedTgMessage | null = cherkoeTgParser.parseMessage(message.message);
-
-        if (!parsedMessage?.targetDate) {
-          return;
-        }
-
-        this.daysScheduleData[parsedMessage.targetDate] = parsedMessage.eventsList || [];
-      }
-    });
-
-    // console.log('daysScheduleData', daysScheduleData);
-
-    const { todayDate, tomorrowDate } = this.getTodayAndTomorrowDate();
-    const result: ISchedule = { events: [], hasTodayData: false, hasTomorrowData: false };
-
-    if (this.daysScheduleData[todayDate]) {
-      result.events = [...result.events, ...this.daysScheduleData[todayDate]];
-      result.hasTodayData = true;
-    }
-
-    if (this.daysScheduleData[tomorrowDate]) {
-      result.events = [...result.events, ...this.daysScheduleData[tomorrowDate]];
-      result.hasTomorrowData = true;
-    }
-
-    return result;
+    return cherkoeTgParser.convertMessagesToEvents(lastMessages);
   }
 
   async getMessage(type: string, queue: string, day: string): Promise<string> {
     const schedule: ISchedule = await this.getSchedule();
 
-    const { todayDate, tomorrowDate } = this.getTodayAndTomorrowDate();
+    const { todayDate, tomorrowDate } = getTodayAndTomorrowDate();
 
     const targetDate = day === 'today' ? todayDate : tomorrowDate;
 
