@@ -1,5 +1,4 @@
 import { ELECTRICITY_PROVIDER, ELECTRICITY_STATUS } from './enums';
-import { EoffEvent } from '../../../src_old/services/cherkoe';
 import { StringSession } from 'telegram/sessions';
 import { EntityLike } from 'telegram/define';
 

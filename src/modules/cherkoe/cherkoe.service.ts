@@ -1,10 +1,11 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { getTelegramClient, getTodayAndTomorrowDate, MONTH_NAMES } from '../../../src_old/common/utils';
-import config from '../../../src_old/config';
 import { TotalList } from 'telegram/Helpers';
 import { Api } from 'telegram';
 import { ISchedule, IEoffEvent } from '../../common/types';
 import { CherkoeTgParser } from './cherkoe-tg-parser.service';
+import config from '../../config';
+import { getTelegramClient, getTodayAndTomorrowDate, MONTH_NAMES } from './utils';
+import { DAY, MESSAGE_TYPE } from './types/cherkoe.enums';
 
 
 @Injectable()
@@ -13,16 +14,13 @@ export class CherkoeService {
     @Inject(forwardRef(() => CherkoeTgParser))
     private readonly cherkoeTgParser: CherkoeTgParser,
   ) {
-    console.log('CherkoeService initialized');
   }
 
   async getSchedule(): Promise<ISchedule> {
-    console.log('getSchedule method called');
     const client = await getTelegramClient().catch(err => {
       console.error('Error getting Telegram client:', err);
       throw new Error('Failed to get Telegram client');
     });
-    console.log('Telegram client received:', client);
 
     // Getting the channel entity
     const channel = await client.getEntity(config.telegram.channelUsername);
@@ -37,7 +35,7 @@ export class CherkoeService {
     return this.cherkoeTgParser.convertMessagesToEvents(lastMessages);
   }
 
-  async getMessage(type: string, queue: string, day: string): Promise<string> {
+  async getMessage(type: MESSAGE_TYPE, queue: string, day: DAY): Promise<string> {
     const schedule: ISchedule = await this.getSchedule();
 
     const { todayDate, tomorrowDate } = getTodayAndTomorrowDate();

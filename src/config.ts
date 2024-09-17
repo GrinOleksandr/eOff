@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { StringSession } from 'telegram/sessions/index.js';
-import { ELECTRICITY_PROVIDER, IConfig } from './common/types';
+import { IConfig } from './common/types';
 
 const config: IConfig = {
   telegram: {

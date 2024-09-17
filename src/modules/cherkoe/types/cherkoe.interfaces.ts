@@ -1,4 +1,3 @@
-import { EoffEvent } from '../../../../src_old/services/cherkoe';
 import { IEoffEvent } from '../../../common/types';
 
 export interface ParsedScheduleString {

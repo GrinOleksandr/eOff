@@ -9,9 +9,6 @@ import { formatDateFromObject, getCurrentMonth, getNextMonth, getTodayAndTomorro
 
 @Injectable()
 export class CherkoeTgParser {
-  constructor(){
-    console.log('CherkoeTgParser initialized');
-  }
   private daysScheduleData: { [index: string]: IEoffEvent[] } = {};
 
   getTargetDate = (message: string) => {
@@ -161,7 +158,6 @@ export class CherkoeTgParser {
   convertMessagesToEvents(messages: TotalList<Api.Message>): ISchedule {
     messages.forEach((message) => {
       if (message.message) {
-        // console.log(`Message from ${config.telegram.channelUsername}: ${message.message}`)
         const parsedMessage: IParsedTgMessage | null = this.parseMessage(message.message);
 
         if (!parsedMessage?.targetDate) {

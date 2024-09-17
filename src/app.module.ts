@@ -3,13 +3,16 @@ import { APP_FILTER, APP_PIPE, RouterModule } from '@nestjs/core';
 
 import { ConfigModule } from '@nestjs/config';
 import { ExceptionsFilter } from './common/filters';
-import { CherkoeModule } from './modules/cherkoe/cherkoe.module';
-import { SimpleModule } from './modules/simple/simple.module'; // Ensure the correct path to CherkoeModule
+import { CherkoeModule, ServiceModule } from './modules';
 
 const routes = RouterModule.register([
   {
     path: '/cherkoe',
     module: CherkoeModule,
+  },
+  {
+    path: '/service',
+    module: ServiceModule,
   },
 ]);
 
@@ -19,7 +22,7 @@ const imports = [
     envFilePath: `.env`,
   }),
   CherkoeModule,
-  SimpleModule,
+  ServiceModule,
   routes,
 ];
 
@@ -38,4 +41,5 @@ const providers = [
   imports,
   providers,
 })
-export class AppModule {}
+export class AppModule {
+}
