@@ -1,12 +1,7 @@
 import { TelegramClient } from 'telegram';
-import config from '../config';
+import config from '../../config';
 import moment from 'moment-timezone';
-
-export interface DateObj {
-  year: number;
-  name: string;
-  index: number;
-}
+import { DateObj } from './types';
 
 export const MONTH_NAMES: string[] = [
   'січня',
@@ -99,4 +94,13 @@ const getTodayAndTomorrowDate = (): { todayDate: string; tomorrowDate: string } 
   return { todayDate, tomorrowDate };
 };
 
-export { getCurrentMonth, getNextMonth, formatDateFromObject, getTelegramClient, getFormattedDate, getNewKyivDate, getTodayAndTomorrowDate, toKyivDate };
+export {
+  getCurrentMonth,
+  getNextMonth,
+  formatDateFromObject,
+  getTelegramClient,
+  getFormattedDate,
+  getNewKyivDate,
+  getTodayAndTomorrowDate,
+  toKyivDate,
+};

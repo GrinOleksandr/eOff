@@ -1,37 +1,28 @@
-import config from '../config';
-import {
-  getFormattedDate,
-  getNewKyivDate,
-  getTelegramClient,
-  getTodayAndTomorrowDate,
-  MONTH_NAMES,
-} from '../common/utils';
-import { cherkoeTgParser, IParsedTgMessage } from './cherkoe-tg-parser';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { getTelegramClient, getTodayAndTomorrowDate, MONTH_NAMES } from '../../../src_old/common/utils';
+import config from '../../../src_old/config';
 import { TotalList } from 'telegram/Helpers';
 import { Api } from 'telegram';
+import { ISchedule, IEoffEvent } from '../../common/types';
+import { CherkoeTgParser } from './cherkoe-tg-parser.service';
 
-export interface EoffEvent {
-  startTime: string; // e.g. "18:00"
-  endTime: string; // e.g. "18:00"
-  queue: string; // e.g. "2"
-  date: string; // e.g. "2024-09-02"
-  electricity: string; // "on"/"off"
-  provider: string; // "CHERKOE"
-}
 
-export interface ISchedule {
-  events: EoffEvent[];
-  hasTodayData: boolean;
-  hasTomorrowData: boolean;
-}
-
+@Injectable()
 export class CherkoeService {
-  private daysScheduleData: { [index: string]: EoffEvent[] } = {};
-
-  constructor() {}
+  constructor(
+    @Inject(forwardRef(() => CherkoeTgParser))
+    private readonly cherkoeTgParser: CherkoeTgParser,
+  ) {
+    console.log('CherkoeService initialized');
+  }
 
   async getSchedule(): Promise<ISchedule> {
-    const client = await getTelegramClient();
+    console.log('getSchedule method called');
+    const client = await getTelegramClient().catch(err => {
+      console.error('Error getting Telegram client:', err);
+      throw new Error('Failed to get Telegram client');
+    });
+    console.log('Telegram client received:', client);
 
     // Getting the channel entity
     const channel = await client.getEntity(config.telegram.channelUsername);
@@ -43,7 +34,7 @@ export class CherkoeService {
 
     lastMessages.reverse();
 
-    return cherkoeTgParser.convertMessagesToEvents(lastMessages);
+    return this.cherkoeTgParser.convertMessagesToEvents(lastMessages);
   }
 
   async getMessage(type: string, queue: string, day: string): Promise<string> {
@@ -53,8 +44,8 @@ export class CherkoeService {
 
     const targetDate = day === 'today' ? todayDate : tomorrowDate;
 
-    const filteredSchedule: EoffEvent[] = schedule.events.filter(
-      (event) => event.queue === queue && event.date === targetDate
+    const filteredSchedule: IEoffEvent[] = schedule.events.filter(
+      (event) => event.queue === queue && event.date === targetDate,
     );
 
     const preparedSchedule = filteredSchedule.map((item) => `${item.startTime} - ${item.endTime}`);
@@ -69,5 +60,3 @@ export class CherkoeService {
       : `(lightening)${dayNumber} ${month} відключення:<br>${preparedSchedule.join('</br>')}`;
   }
 }
-
-export const cherkoeService = new CherkoeService();
