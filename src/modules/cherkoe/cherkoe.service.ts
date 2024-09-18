@@ -23,10 +23,10 @@ export class CherkoeService {
     });
 
     // Getting the channel entity
-    const channel = await client.getEntity(config.telegram.channelUsername);
+    const cherkoeChannel = await client.getEntity(config.telegram.cherkoeChannel);
 
     // Fetching the last N messages from the channel
-    const lastMessages: TotalList<Api.Message> = await client.getMessages(channel, {
+    const lastMessages: TotalList<Api.Message> = await client.getMessages(cherkoeChannel, {
       limit: config.telegram.MESSAGES_LIMIT,
     });
 
