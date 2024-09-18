@@ -6,7 +6,7 @@
 	"scripts": {
 		"build": "nest build",
 		"installAndBuild": "npm install && npm run build",
-		"start": "nest start",
+		"start": "NODE_OPTIONS='--max_old_space_size=512' nest start",
 		"dev": "nest start --watch",
 		"debug": "set DEBUG=* && nest start --watch",
 		"test": "npx jest"
