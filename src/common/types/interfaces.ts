@@ -22,7 +22,7 @@ export interface IConfig {
     apiId: number;
     apiHash: string;
     stringSession: StringSession | string;
-    channelUsername: EntityLike;
+    cherkoeChannel: EntityLike;
     MESSAGES_LIMIT: number;
   };
 }
