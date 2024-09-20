@@ -11,7 +11,7 @@ const routes = RouterModule.register([
     module: CherkoeModule,
   },
   {
-    path: '/service2223',
+    path: '/service22',
     module: ServiceModule,
   },
 ]);
