@@ -33,28 +33,37 @@ export class CherkoeService {
   }
 
   async getSchedule(): Promise<ISchedule> {
-    const client = await getTelegramClient();
+    let lastMessages: any[] = []
 
-    // Getting the channel entity
-    const channel = await client.getEntity(config.telegram.channelUsername);
+    try {
+      const client = await getTelegramClient();
 
-    // Fetching the last 20 messages from the channel
-    const lastMessages = await client.getMessages(channel, { limit: config.telegram.MESSAGES_LIMIT });
+      // Getting the channel entity
+      const channel = await client.getEntity(config.telegram.channelUsername);
 
-    lastMessages.reverse();
+      // Fetching the last 20 messages from the channel
+      lastMessages = await client.getMessages(channel, { limit: config.telegram.MESSAGES_LIMIT });
 
-    lastMessages.forEach((message) => {
-      if (message.message) {
-        // console.log(`Message from ${config.telegram.channelUsername}: ${message.message}`)
-        const parsedMessage: IParsedTgMessage | null = cherkoeTgParser.parseMessage(message.message);
+      lastMessages.reverse();
+    } catch (e) {
+      console.error('Telegram API error: ', e)
+    }
 
-        if (!parsedMessage?.targetDate) {
-          return;
+
+    if(lastMessages.length){
+      lastMessages.forEach((message) => {
+        if (message.message) {
+          // console.log(`Message from ${config.telegram.channelUsername}: ${message.message}`)
+          const parsedMessage: IParsedTgMessage | null = cherkoeTgParser.parseMessage(message.message);
+
+          if (!parsedMessage?.targetDate) {
+            return;
+          }
+
+          this.daysScheduleData[parsedMessage.targetDate] = parsedMessage.eventsList || [];
         }
-
-        this.daysScheduleData[parsedMessage.targetDate] = parsedMessage.eventsList || [];
-      }
-    });
+      });
+    }
 
     // console.log('daysScheduleData', daysScheduleData);
 
