@@ -49,6 +49,7 @@ export class CherkoeService {
       console.error('Telegram API error: ', e)
     }
 
+    console.log('Getting schedule. Messages length', lastMessages.length)
 
     if(lastMessages.length){
       lastMessages.forEach((message) => {
