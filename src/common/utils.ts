@@ -65,7 +65,7 @@ const getTelegramClient = async (): Promise<TelegramClient> => {
   }
 
   tgClient = new TelegramClient(config.telegram.stringSession, config.telegram.apiId, config.telegram.apiHash, {
-    connectionRetries: 10,
+    connectionRetries: 10, floodSleepThreshold: 0
   });
 
   await tgClient.connect();
