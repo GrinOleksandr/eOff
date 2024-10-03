@@ -29,11 +29,11 @@ export class App {
   }
 
   public async init() {
-    try{
-      await getTelegramClient();
-    } catch (e) {
-      console.error('Telegram API error: ', e)
-    }
+    // try{
+    //   await getTelegramClient();
+    // } catch (e) {
+    //   console.error('Telegram API error: ', e)
+    // }
 
     this.useMiddlewares();
     this.useRoutes();
