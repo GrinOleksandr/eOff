@@ -4,35 +4,64 @@ import path from 'path';
 
 const sut = new ZoeImageParser();
 
-// import { createCanvas } from 'canvas';
-// const canvas = createCanvas(200, 200);
-// const ctx = canvas.getContext('2d');
-// ctx.fillStyle = 'green';
-// ctx.fillRect(10, 10, 100, 100);
-// console.log('Canvas module works!');
+const testData = [
+  {
+    fileName: 'image_1.jpg',
+    expectedResult: {
+      date: '25 листопада 2024',
+      darkSquares: [
+        { row: 3, col: 15 },
+        { row: 3, col: 16 },
+        { row: 3, col: 17 },
+        { row: 4, col: 18 },
+        { row: 4, col: 19 },
+        { row: 4, col: 20 },
+      ],
+    },
+  },
+  {
+    fileName: 'image_2.jpeg',
+    expectedResult: {
+      date: '26 листопада 2024',
+      darkSquares: [
+        { row: 1, col: 19 },
+        { row: 1, col: 20 },
+        { row: 1, col: 21 },
+        { row: 5, col: 3 },
+        { row: 5, col: 11 },
+      ],
+    },
+  },
+];
 
-// const tesseract = require('tesseract.js');
-
-// @ts-ignore
-
-// tesseract
-//   .recognize('path/to/image.png', 'eng', {
-//     logger: (info: any) => console.log(info), // Log progress
-//   }) // @ts-ignore
-//   .then(({ data: { text } }) => {
-//     console.log('Recognized Text:', text);
-//   })
-//   .catch((error: any) => {
-//     console.error('Error:', error);
-//   });
-
-describe('Download image', () => {
-  it(`Should download an image from Zoe website`, async () => {
-    const filePath = path.join(__dirname, '/assets/schedule_images/image_1.jpg');
+describe.each(testData)('Parse image:', (data) => {
+  it(`${testData.indexOf(data)}`, async () => {
+    const filePath = path.join(__dirname, `/assets/schedule_images/${data.fileName}`);
 
     const result = await sut.parseImage(filePath);
     console.log('scv_res', result);
 
-    expect(1).toBe(1);
+    expect(result).toMatchObject(data.expectedResult);
   });
 });
+
+// describe('Download image', () => {
+//   it(`Should download an image from Zoe website`, async () => {
+//     const filePath = path.join(__dirname, '/assets/schedule_images/image_1.jpg');
+//
+//     const result = await sut.parseImage(filePath);
+//     console.log('scv_res', result);
+//
+//     expect(result).toBe({
+//       date: '25 листопада 2024',
+//       darkSquares: [
+//         { row: 5, col: 16 },
+//         { row: 5, col: 17 },
+//         { row: 5, col: 18 },
+//         { row: 6, col: 19 },
+//         { row: 6, col: 20 },
+//         { row: 6, col: 21 },
+//       ],
+//     });
+//   });
+// });

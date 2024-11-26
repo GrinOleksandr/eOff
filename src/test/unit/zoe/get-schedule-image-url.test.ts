@@ -5,16 +5,6 @@ import path from 'path';
 
 const sut = new ZoeImageParser();
 
-// describe('Get image url', () => {
-// it(`Should get image URL from Zoe website`, async () => {
-//   const result = await sut.getScheduleImageUrl();
-//
-//   expect(typeof result).toBe('string');
-//   expect(result).toContain('https://www.zoe.com.ua/wp-content/uploads/');
-//   expect(result).toContain('.jpg');
-// });
-// });
-
 const testData = [
   { fileName: 'page_with_1_image.html', urlCount: 1 },
   { fileName: 'page_with_2_images.html', urlCount: 2 },

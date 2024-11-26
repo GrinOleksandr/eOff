@@ -154,7 +154,6 @@ export class ZoeImageParser {
     const dateRegex = /на\s+(\d{1,2})\s+([а-яіїєґА-ЯІЇЄҐ]+)\s+(\d{4})/;
     const dateMatch = header.match(dateRegex);
     const date = dateMatch ? `${dateMatch[1]} ${dateMatch[2]} ${dateMatch[3]}` : 'Date not found';
-
     console.log('Parsed Date:', date);
 
     // Step 2: Detect dark squares
@@ -167,56 +166,51 @@ export class ZoeImageParser {
     const imageData = ctx.getImageData(0, 0, image.width, image.height);
     const data = imageData.data;
 
-    // Analyze grid structure and identify dark squares
-    const gridStartY = 50; // Adjust based on your image's grid location
-    const gridEndY = image.height - 50;
-    const gridStartX = 50;
-    const gridEndX = image.width - 50;
+    // Grid structure parameters
+    const gridStartY = 85;
+    const gridEndY = image.height - 3;
+    const gridStartX = 62;
+    const gridEndX = image.width - 5;
     const columnWidth = (gridEndX - gridStartX) / 24; // 24-hour columns
     const rowHeight = (gridEndY - gridStartY) / 6; // 6 rows
 
-    // Loop through each cell in the grid
     for (let row = 0; row < 6; row++) {
       for (let col = 0; col < 24; col++) {
-        const x = Math.floor(gridStartX + col * columnWidth);
-        const y = Math.floor(gridStartY + row * rowHeight);
+        // Calculate the coordinates for the center of each square
+        const xCenter = Math.floor(gridStartX + col * columnWidth + columnWidth / 2);
+        const yCenter = Math.floor(gridStartY + row * rowHeight + rowHeight / 2);
 
-        let totalR = 0,
-          totalG = 0,
-          totalB = 0;
-        let pixelCount = 0;
+        // Get the pixel index at the center of the square
+        const pixelIndex = (yCenter * image.width + xCenter) * 4;
 
-        // Sample a 5x5 grid of pixels in each cell
-        for (let dx = 0; dx < 5; dx++) {
-          for (let dy = 0; dy < 5; dy++) {
-            const sampleX = x + dx * (columnWidth / 5);
-            const sampleY = y + dy * (rowHeight / 5);
-            const pixelIndex = (Math.floor(sampleY) * image.width + Math.floor(sampleX)) * 4;
+        // Extract the RGB values of the pixel at the center
+        const r = data[pixelIndex];
+        const g = data[pixelIndex + 1];
+        const b = data[pixelIndex + 2];
 
-            const r = data[pixelIndex];
-            const g = data[pixelIndex + 1];
-            const b = data[pixelIndex + 2];
-
-            totalR += r;
-            totalG += g;
-            totalB += b;
-            pixelCount++;
-          }
-        }
-
-        // Calculate average color of the sampled pixels
-        const avgR = totalR / pixelCount;
-        const avgG = totalG / pixelCount;
-        const avgB = totalB / pixelCount;
-
-        // Adjusted threshold to catch darker squares
-        if (avgR < 110 && avgG < 110 && avgB < 110) {
+        // Adjust threshold for detecting dark pixels
+        if (r < 110 && g < 110 && b < 110) {
           darkSquares.push({ row: row + 1, col: col + 1 });
+
+          // Highlight dark squares in red
+          ctx.fillStyle = 'rgba(255, 0, 0, 0.5)'; // Semi-transparent red
+          ctx.fillRect(xCenter - columnWidth / 4, yCenter - rowHeight / 4, columnWidth / 2, rowHeight / 2);
+        } else {
+          // Optionally highlight light squares in green for debugging
+          ctx.fillStyle = 'rgba(0, 255, 0, 0.5)'; // Semi-transparent green
+          ctx.fillRect(xCenter - columnWidth / 4, yCenter - rowHeight / 4, columnWidth / 2, rowHeight / 2);
         }
       }
     }
 
     console.log('Dark Squares:', darkSquares);
+
+    // Save the modified image for visual inspection
+    const outputImagePath = './output_debug_image.png';
+    const buffer = canvas.toBuffer('image/png');
+    fs.writeFileSync(outputImagePath, buffer);
+
+    console.log('Debug image saved at:', outputImagePath);
 
     return { date, darkSquares };
   };
