@@ -1,4 +1,4 @@
-import {CherkoeTgParser} from '../../services/cherkoe/cherkoe-tg-parser';
+import {CherkoeTgParser} from '../../../services/cherkoe/cherkoe-tg-parser';
 import {linesForQueueNumbers} from './stubs/linesForQueueNumbers';
 
 const sut = new CherkoeTgParser();

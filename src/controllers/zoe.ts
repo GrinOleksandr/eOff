@@ -1,4 +1,4 @@
-//CherkasyOblenergo Controller
+//ZaporizhyaOblenergo Controller
 
 import express, { Request, Response, Router } from 'express';
 import { cherkoeService } from '../services/cherkoe/cherkoe';
