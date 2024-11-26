@@ -29,7 +29,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import axiosInstance from '../../common/utils/axios';
 import { removeNbsp, removeSpacesFromString } from '../../common/utils';
-// import tesseract from 'tesseract.js';
+import { getBestResolutionImage } from './utils';
+import { createCanvas, loadImage } from 'canvas';
+import tesseract from 'tesseract.js';
 // import sharp from 'sharp';
 // import { promises as fsPromises } from 'fs';
 
@@ -49,8 +51,6 @@ export class ZoeImageParser {
   };
 
   getScheduleImageUrlsFromDocument = async (html: string): Promise<string[] | void> => {
-    let foundImageURL = null;
-
     try {
       const dom: JSDOM = new JSDOM(html);
       const document: Document = dom.window.document;
@@ -70,13 +70,23 @@ export class ZoeImageParser {
       const scheduleImageUrls: string[] = [];
 
       gpvElements.forEach((element) => {
-        const nextParagraph = element?.closest('p')?.nextElementSibling;
-        if (nextParagraph) {
-          const img = nextParagraph.querySelector('img');
-          const srcSet = img?.srcset.split(' ');
-          if (srcSet) {
-            foundImageURL = srcSet[srcSet.length - 2];
-            if (foundImageURL) scheduleImageUrls.push(foundImageURL);
+        const parentParagraph = element.closest('p');
+
+        if (parentParagraph) {
+          // 1. Check for <img> within the same <p>
+          let img = parentParagraph.querySelector('img');
+          if (img && img.srcset) {
+            scheduleImageUrls.push(getBestResolutionImage(img.srcset));
+          }
+
+          // 2. If no <img> in the current <p>, check the next sibling <p>
+          if (!img) {
+            const nextParagraph = parentParagraph.nextElementSibling;
+            // @ts-ignore
+            img = nextParagraph?.querySelector('img');
+            if (img && img.srcset) {
+              scheduleImageUrls.push(getBestResolutionImage(img.srcset));
+            }
           }
         }
       });
@@ -119,60 +129,97 @@ export class ZoeImageParser {
   getAllSchedule = async (): Promise<any> => {
     const html = await this.getZoeHtmlDocument();
     const zoeTodayImageUrls: string[] | void = await this.getScheduleImageUrlsFromDocument(html);
+    if (zoeTodayImageUrls?.length) {
+      for (const url of zoeTodayImageUrls) {
+        await this.downloadImage(url, this.todayImagePath);
+      }
+    }
 
     // if (zoeTodayImageUrl) {
     //   await this.downloadImage(zoeTodayImageUrl, this.todayImagePath);
     // }
   };
 
-  // parseImage = async (imagePath: string) => {
-  //   // Step 1: Extract header text manually (if known area or already part of a file's metadata)
-  //   const headerText = 'Графік погодинних відключень на 25 листопада 2024 року'; // Hardcoded here or extracted in an alternative way.
-  //   console.log('Header Text:', headerText);
-  //
-  //   // Use regex to extract the date
-  //   const dateRegex = /на\s+(\d+\s+\w+\s+\d{4})/; // Match date format like 'на 25 листопада 2024'
-  //   const dateMatch = headerText.match(dateRegex);
-  //   const date = dateMatch ? dateMatch[1] : 'Date not found';
-  //   console.log('Parsed Date:', date);
-  //
-  //   // Step 2: Detect dark squares
-  //   const darkSquares = [];
-  //   const imageBuffer = await fsPromises.readFile(imagePath);
-  //   const image = sharp(imageBuffer);
-  //
-  //   const { width, height } = await image.metadata();
-  //   if (!width || !height) throw new Error('Unable to retrieve image dimensions');
-  //
-  //   const rawImage = await image.raw().toBuffer();
-  //   const gridStartY = 50; // Adjust these coordinates to match the grid's area in your image
-  //   const gridEndY = height - 50;
-  //   const gridStartX = 50;
-  //   const gridEndX = width - 50;
-  //   const columnWidth = (gridEndX - gridStartX) / 24; // 24-hour columns
-  //   const rowHeight = (gridEndY - gridStartY) / 6; // 6 rows
-  //
-  //   for (let row = 0; row < 6; row++) {
-  //     for (let col = 0; col < 24; col++) {
-  //       const x = Math.floor(gridStartX + col * columnWidth);
-  //       const y = Math.floor(gridStartY + row * rowHeight);
-  //       const pixelIndex = (y * width + x) * 3; // Each pixel has R, G, B channels (no alpha in raw)
-  //
-  //       const r = rawImage[pixelIndex];
-  //       const g = rawImage[pixelIndex + 1];
-  //       const b = rawImage[pixelIndex + 2];
-  //
-  //       // Check if the pixel is dark (adjust the threshold as needed)
-  //       if (r < 100 && g < 100 && b < 100) {
-  //         darkSquares.push({ row: row + 1, col: col + 1 });
-  //       }
-  //     }
-  //   }
-  //
-  //   console.log('Dark Squares:', darkSquares);
-  //
-  //   return { date, darkSquares };
-  // };
+  parseImage = async (imagePath: string) => {
+    // Step 1: Perform OCR on the image
+    const headerText = await tesseract.recognize(imagePath, 'ukr', {
+      logger: (info) => console.log(info), // Log OCR progress
+    });
+
+    // Extract the text result
+    const header = headerText.data.text;
+    console.log('OCR Result:', header);
+
+    // Use regex to extract the date
+    const dateRegex = /на\s+(\d{1,2})\s+([а-яіїєґА-ЯІЇЄҐ]+)\s+(\d{4})/;
+    const dateMatch = header.match(dateRegex);
+    const date = dateMatch ? `${dateMatch[1]} ${dateMatch[2]} ${dateMatch[3]}` : 'Date not found';
+
+    console.log('Parsed Date:', date);
+
+    // Step 2: Detect dark squares
+    const darkSquares = [];
+    const image = await loadImage(imagePath);
+    const canvas = createCanvas(image.width, image.height);
+    const ctx = canvas.getContext('2d');
+
+    ctx.drawImage(image, 0, 0, image.width, image.height);
+    const imageData = ctx.getImageData(0, 0, image.width, image.height);
+    const data = imageData.data;
+
+    // Analyze grid structure and identify dark squares
+    const gridStartY = 50; // Adjust based on your image's grid location
+    const gridEndY = image.height - 50;
+    const gridStartX = 50;
+    const gridEndX = image.width - 50;
+    const columnWidth = (gridEndX - gridStartX) / 24; // 24-hour columns
+    const rowHeight = (gridEndY - gridStartY) / 6; // 6 rows
+
+    // Loop through each cell in the grid
+    for (let row = 0; row < 6; row++) {
+      for (let col = 0; col < 24; col++) {
+        const x = Math.floor(gridStartX + col * columnWidth);
+        const y = Math.floor(gridStartY + row * rowHeight);
+
+        let totalR = 0,
+          totalG = 0,
+          totalB = 0;
+        let pixelCount = 0;
+
+        // Sample a 5x5 grid of pixels in each cell
+        for (let dx = 0; dx < 5; dx++) {
+          for (let dy = 0; dy < 5; dy++) {
+            const sampleX = x + dx * (columnWidth / 5);
+            const sampleY = y + dy * (rowHeight / 5);
+            const pixelIndex = (Math.floor(sampleY) * image.width + Math.floor(sampleX)) * 4;
+
+            const r = data[pixelIndex];
+            const g = data[pixelIndex + 1];
+            const b = data[pixelIndex + 2];
+
+            totalR += r;
+            totalG += g;
+            totalB += b;
+            pixelCount++;
+          }
+        }
+
+        // Calculate average color of the sampled pixels
+        const avgR = totalR / pixelCount;
+        const avgG = totalG / pixelCount;
+        const avgB = totalB / pixelCount;
+
+        // Adjusted threshold to catch darker squares
+        if (avgR < 110 && avgG < 110 && avgB < 110) {
+          darkSquares.push({ row: row + 1, col: col + 1 });
+        }
+      }
+    }
+
+    console.log('Dark Squares:', darkSquares);
+
+    return { date, darkSquares };
+  };
 }
 
 export const zoeImageParser = new ZoeImageParser();

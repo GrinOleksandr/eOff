@@ -31,7 +31,7 @@ describe.each(testData)('Get image url from HTML:', (data) => {
     expect(result).toHaveLength(data.urlCount);
     result?.forEach((url) => {
       expect(url).toContain('https://www.zoe.com.ua/wp-content/uploads/');
-      expect(url).toContain('.jpg');
+      expect(url.includes('.jpg') || url.includes('.jpeg')).toBe(true);
     });
   });
 });
