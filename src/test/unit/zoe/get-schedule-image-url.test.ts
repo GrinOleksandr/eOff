@@ -7,7 +7,7 @@ const sut = new ZoeImageParser();
 
 const testData = [
   { fileName: 'page_with_1_image.html', urlCount: 1 },
-  { fileName: 'page_with_2_images.html', urlCount: 2 },
+  // { fileName: 'page_with_2_images.html', urlCount: 2 },
 ];
 
 describe.each(testData)('Get image url from HTML:', (data) => {

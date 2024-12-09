@@ -140,7 +140,89 @@ export class ZoeImageParser {
     // }
   };
 
+  preprocessImage = async (imagePath: string, outputPath: string) => {
+    const image = await loadImage(imagePath);
+    const canvas = createCanvas(image.width, image.height);
+    const ctx = canvas.getContext('2d');
+
+    // Draw the image
+    ctx.drawImage(image, 0, 0);
+
+    // Convert to grayscale
+    const imageData = ctx.getImageData(0, 0, image.width, image.height);
+    const data = imageData.data;
+    for (let i = 0; i < data.length; i += 4) {
+      const grayscale = 0.3 * data[i] + 0.59 * data[i + 1] + 0.11 * data[i + 2];
+      data[i] = grayscale;
+      data[i + 1] = grayscale;
+      data[i + 2] = grayscale;
+    }
+    ctx.putImageData(imageData, 0, 0);
+
+    // Save the processed image
+    const buffer = canvas.toBuffer('image/png');
+    require('fs').writeFileSync(outputPath, buffer);
+    console.log('Preprocessed image saved at:', outputPath);
+
+    return outputPath;
+  };
+
+  findWordCoordinates = async (imagePath: string, targetWord: string) => {
+    // Perform OCR
+    const ocrResult = await tesseract.recognize(imagePath, 'rus', {
+      logger: (info) => console.log(info), // Log progress
+    });
+
+    // Log full OCR output
+    console.log('SCV_OCR Output:', ocrResult.data.text);
+
+    // Iterate through the word-level bounding boxes
+    const { words } = ocrResult.data;
+    let foundWord = null;
+
+    for (const word of words) {
+      if (word.text === targetWord) {
+        foundWord = word;
+        break;
+      }
+    }
+
+    if (!foundWord) {
+      console.log(`"${targetWord}" not found in the image.`);
+      return null;
+    }
+
+    console.log(`"${targetWord}" found at:`, foundWord.bbox);
+
+    // Example: Highlighting the detected word
+    const image = await loadImage(imagePath);
+    const canvas = createCanvas(image.width, image.height);
+    const ctx = canvas.getContext('2d');
+
+    // Draw the original image
+    ctx.drawImage(image, 0, 0, image.width, image.height);
+
+    // Highlight the bounding box
+    const { x0, y0, x1, y1 } = foundWord.bbox;
+    ctx.strokeStyle = 'red';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
+
+    // Save the result
+    const outputPath = './highlighted_output.png';
+    const buffer = canvas.toBuffer('image/png');
+    require('fs').writeFileSync(outputPath, buffer);
+    console.log('Highlighted image saved at:', outputPath);
+
+    return foundWord.bbox;
+  };
+
   parseImage = async (imagePath: string) => {
+    // Apply preprocessing
+    await this.preprocessImage(imagePath, './preprocessed_image.png');
+
+    const coords1 = await this.findWordCoordinates('./preprocessed_image.png', '1 черга');
+    console.log('scv_cors1_found', coords1);
     // Step 1: Perform OCR on the image
     const headerText = await tesseract.recognize(imagePath, 'ukr', {
       logger: (info) => console.log(info), // Log OCR progress
@@ -156,9 +238,10 @@ export class ZoeImageParser {
     const date = dateMatch ? `${dateMatch[1]} ${dateMatch[2]} ${dateMatch[3]}` : 'Date not found';
     console.log('Parsed Date:', date);
 
-    // Step 2: Detect dark squares
-    const darkSquares = [];
+    // Step 2: Detect ROI and dark squares
+    const darkSquares: any[] = [];
     const image = await loadImage(imagePath);
+    console.log(`Image Dimensions - Width: ${image.width}, Height: ${image.height}`);
     const canvas = createCanvas(image.width, image.height);
     const ctx = canvas.getContext('2d');
 
@@ -166,33 +249,75 @@ export class ZoeImageParser {
     const imageData = ctx.getImageData(0, 0, image.width, image.height);
     const data = imageData.data;
 
-    // Grid structure parameters
-    const gridStartY = 85;
-    const gridEndY = image.height - 3;
-    const gridStartX = 62;
-    const gridEndX = image.width - 5;
-    const columnWidth = (gridEndX - gridStartX) / 24; // 24-hour columns
-    const rowHeight = (gridEndY - gridStartY) / 6; // 6 rows
+    // Step 3: Detect ROI dynamically using edge detection or color contrast
+    let tableTop = -1;
+    let tableBottom = -1;
+    let tableLeft = -1;
+    let tableRight = -1;
+    const threshold = 200; // A threshold for detecting grid lines or table boundaries
 
-    for (let row = 0; row < 6; row++) {
-      for (let col = 0; col < 24; col++) {
-        // Calculate the coordinates for the center of each square
-        const xCenter = Math.floor(gridStartX + col * columnWidth + columnWidth / 2);
-        const yCenter = Math.floor(gridStartY + row * rowHeight + rowHeight / 2);
-
-        // Get the pixel index at the center of the square
-        const pixelIndex = (yCenter * image.width + xCenter) * 4;
-
-        // Extract the RGB values of the pixel at the center
+    // Find table edges by checking for dark pixels
+    for (let y = 0; y < image.height; y++) {
+      for (let x = 0; x < image.width; x++) {
+        const pixelIndex = (y * image.width + x) * 4;
         const r = data[pixelIndex];
         const g = data[pixelIndex + 1];
         const b = data[pixelIndex + 2];
+        const brightness = (r + g + b) / 3;
+
+        // Check for grid lines or table edges (dark lines)
+        if (brightness < threshold) {
+          if (tableTop === -1) tableTop = y; // First dark pixel found, marking top edge
+          tableBottom = y; // Continuously update the bottom
+          tableLeft = tableLeft === -1 ? x : Math.min(tableLeft, x); // Left-most dark pixel
+          tableRight = Math.max(tableRight, x); // Right-most dark pixel
+        }
+      }
+      // Stop searching after finding the first table area
+      if (tableTop !== -1 && tableBottom !== -1) {
+        break;
+      }
+    }
+
+    if (tableTop === -1 || tableBottom === -1 || tableLeft === -1 || tableRight === -1) {
+      console.log('Table boundaries could not be detected.');
+      return { date, darkSquares };
+    }
+
+    // Table boundaries detected
+    console.log(`Table boundaries detected: 
+    Top: ${tableTop}, Bottom: ${tableBottom}, 
+    Left: ${tableLeft}, Right: ${tableRight}`);
+
+    // Step 4: Crop the image based on detected boundaries
+    const cropWidth = tableRight - tableLeft;
+    const cropHeight = tableBottom - tableTop;
+    console.log('scv_crop', cropWidth, cropHeight);
+    const croppedImageData = ctx.getImageData(tableLeft, tableTop, cropWidth, cropHeight);
+    const croppedData = croppedImageData.data;
+
+    // Grid structure parameters based on cropped area
+    const gridStartX = 0; // Start X in cropped image
+    const gridStartY = 0; // Start Y in cropped image
+    const columnWidth = cropWidth / 24; // 24-hour columns
+    const rowHeight = cropHeight / 6; // 6 rows
+
+    // Detect dark squares in the cropped area
+    for (let row = 0; row < 6; row++) {
+      for (let col = 0; col < 24; col++) {
+        const xCenter = Math.floor(gridStartX + col * columnWidth + columnWidth / 2);
+        const yCenter = Math.floor(gridStartY + row * rowHeight + rowHeight / 2);
+        const pixelIndex = (yCenter * cropWidth + xCenter) * 4; // Get pixel data from cropped area
+
+        const r = croppedData[pixelIndex];
+        const g = croppedData[pixelIndex + 1];
+        const b = croppedData[pixelIndex + 2];
 
         // Adjust threshold for detecting dark pixels
         if (r < 110 && g < 110 && b < 110) {
           darkSquares.push({ row: row + 1, col: col + 1 });
 
-          // Highlight dark squares in red
+          // Highlight dark squares in red for visual debugging
           ctx.fillStyle = 'rgba(255, 0, 0, 0.5)'; // Semi-transparent red
           ctx.fillRect(xCenter - columnWidth / 4, yCenter - rowHeight / 4, columnWidth / 2, rowHeight / 2);
         } else {

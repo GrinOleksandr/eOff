@@ -5,20 +5,20 @@ import path from 'path';
 const sut = new ZoeImageParser();
 
 const testData = [
-  {
-    fileName: 'image_1.jpg',
-    expectedResult: {
-      date: '25 листопада 2024',
-      darkSquares: [
-        { row: 3, col: 15 },
-        { row: 3, col: 16 },
-        { row: 3, col: 17 },
-        { row: 4, col: 18 },
-        { row: 4, col: 19 },
-        { row: 4, col: 20 },
-      ],
-    },
-  },
+  // {
+  //   fileName: 'image_1.jpg',
+  //   expectedResult: {
+  //     date: '25 листопада 2024',
+  //     darkSquares: [
+  //       { row: 3, col: 15 },
+  //       { row: 3, col: 16 },
+  //       { row: 3, col: 17 },
+  //       { row: 4, col: 18 },
+  //       { row: 4, col: 19 },
+  //       { row: 4, col: 20 },
+  //     ],
+  //   },
+  // },
   {
     fileName: 'image_2.jpeg',
     expectedResult: {

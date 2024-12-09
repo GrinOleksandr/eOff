@@ -1,0 +1,48 @@
+h4.subsection_title{
+	padding: 10px 0;
+}
+.publ_item {
+	width: 33%;
+	display: inline-block;
+	vertical-align: top;
+	padding-bottom: 10px;
+}
+.publ_item a:hover p{
+	font-weight: bold;
+	text-decoration: underline;
+}
+.publ_item a p{display: inline-block;}
+
+/*  GALLERY  */
+.gallery_prev_slide{
+	height: 120px;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center center;
+
+}
+.full_gallery_slide{
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center center;
+	height: 400px
+}
+h4.gallery_title {
+	padding: 10px 0;
+}
+.gallery_wrapp {
+	margin-bottom: 10px;
+}
+.gallery_prev {
+	margin-bottom: 10px;
+}
+
+/**			ЗАКУПКИ			**/
+
+.file_post {
+    padding: 10px 0;
+}
+
+h4.file_post_title:hover {
+    text-decoration: underline;
+}
