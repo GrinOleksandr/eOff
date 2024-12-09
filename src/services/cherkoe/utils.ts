@@ -1,5 +1,5 @@
 import { TelegramClient } from 'telegram';
-import config from '../config';
+import config from '../../config';
 import moment from 'moment-timezone';
 
 export interface DateObj {
@@ -7,6 +7,8 @@ export interface DateObj {
   name: string;
   index: number;
 }
+
+const KYIV_TIMEZONE = 'Europe/Kiev';
 
 export const MONTH_NAMES: string[] = [
   'січня',
@@ -65,7 +67,8 @@ const getTelegramClient = async (): Promise<TelegramClient> => {
   }
 
   tgClient = new TelegramClient(config.telegram.stringSession, config.telegram.apiId, config.telegram.apiHash, {
-    connectionRetries: 10, floodSleepThreshold: 0
+    connectionRetries: 10,
+    floodSleepThreshold: 0,
   });
 
   await tgClient.connect();
@@ -83,4 +86,25 @@ const getFormattedDate = (date: moment.Moment): string => {
 // Get the current date and time in Kyiv timezone
 const getNewKyivDate = (): moment.Moment => moment.tz('Europe/Kyiv');
 
-export { getCurrentMonth, getNextMonth, formatDateFromObject, getTelegramClient, getFormattedDate, getNewKyivDate };
+const toKyivDate = (date: any): moment.Moment => moment.tz(date, KYIV_TIMEZONE);
+
+const getTodayAndTomorrowDate = (): { todayDate: string; tomorrowDate: string } => {
+  const today: moment.Moment = getNewKyivDate();
+  const todayDate: string = getFormattedDate(today);
+
+  const tomorrow: moment.Moment = today.clone().add(1, 'day');
+  const tomorrowDate: string = getFormattedDate(tomorrow);
+
+  return { todayDate, tomorrowDate };
+};
+
+export {
+  getCurrentMonth,
+  getNextMonth,
+  formatDateFromObject,
+  getTelegramClient,
+  getFormattedDate,
+  getNewKyivDate,
+  toKyivDate,
+  getTodayAndTomorrowDate,
+};

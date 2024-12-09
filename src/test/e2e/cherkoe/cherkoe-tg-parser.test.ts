@@ -1,9 +1,9 @@
 import { regularMessages, messagesWithMinutes } from './stubs/messages';
-import { cherkoeTgParser } from '../../services/cherkoe-tg-parser';
-import * as utilsModule from '../../common/utils';
-import { MONTH_NAMES } from '../../common/utils';
+import { CherkoeTgParser } from '../../../services/cherkoe/cherkoe-tg-parser';
+import * as utilsModule from '../../../services/cherkoe/utils';
+import { MONTH_NAMES } from '../../../services/cherkoe/utils';
 
-const sut = cherkoeTgParser;
+const sut = new CherkoeTgParser();
 
 describe.each(regularMessages)('Parse Regular Messages', (testMessage) => {
   it(`${testMessage.messageNumber}`, async () => {

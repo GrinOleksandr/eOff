@@ -5,7 +5,7 @@ import { cherkoeController } from './controllers';
 import cors from 'cors-ts';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import { getTelegramClient } from './common/utils';
+import { getTelegramClient } from './services/cherkoe/utils';
 
 export class App {
   app = express();

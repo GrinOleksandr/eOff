@@ -1,5 +1,5 @@
 import express, { Request, Response, Router } from 'express';
-import { cherkoeService } from '../services/cherkoe';
+import { cherkoeService } from '../services/cherkoe/cherkoe';
 
 export class CherkoeController {
   router: Router = express.Router();
