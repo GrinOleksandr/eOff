@@ -67,7 +67,8 @@ const getTelegramClient = async (): Promise<TelegramClient> => {
   }
 
   tgClient = new TelegramClient(config.telegram.stringSession, config.telegram.apiId, config.telegram.apiHash, {
-    connectionRetries: 10, floodSleepThreshold: 0
+    connectionRetries: 10,
+    floodSleepThreshold: 0,
   });
 
   await tgClient.connect();
@@ -97,4 +98,13 @@ const getTodayAndTomorrowDate = (): { todayDate: string; tomorrowDate: string } 
   return { todayDate, tomorrowDate };
 };
 
-export { getCurrentMonth, getNextMonth, formatDateFromObject, getTelegramClient, getFormattedDate, getNewKyivDate, toKyivDate, getTodayAndTomorrowDate };
+export {
+  getCurrentMonth,
+  getNextMonth,
+  formatDateFromObject,
+  getTelegramClient,
+  getFormattedDate,
+  getNewKyivDate,
+  toKyivDate,
+  getTodayAndTomorrowDate,
+};

@@ -1,9 +1,9 @@
 import config from '../../config';
-import {DateObj, formatDateFromObject, getCurrentMonth, getNextMonth, getTodayAndTomorrowDate} from './utils';
-import {EoffEvent, ISchedule} from './cherkoe';
-import {TotalList} from "telegram/Helpers";
-import {Api} from "telegram";
-import {ELECTRICITY_PROVIDER, ELECTRICITY_STATUS, IEoffEvent} from "../../common/types-and-interfaces";
+import { DateObj, formatDateFromObject, getCurrentMonth, getNextMonth, getTodayAndTomorrowDate } from './utils';
+import { EoffEvent, ISchedule } from './cherkoe';
+import { TotalList } from 'telegram/Helpers';
+import { Api } from 'telegram';
+import { ELECTRICITY_PROVIDER, ELECTRICITY_STATUS, IEoffEvent } from '../../common/types-and-interfaces';
 
 interface ParsedScheduleString {
   queue: string;
@@ -39,6 +39,8 @@ export class CherkoeTgParser {
     const targetDayString: string = message.toUpperCase().split(` ${target.name.toUpperCase()}`)[0].trim();
     const targetDayMatch = targetDayString.match(/\d+$/);
     const targetDay: number | null = targetDayMatch ? parseInt(targetDayMatch[0]) : null;
+
+    if (!targetDay) return null;
 
     return formatDateFromObject({ ...target, day: targetDay });
   };
@@ -127,7 +129,12 @@ export class CherkoeTgParser {
       });
 
       const result = [];
-      const defaultValuesObj = { queue, date: date || '', electricity: ELECTRICITY_STATUS.OFF, provider: ELECTRICITY_PROVIDER.CHERKOE };
+      const defaultValuesObj = {
+        queue,
+        date: date || '',
+        electricity: ELECTRICITY_STATUS.OFF,
+        provider: ELECTRICITY_PROVIDER.CHERKOE,
+      };
 
       let currentStartTime: string = timeIntervals[0].startTime;
       let currentEndTime: string = timeIntervals[0].endTime;
@@ -159,6 +166,8 @@ export class CherkoeTgParser {
   parseMessage = (message: string): IParsedTgMessage | null => {
     const targetDate: string | null = this.getTargetDate(message);
 
+    // if (!targetDate) return null;
+
     const parsedSchedule: ParsedScheduleString[] | null = this.parseSchedule(message);
 
     if (!parsedSchedule) return null;
@@ -171,20 +180,19 @@ export class CherkoeTgParser {
     return { targetDate, eventsList };
   };
 
-  convertMessagesToEvents(messages: TotalList<Api.Message>): ISchedule{
+  convertMessagesToEvents(messages: TotalList<Api.Message>): ISchedule {
     messages.forEach((message) => {
-        if (message.message) {
-          // console.log(`Message from ${config.telegram.channelUsername}: ${message.message}`)
-          const parsedMessage: IParsedTgMessage | null = cherkoeTgParser.parseMessage(message.message);
+      if (message.message) {
+        // console.log(`Message from ${config.telegram.channelUsername}: ${message.message}`)
+        const parsedMessage: IParsedTgMessage | null = cherkoeTgParser.parseMessage(message.message);
 
-          if (!parsedMessage?.targetDate) {
-            return;
-          }
-
-          this.daysScheduleData[parsedMessage.targetDate] = parsedMessage.eventsList || [];
+        if (!parsedMessage?.targetDate) {
+          return;
         }
-      });
 
+        this.daysScheduleData[parsedMessage.targetDate] = parsedMessage.eventsList || [];
+      }
+    });
 
     // console.log('daysScheduleData', daysScheduleData);
 
