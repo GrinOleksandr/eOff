@@ -2,23 +2,23 @@
 import { IParsedTgMessage } from '../../../../modules';
 
 type TestMessageData = {
-    messageNumber: number;
-    message: string;
-    expectedResult: IParsedTgMessage | null;
+  messageNumber: number;
+  message: string;
+  expectedResult: IParsedTgMessage | null;
 };
 
 const example: TestMessageData = {
-    messageNumber: 1,
-    message: ``,
-    //@ts-ignore
-    expectedResult: {},
+  messageNumber: 1,
+  message: ``,
+  //@ts-ignore
+  expectedResult: {},
 };
 
 export const regularMessages: TestMessageData[] = [
-    {
-        // schedule update
-        messageNumber: 1,
-        message: `
+  {
+    // schedule update
+    messageNumber: 1,
+    message: `
     Оновлені графіки погодинних відключень на 26 вересня
 
 З 16:00 до 18:00 зменшено кількість черг.
@@ -36,64 +36,64 @@ export const regularMessages: TestMessageData[] = [
 
 Сторінка у Telegram: t.me/pat_cherkasyoblenergo
     `,
-        expectedResult: {
-            eventsList: [
-                {
-                    date: '2024-09-26',
-                    electricity: 'off',
-                    endTime: '22:00',
-                    provider: 'CHERKOE',
-                    queue: '1',
-                    startTime: '20:00',
-                },
-                {
-                    date: '2024-09-26',
-                    electricity: 'off',
-                    endTime: '23:00',
-                    provider: 'CHERKOE',
-                    queue: '2',
-                    startTime: '21:00',
-                },
-                {
-                    date: '2024-09-26',
-                    electricity: 'off',
-                    endTime: '17:00',
-                    provider: 'CHERKOE',
-                    queue: '3',
-                    startTime: '16:00',
-                },
-                {
-                    date: '2024-09-26',
-                    electricity: 'off',
-                    endTime: '19:00',
-                    provider: 'CHERKOE',
-                    queue: '4',
-                    startTime: '17:00',
-                },
-                {
-                    date: '2024-09-26',
-                    electricity: 'off',
-                    endTime: '24:00',
-                    provider: 'CHERKOE',
-                    queue: '5',
-                    startTime: '22:00',
-                },
-                {
-                    date: '2024-09-26',
-                    electricity: 'off',
-                    endTime: '21:00',
-                    provider: 'CHERKOE',
-                    queue: '6',
-                    startTime: '19:00',
-                },
-            ],
-            targetDate: '2024-09-26',
+    expectedResult: {
+      eventsList: [
+        {
+          date: '2024-09-26',
+          electricity: 'off',
+          endTime: '22:00',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '20:00',
         },
+        {
+          date: '2024-09-26',
+          electricity: 'off',
+          endTime: '23:00',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '21:00',
+        },
+        {
+          date: '2024-09-26',
+          electricity: 'off',
+          endTime: '17:00',
+          provider: 'CHERKOE',
+          queue: '3',
+          startTime: '16:00',
+        },
+        {
+          date: '2024-09-26',
+          electricity: 'off',
+          endTime: '19:00',
+          provider: 'CHERKOE',
+          queue: '4',
+          startTime: '17:00',
+        },
+        {
+          date: '2024-09-26',
+          electricity: 'off',
+          endTime: '24:00',
+          provider: 'CHERKOE',
+          queue: '5',
+          startTime: '22:00',
+        },
+        {
+          date: '2024-09-26',
+          electricity: 'off',
+          endTime: '21:00',
+          provider: 'CHERKOE',
+          queue: '6',
+          startTime: '19:00',
+        },
+      ],
+      targetDate: '2024-09-26',
     },
-    {
-        // no schedule in this message
-        messageNumber: 2,
-        message: `У відповідності до чинного законодавства індивідуальні та колективні побутові споживачі, які проживають в житлових будинках (у тому числі в житлових будинках готельного типу, квартирах), обладнаних електроопалювальними установками, можуть платити за спожиту електроенергію за пільговим тарифом (https://cherkasyoblenergo.com/news/3416) у період з 1 жовтня 2024 по 30 квітня 2025 (включно), а саме: до 2000 кВт∙год спожитої електричної енергії на місяць (включно, за весь обсяг споживання) фіксована ціна складатиме 2,64 грн/кВт∙год, понад 2000 кВт∙год спожитої електричної енергії на місяць (включно, за весь обсяг споживання) ціна складатиме 4,32 грн/кВт год.
+  },
+  {
+    // no schedule in this message
+    messageNumber: 2,
+    message: `У відповідності до чинного законодавства індивідуальні та колективні побутові споживачі, які проживають в житлових будинках (у тому числі в житлових будинках готельного типу, квартирах), обладнаних електроопалювальними установками, можуть платити за спожиту електроенергію за пільговим тарифом (https://cherkasyoblenergo.com/news/3416) у період з 1 жовтня 2024 по 30 квітня 2025 (включно), а саме: до 2000 кВт∙год спожитої електричної енергії на місяць (включно, за весь обсяг споживання) фіксована ціна складатиме 2,64 грн/кВт∙год, понад 2000 кВт∙год спожитої електричної енергії на місяць (включно, за весь обсяг споживання) ціна складатиме 4,32 грн/кВт год.
 
 Постановою Кабінету Міністрів України від 31.05.2024 № 632 внесено зміни до Положення про покладення спеціальних обов'язків на учасників ринку електричної енергії для забезпечення загальносуспільних інтересів у процесі функціонування ринку електричної енергії, згідно з яким встановлено нові фіксовані ціни на електричну енергію для побутових споживачів з 01.06.2024 по 30.04.2025, зокрема виділено в окрему категорію індивідуальних та колективних побутових споживачів, які проживають в житлових будинках (у тому числі в житлових будинках готельного типу, квартирах), обладнаних в установленому порядку електроопалювальними установками, із диференціацією ціни в опалювальний та неопалювальний період залежно від обсягів споживання.
 
@@ -103,12 +103,12 @@ export const regularMessages: TestMessageData[] = [
 
 Ознайомитися з Додатком до Протоколу можна на сайті Товариства за посиланням ➡️ https://cherkasyoblenergo.com/news/3416`,
 
-        expectedResult: null,
-    },
-    {
-        // message with queue hours stats
-        messageNumber: 3,
-        message: `Відповідно до команди НЕК «Укренерго», 26 вересня з 05:00 до 24:00 по Черкаській області будуть застосовані графіки погодинних відключень (ГПВ).
+    expectedResult: null,
+  },
+  {
+    // message with queue hours stats
+    messageNumber: 3,
+    message: `Відповідно до команди НЕК «Укренерго», 26 вересня з 05:00 до 24:00 по Черкаській області будуть застосовані графіки погодинних відключень (ГПВ).
 
 Години відсутності електропостачання:
 
@@ -142,128 +142,128 @@ export const regularMessages: TestMessageData[] = [
 6 черга – 241 годин
 
 Сторінка у Telegram: t.me/pat_cherkasyoblenergo`,
-        expectedResult: {
-            eventsList: [
-                {
-                    date: '2024-09-26',
-                    electricity: 'off',
-                    endTime: '07:00',
-                    provider: 'CHERKOE',
-                    queue: '1',
-                    startTime: '05:00',
-                },
-                {
-                    date: '2024-09-26',
-                    electricity: 'off',
-                    endTime: '22:00',
-                    provider: 'CHERKOE',
-                    queue: '1',
-                    startTime: '20:00',
-                },
-                {
-                    date: '2024-09-26',
-                    electricity: 'off',
-                    endTime: '09:00',
-                    provider: 'CHERKOE',
-                    queue: '2',
-                    startTime: '07:00',
-                },
-                {
-                    date: '2024-09-26',
-                    electricity: 'off',
-                    endTime: '17:00',
-                    provider: 'CHERKOE',
-                    queue: '2',
-                    startTime: '15:00',
-                },
-                {
-                    date: '2024-09-26',
-                    electricity: 'off',
-                    endTime: '23:00',
-                    provider: 'CHERKOE',
-                    queue: '2',
-                    startTime: '21:00',
-                },
-                {
-                    date: '2024-09-26',
-                    electricity: 'off',
-                    endTime: '11:00',
-                    provider: 'CHERKOE',
-                    queue: '3',
-                    startTime: '09:00',
-                },
-                {
-                    date: '2024-09-26',
-                    electricity: 'off',
-                    endTime: '17:00',
-                    provider: 'CHERKOE',
-                    queue: '3',
-                    startTime: '15:00',
-                },
-                {
-                    date: '2024-09-26',
-                    electricity: 'off',
-                    endTime: '13:00',
-                    provider: 'CHERKOE',
-                    queue: '4',
-                    startTime: '11:00',
-                },
-                {
-                    date: '2024-09-26',
-                    electricity: 'off',
-                    endTime: '19:00',
-                    provider: 'CHERKOE',
-                    queue: '4',
-                    startTime: '17:00',
-                },
-                {
-                    date: '2024-09-26',
-                    electricity: 'off',
-                    endTime: '15:00',
-                    provider: 'CHERKOE',
-                    queue: '5',
-                    startTime: '13:00',
-                },
-                {
-                    date: '2024-09-26',
-                    electricity: 'off',
-                    endTime: '18:00',
-                    provider: 'CHERKOE',
-                    queue: '5',
-                    startTime: '17:00',
-                },
-                {
-                    date: '2024-09-26',
-                    electricity: 'off',
-                    endTime: '24:00',
-                    provider: 'CHERKOE',
-                    queue: '5',
-                    startTime: '22:00',
-                },
-                {
-                    date: '2024-09-26',
-                    electricity: 'off',
-                    endTime: '15:00',
-                    provider: 'CHERKOE',
-                    queue: '6',
-                    startTime: '13:00',
-                },
-                {
-                    date: '2024-09-26',
-                    electricity: 'off',
-                    endTime: '21:00',
-                    provider: 'CHERKOE',
-                    queue: '6',
-                    startTime: '19:00',
-                },
-            ],
-            targetDate: '2024-09-26',
+    expectedResult: {
+      eventsList: [
+        {
+          date: '2024-09-26',
+          electricity: 'off',
+          endTime: '07:00',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '05:00',
         },
+        {
+          date: '2024-09-26',
+          electricity: 'off',
+          endTime: '22:00',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '20:00',
+        },
+        {
+          date: '2024-09-26',
+          electricity: 'off',
+          endTime: '09:00',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '07:00',
+        },
+        {
+          date: '2024-09-26',
+          electricity: 'off',
+          endTime: '17:00',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '15:00',
+        },
+        {
+          date: '2024-09-26',
+          electricity: 'off',
+          endTime: '23:00',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '21:00',
+        },
+        {
+          date: '2024-09-26',
+          electricity: 'off',
+          endTime: '11:00',
+          provider: 'CHERKOE',
+          queue: '3',
+          startTime: '09:00',
+        },
+        {
+          date: '2024-09-26',
+          electricity: 'off',
+          endTime: '17:00',
+          provider: 'CHERKOE',
+          queue: '3',
+          startTime: '15:00',
+        },
+        {
+          date: '2024-09-26',
+          electricity: 'off',
+          endTime: '13:00',
+          provider: 'CHERKOE',
+          queue: '4',
+          startTime: '11:00',
+        },
+        {
+          date: '2024-09-26',
+          electricity: 'off',
+          endTime: '19:00',
+          provider: 'CHERKOE',
+          queue: '4',
+          startTime: '17:00',
+        },
+        {
+          date: '2024-09-26',
+          electricity: 'off',
+          endTime: '15:00',
+          provider: 'CHERKOE',
+          queue: '5',
+          startTime: '13:00',
+        },
+        {
+          date: '2024-09-26',
+          electricity: 'off',
+          endTime: '18:00',
+          provider: 'CHERKOE',
+          queue: '5',
+          startTime: '17:00',
+        },
+        {
+          date: '2024-09-26',
+          electricity: 'off',
+          endTime: '24:00',
+          provider: 'CHERKOE',
+          queue: '5',
+          startTime: '22:00',
+        },
+        {
+          date: '2024-09-26',
+          electricity: 'off',
+          endTime: '15:00',
+          provider: 'CHERKOE',
+          queue: '6',
+          startTime: '13:00',
+        },
+        {
+          date: '2024-09-26',
+          electricity: 'off',
+          endTime: '21:00',
+          provider: 'CHERKOE',
+          queue: '6',
+          startTime: '19:00',
+        },
+      ],
+      targetDate: '2024-09-26',
     },
-    {
-        //message with schedule update
-        messageNumber: 4,
-        message: `Відповідно до команди НЕК «Укренерго», 24 вересня по Черкаській області до 16:00 скасовано графіки погодинних відключень. Графік діятиме з 16:00.
+  },
+  {
+    //message with schedule update
+    messageNumber: 4,
+    message: `Відповідно до команди НЕК «Укренерго», 24 вересня по Черкаській області до 16:00 скасовано графіки погодинних відключень. Графік діятиме з 16:00.
 
 Години відсутності електропостачання
 
@@ -277,56 +277,56 @@ export const regularMessages: TestMessageData[] = [
 23:00-24:00  5 черга
 
 Сторінка у Telegram: t.me/pat_cherkasyoblenergo`,
-        expectedResult: {
-            eventsList: [
-                {
-                    date: '2024-09-24',
-                    electricity: 'off',
-                    endTime: '20:00',
-                    provider: 'CHERKOE',
-                    queue: '1',
-                    startTime: '18:00',
-                },
-                {
-                    date: '2024-09-24',
-                    electricity: 'off',
-                    endTime: '22:00',
-                    provider: 'CHERKOE',
-                    queue: '2',
-                    startTime: '20:00',
-                },
-                {
-                    date: '2024-09-24',
-                    electricity: 'off',
-                    endTime: '22:00',
-                    provider: 'CHERKOE',
-                    queue: '3',
-                    startTime: '20:00',
-                },
-                {
-                    date: '2024-09-24',
-                    electricity: 'off',
-                    endTime: '24:00',
-                    provider: 'CHERKOE',
-                    queue: '5',
-                    startTime: '22:00',
-                },
-                {
-                    date: '2024-09-24',
-                    electricity: 'off',
-                    endTime: '18:00',
-                    provider: 'CHERKOE',
-                    queue: '6',
-                    startTime: '16:00',
-                },
-            ],
-            targetDate: '2024-09-24',
+    expectedResult: {
+      eventsList: [
+        {
+          date: '2024-09-24',
+          electricity: 'off',
+          endTime: '20:00',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '18:00',
         },
+        {
+          date: '2024-09-24',
+          electricity: 'off',
+          endTime: '22:00',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '20:00',
+        },
+        {
+          date: '2024-09-24',
+          electricity: 'off',
+          endTime: '22:00',
+          provider: 'CHERKOE',
+          queue: '3',
+          startTime: '20:00',
+        },
+        {
+          date: '2024-09-24',
+          electricity: 'off',
+          endTime: '24:00',
+          provider: 'CHERKOE',
+          queue: '5',
+          startTime: '22:00',
+        },
+        {
+          date: '2024-09-24',
+          electricity: 'off',
+          endTime: '18:00',
+          provider: 'CHERKOE',
+          queue: '6',
+          startTime: '16:00',
+        },
+      ],
+      targetDate: '2024-09-24',
     },
-    {
-        // regular message
-        messageNumber: 5,
-        message: `Графіки погодинних відключень на 24 вересня
+  },
+  {
+    // regular message
+    messageNumber: 5,
+    message: `Графіки погодинних відключень на 24 вересня
 
 Години відсутності електропостачання
 
@@ -356,152 +356,152 @@ export const regularMessages: TestMessageData[] = [
 23:00-24:00  5 черга
 
 Сторінка у Telegram: t.me/pat_cherkasyoblenergo`,
-        expectedResult: {
-            eventsList: [
-                {
-                    date: '2024-09-24',
-                    electricity: 'off',
-                    endTime: '02:00',
-                    provider: 'CHERKOE',
-                    queue: '1',
-                    startTime: '00:00',
-                },
-                {
-                    date: '2024-09-24',
-                    electricity: 'off',
-                    endTime: '08:00',
-                    provider: 'CHERKOE',
-                    queue: '1',
-                    startTime: '06:00',
-                },
-                {
-                    date: '2024-09-24',
-                    electricity: 'off',
-                    endTime: '20:00',
-                    provider: 'CHERKOE',
-                    queue: '1',
-                    startTime: '18:00',
-                },
-                {
-                    date: '2024-09-24',
-                    electricity: 'off',
-                    endTime: '04:00',
-                    provider: 'CHERKOE',
-                    queue: '2',
-                    startTime: '02:00',
-                },
-                {
-                    date: '2024-09-24',
-                    electricity: 'off',
-                    endTime: '10:00',
-                    provider: 'CHERKOE',
-                    queue: '2',
-                    startTime: '08:00',
-                },
-                {
-                    date: '2024-09-24',
-                    electricity: 'off',
-                    endTime: '22:00',
-                    provider: 'CHERKOE',
-                    queue: '2',
-                    startTime: '20:00',
-                },
-                {
-                    date: '2024-09-24',
-                    electricity: 'off',
-                    endTime: '04:00',
-                    provider: 'CHERKOE',
-                    queue: '3',
-                    startTime: '02:00',
-                },
-                {
-                    date: '2024-09-24',
-                    electricity: 'off',
-                    endTime: '12:00',
-                    provider: 'CHERKOE',
-                    queue: '3',
-                    startTime: '10:00',
-                },
-                {
-                    date: '2024-09-24',
-                    electricity: 'off',
-                    endTime: '22:00',
-                    provider: 'CHERKOE',
-                    queue: '3',
-                    startTime: '20:00',
-                },
-                {
-                    date: '2024-09-24',
-                    electricity: 'off',
-                    endTime: '06:00',
-                    provider: 'CHERKOE',
-                    queue: '4',
-                    startTime: '04:00',
-                },
-                {
-                    date: '2024-09-24',
-                    electricity: 'off',
-                    endTime: '14:00',
-                    provider: 'CHERKOE',
-                    queue: '4',
-                    startTime: '12:00',
-                },
-                {
-                    date: '2024-09-24',
-                    electricity: 'off',
-                    endTime: '06:00',
-                    provider: 'CHERKOE',
-                    queue: '5',
-                    startTime: '04:00',
-                },
-                {
-                    date: '2024-09-24',
-                    electricity: 'off',
-                    endTime: '16:00',
-                    provider: 'CHERKOE',
-                    queue: '5',
-                    startTime: '14:00',
-                },
-                {
-                    date: '2024-09-24',
-                    electricity: 'off',
-                    endTime: '24:00',
-                    provider: 'CHERKOE',
-                    queue: '5',
-                    startTime: '22:00',
-                },
-                {
-                    date: '2024-09-24',
-                    electricity: 'off',
-                    endTime: '02:00',
-                    provider: 'CHERKOE',
-                    queue: '6',
-                    startTime: '00:00',
-                },
-                {
-                    date: '2024-09-24',
-                    electricity: 'off',
-                    endTime: '08:00',
-                    provider: 'CHERKOE',
-                    queue: '6',
-                    startTime: '06:00',
-                },
-                {
-                    date: '2024-09-24',
-                    electricity: 'off',
-                    endTime: '18:00',
-                    provider: 'CHERKOE',
-                    queue: '6',
-                    startTime: '16:00',
-                },
-            ],
-            targetDate: '2024-09-24',
+    expectedResult: {
+      eventsList: [
+        {
+          date: '2024-09-24',
+          electricity: 'off',
+          endTime: '02:00',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '00:00',
         },
+        {
+          date: '2024-09-24',
+          electricity: 'off',
+          endTime: '08:00',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '06:00',
+        },
+        {
+          date: '2024-09-24',
+          electricity: 'off',
+          endTime: '20:00',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '18:00',
+        },
+        {
+          date: '2024-09-24',
+          electricity: 'off',
+          endTime: '04:00',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '02:00',
+        },
+        {
+          date: '2024-09-24',
+          electricity: 'off',
+          endTime: '10:00',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '08:00',
+        },
+        {
+          date: '2024-09-24',
+          electricity: 'off',
+          endTime: '22:00',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '20:00',
+        },
+        {
+          date: '2024-09-24',
+          electricity: 'off',
+          endTime: '04:00',
+          provider: 'CHERKOE',
+          queue: '3',
+          startTime: '02:00',
+        },
+        {
+          date: '2024-09-24',
+          electricity: 'off',
+          endTime: '12:00',
+          provider: 'CHERKOE',
+          queue: '3',
+          startTime: '10:00',
+        },
+        {
+          date: '2024-09-24',
+          electricity: 'off',
+          endTime: '22:00',
+          provider: 'CHERKOE',
+          queue: '3',
+          startTime: '20:00',
+        },
+        {
+          date: '2024-09-24',
+          electricity: 'off',
+          endTime: '06:00',
+          provider: 'CHERKOE',
+          queue: '4',
+          startTime: '04:00',
+        },
+        {
+          date: '2024-09-24',
+          electricity: 'off',
+          endTime: '14:00',
+          provider: 'CHERKOE',
+          queue: '4',
+          startTime: '12:00',
+        },
+        {
+          date: '2024-09-24',
+          electricity: 'off',
+          endTime: '06:00',
+          provider: 'CHERKOE',
+          queue: '5',
+          startTime: '04:00',
+        },
+        {
+          date: '2024-09-24',
+          electricity: 'off',
+          endTime: '16:00',
+          provider: 'CHERKOE',
+          queue: '5',
+          startTime: '14:00',
+        },
+        {
+          date: '2024-09-24',
+          electricity: 'off',
+          endTime: '24:00',
+          provider: 'CHERKOE',
+          queue: '5',
+          startTime: '22:00',
+        },
+        {
+          date: '2024-09-24',
+          electricity: 'off',
+          endTime: '02:00',
+          provider: 'CHERKOE',
+          queue: '6',
+          startTime: '00:00',
+        },
+        {
+          date: '2024-09-24',
+          electricity: 'off',
+          endTime: '08:00',
+          provider: 'CHERKOE',
+          queue: '6',
+          startTime: '06:00',
+        },
+        {
+          date: '2024-09-24',
+          electricity: 'off',
+          endTime: '18:00',
+          provider: 'CHERKOE',
+          queue: '6',
+          startTime: '16:00',
+        },
+      ],
+      targetDate: '2024-09-24',
     },
-    {
-        // message with a line break in between the queues lines
-        messageNumber: 6,
-        message: `20 вересня з 00:00 до 02:00 та 05:00 до 24:00 по Черкаській області будуть застосовані графіки погодинних відключень (ГПВ). 
+  },
+  {
+    // message with a line break in between the queues lines
+    messageNumber: 6,
+    message: `20 вересня з 00:00 до 02:00 та 05:00 до 24:00 по Черкаській області будуть застосовані графіки погодинних відключень (ГПВ). 
 
 З 02:00 до 05:00 графіки погодинних відключень (ГПВ) застосовуватися не будуть.
 
@@ -529,152 +529,152 @@ export const regularMessages: TestMessageData[] = [
 21:00-22:00  6 та 1 черги
 22:00-23:00  6 та 1 черги
 23:00-24:00  2 та 3 черга`,
-        expectedResult: {
-            eventsList: [
-                {
-                    date: '2024-09-20',
-                    electricity: 'off',
-                    endTime: '09:00',
-                    provider: 'CHERKOE',
-                    queue: '1',
-                    startTime: '07:00',
-                },
-                {
-                    date: '2024-09-20',
-                    electricity: 'off',
-                    endTime: '17:00',
-                    provider: 'CHERKOE',
-                    queue: '1',
-                    startTime: '15:00',
-                },
-                {
-                    date: '2024-09-20',
-                    electricity: 'off',
-                    endTime: '23:00',
-                    provider: 'CHERKOE',
-                    queue: '1',
-                    startTime: '21:00',
-                },
-                {
-                    date: '2024-09-20',
-                    electricity: 'off',
-                    endTime: '02:00',
-                    provider: 'CHERKOE',
-                    queue: '2',
-                    startTime: '00:00',
-                },
-                {
-                    date: '2024-09-20',
-                    electricity: 'off',
-                    endTime: '11:00',
-                    provider: 'CHERKOE',
-                    queue: '2',
-                    startTime: '09:00',
-                },
-                {
-                    date: '2024-09-20',
-                    electricity: 'off',
-                    endTime: '19:00',
-                    provider: 'CHERKOE',
-                    queue: '2',
-                    startTime: '17:00',
-                },
-                {
-                    date: '2024-09-20',
-                    electricity: 'off',
-                    endTime: '24:00',
-                    provider: 'CHERKOE',
-                    queue: '2',
-                    startTime: '23:00',
-                },
-                {
-                    date: '2024-09-20',
-                    electricity: 'off',
-                    endTime: '13:00',
-                    provider: 'CHERKOE',
-                    queue: '3',
-                    startTime: '11:00',
-                },
-                {
-                    date: '2024-09-20',
-                    electricity: 'off',
-                    endTime: '19:00',
-                    provider: 'CHERKOE',
-                    queue: '3',
-                    startTime: '17:00',
-                },
-                {
-                    date: '2024-09-20',
-                    electricity: 'off',
-                    endTime: '24:00',
-                    provider: 'CHERKOE',
-                    queue: '3',
-                    startTime: '23:00',
-                },
-                {
-                    date: '2024-09-20',
-                    electricity: 'off',
-                    endTime: '15:00',
-                    provider: 'CHERKOE',
-                    queue: '4',
-                    startTime: '13:00',
-                },
-                {
-                    date: '2024-09-20',
-                    electricity: 'off',
-                    endTime: '21:00',
-                    provider: 'CHERKOE',
-                    queue: '4',
-                    startTime: '19:00',
-                },
-                {
-                    date: '2024-09-20',
-                    electricity: 'off',
-                    endTime: '15:00',
-                    provider: 'CHERKOE',
-                    queue: '5',
-                    startTime: '13:00',
-                },
-                {
-                    date: '2024-09-20',
-                    electricity: 'off',
-                    endTime: '21:00',
-                    provider: 'CHERKOE',
-                    queue: '5',
-                    startTime: '19:00',
-                },
-                {
-                    date: '2024-09-20',
-                    electricity: 'off',
-                    endTime: '07:00',
-                    provider: 'CHERKOE',
-                    queue: '6',
-                    startTime: '05:00',
-                },
-                {
-                    date: '2024-09-20',
-                    electricity: 'off',
-                    endTime: '17:00',
-                    provider: 'CHERKOE',
-                    queue: '6',
-                    startTime: '15:00',
-                },
-                {
-                    date: '2024-09-20',
-                    electricity: 'off',
-                    endTime: '23:00',
-                    provider: 'CHERKOE',
-                    queue: '6',
-                    startTime: '21:00',
-                },
-            ],
-            targetDate: '2024-09-20',
+    expectedResult: {
+      eventsList: [
+        {
+          date: '2024-09-20',
+          electricity: 'off',
+          endTime: '09:00',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '07:00',
         },
+        {
+          date: '2024-09-20',
+          electricity: 'off',
+          endTime: '17:00',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '15:00',
+        },
+        {
+          date: '2024-09-20',
+          electricity: 'off',
+          endTime: '23:00',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '21:00',
+        },
+        {
+          date: '2024-09-20',
+          electricity: 'off',
+          endTime: '02:00',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '00:00',
+        },
+        {
+          date: '2024-09-20',
+          electricity: 'off',
+          endTime: '11:00',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '09:00',
+        },
+        {
+          date: '2024-09-20',
+          electricity: 'off',
+          endTime: '19:00',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '17:00',
+        },
+        {
+          date: '2024-09-20',
+          electricity: 'off',
+          endTime: '24:00',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '23:00',
+        },
+        {
+          date: '2024-09-20',
+          electricity: 'off',
+          endTime: '13:00',
+          provider: 'CHERKOE',
+          queue: '3',
+          startTime: '11:00',
+        },
+        {
+          date: '2024-09-20',
+          electricity: 'off',
+          endTime: '19:00',
+          provider: 'CHERKOE',
+          queue: '3',
+          startTime: '17:00',
+        },
+        {
+          date: '2024-09-20',
+          electricity: 'off',
+          endTime: '24:00',
+          provider: 'CHERKOE',
+          queue: '3',
+          startTime: '23:00',
+        },
+        {
+          date: '2024-09-20',
+          electricity: 'off',
+          endTime: '15:00',
+          provider: 'CHERKOE',
+          queue: '4',
+          startTime: '13:00',
+        },
+        {
+          date: '2024-09-20',
+          electricity: 'off',
+          endTime: '21:00',
+          provider: 'CHERKOE',
+          queue: '4',
+          startTime: '19:00',
+        },
+        {
+          date: '2024-09-20',
+          electricity: 'off',
+          endTime: '15:00',
+          provider: 'CHERKOE',
+          queue: '5',
+          startTime: '13:00',
+        },
+        {
+          date: '2024-09-20',
+          electricity: 'off',
+          endTime: '21:00',
+          provider: 'CHERKOE',
+          queue: '5',
+          startTime: '19:00',
+        },
+        {
+          date: '2024-09-20',
+          electricity: 'off',
+          endTime: '07:00',
+          provider: 'CHERKOE',
+          queue: '6',
+          startTime: '05:00',
+        },
+        {
+          date: '2024-09-20',
+          electricity: 'off',
+          endTime: '17:00',
+          provider: 'CHERKOE',
+          queue: '6',
+          startTime: '15:00',
+        },
+        {
+          date: '2024-09-20',
+          electricity: 'off',
+          endTime: '23:00',
+          provider: 'CHERKOE',
+          queue: '6',
+          startTime: '21:00',
+        },
+      ],
+      targetDate: '2024-09-20',
     },
-    {
-        // regular message
-        messageNumber: 7,
-        message: `Графіки погодинних відключень на 19 вересня
+  },
+  {
+    // regular message
+    messageNumber: 7,
+    message: `Графіки погодинних відключень на 19 вересня
 
 Години відсутності електропостачання
 
@@ -704,271 +704,271 @@ export const regularMessages: TestMessageData[] = [
 23:00-24:00  2 та 3 черга
 
 Сторінка у Telegram: t.me/pat_cherkasyoblenergo`,
-        expectedResult: {
-            eventsList: [
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '02:00',
-                    provider: 'CHERKOE',
-                    queue: '1',
-                    startTime: '00:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '11:00',
-                    provider: 'CHERKOE',
-                    queue: '1',
-                    startTime: '09:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '15:00',
-                    provider: 'CHERKOE',
-                    queue: '1',
-                    startTime: '13:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '19:00',
-                    provider: 'CHERKOE',
-                    queue: '1',
-                    startTime: '17:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '23:00',
-                    provider: 'CHERKOE',
-                    queue: '1',
-                    startTime: '21:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '04:00',
-                    provider: 'CHERKOE',
-                    queue: '2',
-                    startTime: '02:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '13:00',
-                    provider: 'CHERKOE',
-                    queue: '2',
-                    startTime: '11:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '17:00',
-                    provider: 'CHERKOE',
-                    queue: '2',
-                    startTime: '15:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '21:00',
-                    provider: 'CHERKOE',
-                    queue: '2',
-                    startTime: '19:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '24:00',
-                    provider: 'CHERKOE',
-                    queue: '2',
-                    startTime: '23:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '08:00',
-                    provider: 'CHERKOE',
-                    queue: '3',
-                    startTime: '06:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '12:00',
-                    provider: 'CHERKOE',
-                    queue: '3',
-                    startTime: '10:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '16:00',
-                    provider: 'CHERKOE',
-                    queue: '3',
-                    startTime: '14:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '20:00',
-                    provider: 'CHERKOE',
-                    queue: '3',
-                    startTime: '18:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '24:00',
-                    provider: 'CHERKOE',
-                    queue: '3',
-                    startTime: '22:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '04:00',
-                    provider: 'CHERKOE',
-                    queue: '4',
-                    startTime: '02:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '08:00',
-                    provider: 'CHERKOE',
-                    queue: '4',
-                    startTime: '06:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '12:00',
-                    provider: 'CHERKOE',
-                    queue: '4',
-                    startTime: '10:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '16:00',
-                    provider: 'CHERKOE',
-                    queue: '4',
-                    startTime: '14:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '20:00',
-                    provider: 'CHERKOE',
-                    queue: '4',
-                    startTime: '18:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '23:00',
-                    provider: 'CHERKOE',
-                    queue: '4',
-                    startTime: '22:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '06:00',
-                    provider: 'CHERKOE',
-                    queue: '5',
-                    startTime: '04:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '10:00',
-                    provider: 'CHERKOE',
-                    queue: '5',
-                    startTime: '08:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '14:00',
-                    provider: 'CHERKOE',
-                    queue: '5',
-                    startTime: '12:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '18:00',
-                    provider: 'CHERKOE',
-                    queue: '5',
-                    startTime: '16:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '22:00',
-                    provider: 'CHERKOE',
-                    queue: '5',
-                    startTime: '20:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '02:00',
-                    provider: 'CHERKOE',
-                    queue: '6',
-                    startTime: '00:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '06:00',
-                    provider: 'CHERKOE',
-                    queue: '6',
-                    startTime: '04:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '10:00',
-                    provider: 'CHERKOE',
-                    queue: '6',
-                    startTime: '08:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '14:00',
-                    provider: 'CHERKOE',
-                    queue: '6',
-                    startTime: '12:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '18:00',
-                    provider: 'CHERKOE',
-                    queue: '6',
-                    startTime: '16:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '22:00',
-                    provider: 'CHERKOE',
-                    queue: '6',
-                    startTime: '20:00',
-                },
-            ],
-            targetDate: '2024-09-19',
+    expectedResult: {
+      eventsList: [
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '02:00',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '00:00',
         },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '11:00',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '09:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '15:00',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '13:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '19:00',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '17:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '23:00',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '21:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '04:00',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '02:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '13:00',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '11:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '17:00',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '15:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '21:00',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '19:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '24:00',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '23:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '08:00',
+          provider: 'CHERKOE',
+          queue: '3',
+          startTime: '06:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '12:00',
+          provider: 'CHERKOE',
+          queue: '3',
+          startTime: '10:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '16:00',
+          provider: 'CHERKOE',
+          queue: '3',
+          startTime: '14:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '20:00',
+          provider: 'CHERKOE',
+          queue: '3',
+          startTime: '18:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '24:00',
+          provider: 'CHERKOE',
+          queue: '3',
+          startTime: '22:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '04:00',
+          provider: 'CHERKOE',
+          queue: '4',
+          startTime: '02:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '08:00',
+          provider: 'CHERKOE',
+          queue: '4',
+          startTime: '06:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '12:00',
+          provider: 'CHERKOE',
+          queue: '4',
+          startTime: '10:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '16:00',
+          provider: 'CHERKOE',
+          queue: '4',
+          startTime: '14:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '20:00',
+          provider: 'CHERKOE',
+          queue: '4',
+          startTime: '18:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '23:00',
+          provider: 'CHERKOE',
+          queue: '4',
+          startTime: '22:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '06:00',
+          provider: 'CHERKOE',
+          queue: '5',
+          startTime: '04:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '10:00',
+          provider: 'CHERKOE',
+          queue: '5',
+          startTime: '08:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '14:00',
+          provider: 'CHERKOE',
+          queue: '5',
+          startTime: '12:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '18:00',
+          provider: 'CHERKOE',
+          queue: '5',
+          startTime: '16:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '22:00',
+          provider: 'CHERKOE',
+          queue: '5',
+          startTime: '20:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '02:00',
+          provider: 'CHERKOE',
+          queue: '6',
+          startTime: '00:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '06:00',
+          provider: 'CHERKOE',
+          queue: '6',
+          startTime: '04:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '10:00',
+          provider: 'CHERKOE',
+          queue: '6',
+          startTime: '08:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '14:00',
+          provider: 'CHERKOE',
+          queue: '6',
+          startTime: '12:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '18:00',
+          provider: 'CHERKOE',
+          queue: '6',
+          startTime: '16:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '22:00',
+          provider: 'CHERKOE',
+          queue: '6',
+          startTime: '20:00',
+        },
+      ],
+      targetDate: '2024-09-19',
     },
-    {
-        messageNumber: 8,
-        message: `Оновлені графіки погодинних відключень на 29 вересня 
+  },
+  {
+    messageNumber: 8,
+    message: `Оновлені графіки погодинних відключень на 29 вересня 
  
 29 вересня з 18:00 до 23:00 по Черкаській області будуть застосовані графіки погодинних відключень (ГПВ). 
  
@@ -981,52 +981,56 @@ export const regularMessages: TestMessageData[] = [
 22:00-23:00 3 черга 
  
 Сторінка у Telegram: t.me/pat_cherkasyoblenergo`,
-        expectedResult: {
-            eventsList: [
-                {
-                    date: '2024-09-29',
-                    electricity: 'off',
-                    endTime: '20:00',
-                    provider: 'CHERKOE',
-                    queue: '2',
-                    startTime: '18:00',
-                },
-                {
-                    date: '2024-09-29',
-                    electricity: 'off',
-                    endTime: '23:00',
-                    provider: 'CHERKOE',
-                    queue: '3',
-                    startTime: '22:00',
-                },
-                {
-                    date: '2024-09-29',
-                    electricity: 'off',
-                    endTime: '22:00',
-                    provider: 'CHERKOE',
-                    queue: '5',
-                    startTime: '20:00',
-                },
-            ],
-            targetDate: '2024-09-29',
+    expectedResult: {
+      eventsList: [
+        {
+          date: '2024-09-29',
+          electricity: 'off',
+          endTime: '20:00',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '18:00',
         },
+        {
+          date: '2024-09-29',
+          electricity: 'off',
+          endTime: '23:00',
+          provider: 'CHERKOE',
+          queue: '3',
+          startTime: '22:00',
+        },
+        {
+          date: '2024-09-29',
+          electricity: 'off',
+          endTime: '22:00',
+          provider: 'CHERKOE',
+          queue: '5',
+          startTime: '20:00',
+        },
+      ],
+      targetDate: '2024-09-29',
     },
-    // {
-    //   messageNumber: 9,
-    //   message: ``,
-    //   expectedResult: [],
-    // },
-    // {
-    //   messageNumber: 10,
-    //   message: ``,
-    //   expectedResult: [],
-    // },
+  },
+  {
+    messageNumber: 9,
+    message: `З першого січня наступного року у Товаристві розпочне діяти новий Колективний договір 2025-2027 років, який днями представники підрозділів і філій підприємства ухвалили під час конференції (https://cherkasyoblenergo.com/news/3613) у режимі онлайн-зв’язку. Також учасники конференції затвердили Правила внутрішнього трудового розпорядку працівників ПАТ «Черкасиобленерго». 
+
+У заході взяли участь представники адміністрації ПАТ «Черкасиобленерго», в.о. генерального директора ПАТ «Черкасиобленерго» Вадим Яненко, голова Черкаської обласної організації профспілки працівників енергетики Олександр Молдованов та делегати структурних підрозділів і філій Товариства. Головою конференції обрали керівника первинної профспілкової організації ПАТ «Черкасиобленерго» Сергія Мулявку.
+
+Детальніше - на сайті Товариства ➡️ https://cherkasyoblenergo.com/news/3613`,
+    expectedResult: null,
+  },
+  // {
+  //   messageNumber: 10,
+  //   message: ``,
+  //   expectedResult: [],
+  // },
 ];
 
 export const messagesWithMinutes: TestMessageData[] = [
-    {
-        messageNumber: 1,
-        message: `Графіки погодинних відключень на 19 вересня
+  {
+    messageNumber: 1,
+    message: `Графіки погодинних відключень на 19 вересня
 
 Години відсутності електропостачання
 
@@ -1045,143 +1049,143 @@ export const messagesWithMinutes: TestMessageData[] = [
 12:00-13:00  2, 5 та 6 черги
 
 Сторінка у Telegram: t.me/pat_cherkasyoblenergo`,
-        expectedResult: {
-            eventsList: [
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '02:22',
-                    provider: 'CHERKOE',
-                    queue: '1',
-                    startTime: '00:03',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '11:03',
-                    provider: 'CHERKOE',
-                    queue: '1',
-                    startTime: '09:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '04:59',
-                    provider: 'CHERKOE',
-                    queue: '2',
-                    startTime: '02:22',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '13:00',
-                    provider: 'CHERKOE',
-                    queue: '2',
-                    startTime: '11:03',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '08:21',
-                    provider: 'CHERKOE',
-                    queue: '3',
-                    startTime: '06:30',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '12:00',
-                    provider: 'CHERKOE',
-                    queue: '3',
-                    startTime: '09:59',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '04:59',
-                    provider: 'CHERKOE',
-                    queue: '4',
-                    startTime: '02:22',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '08:21',
-                    provider: 'CHERKOE',
-                    queue: '4',
-                    startTime: '06:30',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '12:00',
-                    provider: 'CHERKOE',
-                    queue: '4',
-                    startTime: '09:59',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '06:30',
-                    provider: 'CHERKOE',
-                    queue: '5',
-                    startTime: '04:59',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '09:59',
-                    provider: 'CHERKOE',
-                    queue: '5',
-                    startTime: '08:21',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '13:00',
-                    provider: 'CHERKOE',
-                    queue: '5',
-                    startTime: '12:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '02:22',
-                    provider: 'CHERKOE',
-                    queue: '6',
-                    startTime: '00:03',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '06:30',
-                    provider: 'CHERKOE',
-                    queue: '6',
-                    startTime: '04:59',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '09:59',
-                    provider: 'CHERKOE',
-                    queue: '6',
-                    startTime: '08:21',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '13:00',
-                    provider: 'CHERKOE',
-                    queue: '6',
-                    startTime: '12:00',
-                },
-            ],
-            targetDate: '2024-09-19',
+    expectedResult: {
+      eventsList: [
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '02:22',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '00:03',
         },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '11:03',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '09:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '04:59',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '02:22',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '13:00',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '11:03',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '08:21',
+          provider: 'CHERKOE',
+          queue: '3',
+          startTime: '06:30',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '12:00',
+          provider: 'CHERKOE',
+          queue: '3',
+          startTime: '09:59',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '04:59',
+          provider: 'CHERKOE',
+          queue: '4',
+          startTime: '02:22',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '08:21',
+          provider: 'CHERKOE',
+          queue: '4',
+          startTime: '06:30',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '12:00',
+          provider: 'CHERKOE',
+          queue: '4',
+          startTime: '09:59',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '06:30',
+          provider: 'CHERKOE',
+          queue: '5',
+          startTime: '04:59',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '09:59',
+          provider: 'CHERKOE',
+          queue: '5',
+          startTime: '08:21',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '13:00',
+          provider: 'CHERKOE',
+          queue: '5',
+          startTime: '12:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '02:22',
+          provider: 'CHERKOE',
+          queue: '6',
+          startTime: '00:03',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '06:30',
+          provider: 'CHERKOE',
+          queue: '6',
+          startTime: '04:59',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '09:59',
+          provider: 'CHERKOE',
+          queue: '6',
+          startTime: '08:21',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '13:00',
+          provider: 'CHERKOE',
+          queue: '6',
+          startTime: '12:00',
+        },
+      ],
+      targetDate: '2024-09-19',
     },
-    {
-        messageNumber: 2,
-        message: `Оновлені графіки погодинних відключень на 19 вересня
+  },
+  {
+    messageNumber: 2,
+    message: `Оновлені графіки погодинних відключень на 19 вересня
 
 Відповідно до команди НЕК «Укренерго», 19 вересня графіки погодинних відключень (ГПВ) будуть застосовані з 17:30 до 21:30.
 
@@ -1193,31 +1197,31 @@ export const messagesWithMinutes: TestMessageData[] = [
 20:30-21:30 2 черга
 
 Сторінка у Telegram: t.me/pat_cherkasyoblenergo`,
-        expectedResult: {
-            eventsList: [
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '19:30',
-                    provider: 'CHERKOE',
-                    queue: '1',
-                    startTime: '17:30',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '21:30',
-                    provider: 'CHERKOE',
-                    queue: '2',
-                    startTime: '19:30',
-                },
-            ],
-            targetDate: '2024-09-19',
+    expectedResult: {
+      eventsList: [
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '19:30',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '17:30',
         },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '21:30',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '19:30',
+        },
+      ],
+      targetDate: '2024-09-19',
     },
-    {
-        messageNumber: 3,
-        message: `Оновлені графіки погодинних відключень
+  },
+  {
+    messageNumber: 3,
+    message: `Оновлені графіки погодинних відключень
 
 Відповідно до команди НЕК «Укренерго», 19 вересня графіки погодинних відключень (ГПВ) будуть застосовані з 18:00 до 21:30.
 
@@ -1229,32 +1233,32 @@ export const messagesWithMinutes: TestMessageData[] = [
 21:00-21:30 2 черга
 
 Сторінка у Telegram: t.me/pat_cherkasyoblenergo`,
-        expectedResult: {
-            eventsList: [
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '20:00',
-                    provider: 'CHERKOE',
-                    queue: '1',
-                    startTime: '18:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '21:30',
-                    provider: 'CHERKOE',
-                    queue: '2',
-                    startTime: '20:00',
-                },
-            ],
-            targetDate: '2024-09-19',
+    expectedResult: {
+      eventsList: [
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '20:00',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '18:00',
         },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '21:30',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '20:00',
+        },
+      ],
+      targetDate: '2024-09-19',
     },
-    {
-        // with gaps
-        messageNumber: 4,
-        message: `Оновлені графіки погодинних відключень
+  },
+  {
+    // with gaps
+    messageNumber: 4,
+    message: `Оновлені графіки погодинних відключень
 
 Відповідно до команди НЕК «Укренерго», 19 вересня графіки погодинних відключень (ГПВ) будуть застосовані з 18:00 до 21:30.
 
@@ -1267,42 +1271,42 @@ export const messagesWithMinutes: TestMessageData[] = [
 21:33-22:10 3 та 4 черги
 
 Сторінка у Telegram: t.me/pat_cherkasyoblenergo`,
-        expectedResult: {
-            eventsList: [
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '20:00',
-                    provider: 'CHERKOE',
-                    queue: '1',
-                    startTime: '18:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '21:30',
-                    provider: 'CHERKOE',
-                    queue: '2',
-                    startTime: '20:00',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '22:10',
-                    provider: 'CHERKOE',
-                    queue: '3',
-                    startTime: '21:33',
-                },
-                {
-                    date: '2024-09-19',
-                    electricity: 'off',
-                    endTime: '22:10',
-                    provider: 'CHERKOE',
-                    queue: '4',
-                    startTime: '21:33',
-                },
-            ],
-            targetDate: '2024-09-19',
+    expectedResult: {
+      eventsList: [
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '20:00',
+          provider: 'CHERKOE',
+          queue: '1',
+          startTime: '18:00',
         },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '21:30',
+          provider: 'CHERKOE',
+          queue: '2',
+          startTime: '20:00',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '22:10',
+          provider: 'CHERKOE',
+          queue: '3',
+          startTime: '21:33',
+        },
+        {
+          date: '2024-09-19',
+          electricity: 'off',
+          endTime: '22:10',
+          provider: 'CHERKOE',
+          queue: '4',
+          startTime: '21:33',
+        },
+      ],
+      targetDate: '2024-09-19',
     },
+  },
 ];
