@@ -4,6 +4,7 @@ import { EoffEvent, ISchedule } from './cherkoe';
 import { TotalList } from 'telegram/Helpers';
 import { Api } from 'telegram';
 import { ELECTRICITY_PROVIDER, ELECTRICITY_STATUS, IEoffEvent } from '../../common/types-and-interfaces';
+import Message = Api.Message;
 
 interface ParsedScheduleString {
   queue: string;
@@ -26,11 +27,13 @@ export class CherkoeTgParser {
   getTargetDate = (message: string) => {
     const currentMonth: DateObj = getCurrentMonth();
     const nextMonth: DateObj = getNextMonth();
-
+    console.log('scv_currentMonth', currentMonth, nextMonth);
     let target;
     if (message.toUpperCase().includes(currentMonth.name.toUpperCase())) {
+      console.log('scv_case_1');
       target = currentMonth;
     } else if (message.toUpperCase().includes(nextMonth.name.toUpperCase())) {
+      console.log('scv_case_2');
       target = nextMonth;
     } else {
       return null;
@@ -47,53 +50,101 @@ export class CherkoeTgParser {
 
   public parseQueueNumbers = (line: string): string[] | null => {
     // Use regex to split the line by time intervals and capture queue numbers
-    const parts: string[] = line.split(/(?:\d{2}:\d{2}-\d{2}:\d{2}\s*)+/);
+    const parts: string[] = line.split(' ');
 
     // Extract the last part (which should contain queue numbers)
-    const queuePart: string = parts[parts.length - 1];
+    const queuePart: string = parts[0];
 
-    // Use regex to match queue numbers
-    const queueNumbers = queuePart.match(/\d+(?:,\d+)?/g);
+    const queuesMap = {
+      '1.І': '1.1',
+      '1.ІІ': '1.2',
+      '2.І': '2.1',
+      '2.ІІ': '2.2',
+      '3.І': '3.1',
+      '3.ІІ': '3.2',
+      '4.І': '4.1',
+      '4.ІІ': '4.2',
+      '5.І': '5.1',
+      '5.ІІ': '5.2',
+      '6.І': '6.1',
+      '6.ІІ': '6.2',
+    };
 
-    // Return the matched queue numbers or null if none found
-    return queueNumbers ? queueNumbers.filter((queue) => /^\d+$/.test(queue)) : null;
+    // @ts-ignore
+    console.log('scv_queuePart', queuePart, ' ->> ', queuesMap[queuePart]);
+
+    return queuePart && queuesMap[queuePart as keyof typeof queuesMap]
+      ? [queuesMap[queuePart as keyof typeof queuesMap]]
+      : null;
   };
 
   private parseSchedule = (message: string): ParsedScheduleString[] | null => {
-    const passPhrase1 = 'Години відсутності електропостачання:';
-    const passPhrase2 = 'Години відсутності електропостачання';
+    const passPhrase1 = 'Години відсутності електропостачання по чергам (підчергам):';
+    const passPhrase2 = 'Години відсутності електропостачання по чергам (підчергам)';
 
     let schedule;
 
     if (message.includes(passPhrase1)) {
+      console.log('scv_passPhrase1');
       schedule = message.split(passPhrase1)[1];
     } else if (message.includes(passPhrase2)) {
+      console.log('scv_passPhrase2');
       schedule = message.split(passPhrase2)[1];
     } else {
       return null;
     }
 
-    const stringedSchedule: string[] = schedule.split('\n\n');
+    // const stringedSchedule: string[] = schedule.split('\n\n');
+    // console.log('scv_stringified, ', stringedSchedule);
 
-    const stringFilterPattern: RegExp = /\d{2}:\d{2}-\d{2}:\d{2}.*черг.*/;
-    const filteredSchedule: string[] = stringedSchedule
-      .filter((line) => stringFilterPattern.test(line))
-      .join('\n')
-      .split('\n');
+    // Split the message into lines and filter out empty ones
+    let lines: string[] = message
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line !== '');
 
+    // Convert to JSON string (for handling invisible characters)
+    const stringifiedLines = JSON.stringify(lines);
+
+    // Parse the stringified lines back into an array
+    let parsedLines: string[] = JSON.parse(stringifiedLines);
+
+    const regex: RegExp = /^\d+\.\І{1,2}.*$/;
+
+    // Filter lines that match the pattern
+    const filteredLines: string[] = parsedLines.filter((line) => regex.test(line));
+
+    // Convert filtered lines to JSON for clear output
+    const stringedSchedule: string = JSON.stringify(filteredLines, null, 2);
+    console.log('scv_jsonString', stringedSchedule);
+    const stringFilterPattern: RegExp = /^\s*\d+\.\І{1,2}/gm;
+
+    // const filteredSchedule: string[] = stringedSchedule
+    //   .filter((line) => {
+    //     const normalizedLine = line
+    //       .replace(/\u00A0/g, ' ') // Replace non-breaking spaces
+    //       .replace(/\r\n|\r|\n/g, '\n') // Normalize newlines
+    //       .trim();
+    //
+    //     return stringFilterPattern.test(normalizedLine);
+    //   })
+    //   .join('\n')
+    //   .split('\n');
+    console.log('scv_filteredSchedule', filteredLines);
     const offlineHours: ParsedScheduleString[] = [];
 
-    filteredSchedule.forEach((line) => {
+    filteredLines.forEach((line) => {
       const queues: string[] | null = this.parseQueueNumbers(line);
 
-      const timeMatch = line.match(/(\d{2}:\d{2})-(\d{2}:\d{2})/);
+      const allTimeMatches = [...line.matchAll(/(\d{2}:\d{2})-(\d{2}:\d{2})/g)];
 
-      if (!queues || !timeMatch) return;
-
-      const [_, startTime, endTime] = timeMatch;
+      if (!queues || !allTimeMatches?.length) return;
 
       queues.forEach((queue) => {
-        offlineHours.push({ queue, startTime, endTime });
+        allTimeMatches.forEach((timeMatch) => {
+          const [_, startTime, endTime] = timeMatch;
+          offlineHours.push({ queue, startTime, endTime });
+        });
       });
     });
 
@@ -165,17 +216,15 @@ export class CherkoeTgParser {
 
   parseMessage = (message: string): IParsedTgMessage | null => {
     const targetDate: string | null = this.getTargetDate(message);
-
-    // if (!targetDate) return null;
-
+    console.log('scv_TargetDate', targetDate);
     const parsedSchedule: ParsedScheduleString[] | null = this.parseSchedule(message);
-
+    console.log('scv_parsedSchedule', parsedSchedule);
     if (!parsedSchedule) return null;
 
     const groupedByQueue: GroupByQueueResult = this.groupByQueue(parsedSchedule);
-
+    console.log('scv_groupedByQueue', groupedByQueue);
     const eventsList: IEoffEvent[] | void = this.convertToEvents(groupedByQueue, targetDate);
-
+    console.log('scv_eventsList', eventsList);
     if (!eventsList || !targetDate) return null;
     return { targetDate, eventsList };
   };
