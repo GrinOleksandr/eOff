@@ -50,6 +50,7 @@ const getNextMonth = (): DateObj => {
 };
 
 function formatDateFromObject(obj: { day: any; index: any; name?: string; year?: number }): string {
+  console.log('scv_formatting_date', obj);
   const year = new Date().getFullYear(); // Get the current year
   const monthIndex = obj.index - 1; // Convert month index to zero-based
   const month = (monthIndex + 1).toString().padStart(2, '0'); // Convert to one-based index and pad to two digits

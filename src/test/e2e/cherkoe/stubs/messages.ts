@@ -188,6 +188,65 @@ export const regularMessages: TestMessageData[] = [
       targetDate: '2024-09-16',
     },
   },
+  {
+    messageNumber: 2,
+    message: `Відповідно до команди НЕК «Укренерго», 18 грудня по Черкаській області скасовано графіки погодинних відключень (ГПВ).  
+ 
+Зверніть увагу на роботу енергоємних приладів, не вмикайте одночасно кілька потужних електроприладів (електрообігрівачі, бойлери, електроплити, мікрохвильовки, пральні і сушильні машини, електричні духові шафи, посудомийні машини, кондиціонери, пилососи, електрочайники, кавоварки, праски тощо) у години пік. Ощадливо споживайте електроенергію з 08:00 до 20:00. 
+ 
+Для промисловості та бізнесу з 07:00 до 20:00 будуть застосовані графіки обмеження потужності (ГОП). 
+ 
+У разі змін повідомлятимемо додатково. 
+ 
+Дякуємо за розуміння!`,
+    //@ts-ignore
+    expectedResult: {
+      eventsList: [],
+      targetDate: '2024-09-18',
+    },
+  },
+  // {
+  //   messageNumber: 1,
+  //   message: ``,
+  //   //@ts-ignore
+  //   expectedResult: {},
+  // },
+  // {
+  //   messageNumber: 1,
+  //   message: ``,
+  //   //@ts-ignore
+  //   expectedResult: {},
+  // },
+  // {
+  //   messageNumber: 1,
+  //   message: ``,
+  //   //@ts-ignore
+  //   expectedResult: {},
+  // },
+  // {
+  //   messageNumber: 1,
+  //   message: ``,
+  //   //@ts-ignore
+  //   expectedResult: {},
+  // },
+  // {
+  //   messageNumber: 1,
+  //   message: ``,
+  //   //@ts-ignore
+  //   expectedResult: {},
+  // },
+  // {
+  //   messageNumber: 1,
+  //   message: ``,
+  //   //@ts-ignore
+  //   expectedResult: {},
+  // },
+  // {
+  //   messageNumber: 1,
+  //   message: ``,
+  //   //@ts-ignore
+  //   expectedResult: {},
+  // },
 ];
 
 export const messagesWithMinutes: TestMessageData[] = [
