@@ -3,8 +3,15 @@ import { DateObj, formatDateFromObject, getCurrentMonth, getNextMonth, getTodayA
 import { EoffEvent, ISchedule } from './cherkoe';
 import { TotalList } from 'telegram/Helpers';
 import { Api } from 'telegram';
-import { ELECTRICITY_PROVIDER, ELECTRICITY_STATUS, IEoffEvent } from '../../common/types-and-interfaces';
+import {
+  ELECTRICITY_PROVIDER,
+  ELECTRICITY_STATUS,
+  IEoffEvent,
+  ITargetDateObject,
+} from '../../common/types-and-interfaces';
 import Message = Api.Message;
+import { message } from 'telegram/client';
+import messages = Api.messages;
 
 interface ParsedScheduleString {
   queue: string;
@@ -24,7 +31,7 @@ export interface IParsedTgMessage {
 export class CherkoeTgParser {
   private daysScheduleData: { [index: string]: IEoffEvent[] } = {};
 
-  getTargetDate = (message: string) => {
+  getTargetDate = (message: string): null | ITargetDateObject => {
     const currentMonth: DateObj = getCurrentMonth();
     const nextMonth: DateObj = getNextMonth();
     console.log('scv_currentMonth', currentMonth, nextMonth);
@@ -45,7 +52,12 @@ export class CherkoeTgParser {
 
     if (!targetDay) return null;
 
-    return formatDateFromObject({ ...target, day: targetDay });
+    const result = { ...target, day: targetDay };
+
+    return {
+      targetDate: formatDateFromObject(result),
+      rawDateObj: result,
+    };
   };
 
   public parseQueueNumbers = (line: string): string[] | null => {
@@ -78,18 +90,26 @@ export class CherkoeTgParser {
       : null;
   };
 
-  private parseSchedule = (message: string): ParsedScheduleString[] | null => {
-    const passPhrase1 = 'Години відсутності електропостачання по чергам (підчергам):';
-    const passPhrase2 = 'Години відсутності електропостачання по чергам (підчергам)';
+  private parseSchedule = (
+    message: string,
+    rawDateObj: ITargetDateObject['rawDateObj']
+  ): ParsedScheduleString[] | null => {
+    const wholeDayCancellationPhrase = `${rawDateObj.day} ${rawDateObj.name} по Черкаській області скасовано графіки погодинних відключень`;
+    console.log('scv_wholeDayCancelationPassphrase', wholeDayCancellationPhrase);
+
+    if (message.includes(wholeDayCancellationPhrase)) return [];
+
+    const phrase1 = 'Години відсутності електропостачання по чергам (підчергам):';
+    const phrase2 = 'Години відсутності електропостачання по чергам (підчергам)';
 
     let schedule;
 
-    if (message.includes(passPhrase1)) {
+    if (message.includes(phrase1)) {
       console.log('scv_passPhrase1');
-      schedule = message.split(passPhrase1)[1];
-    } else if (message.includes(passPhrase2)) {
+      schedule = message.split(phrase1)[1];
+    } else if (message.includes(phrase2)) {
       console.log('scv_passPhrase2');
-      schedule = message.split(passPhrase2)[1];
+      schedule = message.split(phrase2)[1];
     } else {
       return null;
     }
@@ -151,15 +171,6 @@ export class CherkoeTgParser {
     return offlineHours;
   };
 
-  // private indexToHours(timeZoneIndex: number) {
-  //   const startHour = timeZoneIndex; // 1 hour per timezoneIndex
-  //   const endHour = startHour + 1; // Each timezoneIndex is 1 hour duration
-  //   return {
-  //     startHour: `${startHour.toString().padStart(2, '0')}:00`,
-  //     endHour: `${endHour.toString().padStart(2, '0')}:00`,
-  //   };
-  // }
-
   private groupByQueue = (data: ParsedScheduleString[]): GroupByQueueResult =>
     data.reduce((acc: GroupByQueueResult, { queue, startTime, endTime }) => {
       if (!acc[queue]) {
@@ -215,9 +226,11 @@ export class CherkoeTgParser {
   };
 
   parseMessage = (message: string): IParsedTgMessage | null => {
-    const targetDate: string | null = this.getTargetDate(message);
+    const targetDateResult: null | ITargetDateObject = this.getTargetDate(message);
+    if (!targetDateResult) return null;
+    const { targetDate, rawDateObj } = targetDateResult;
     console.log('scv_TargetDate', targetDate);
-    const parsedSchedule: ParsedScheduleString[] | null = this.parseSchedule(message);
+    const parsedSchedule: ParsedScheduleString[] | null = this.parseSchedule(message, rawDateObj);
     console.log('scv_parsedSchedule', parsedSchedule);
     if (!parsedSchedule) return null;
 
@@ -225,7 +238,7 @@ export class CherkoeTgParser {
     console.log('scv_groupedByQueue', groupedByQueue);
     const eventsList: IEoffEvent[] | void = this.convertToEvents(groupedByQueue, targetDate);
     console.log('scv_eventsList', eventsList);
-    if (!eventsList || !targetDate) return null;
+    if (!eventsList) return null;
     return { targetDate, eventsList };
   };
 
