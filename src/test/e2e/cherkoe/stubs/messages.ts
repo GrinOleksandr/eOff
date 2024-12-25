@@ -205,12 +205,234 @@ export const regularMessages: TestMessageData[] = [
       targetDate: '2024-09-18',
     },
   },
-  // {
-  //   messageNumber: 1,
-  //   message: ``,
-  //   //@ts-ignore
-  //   expectedResult: {},
-  // },
+  {
+    messageNumber: 3,
+    message: `Відповідно до команди НЕК «Укренерго», 25 грудня з 06:00 до 24:00 по Черкаській області будуть застосовані оновлені графіки погодинних відключень (ГПВ). Детальніше про оновлені графіки за посиланням https://www.cherkasyoblenergo.com/news/3629. 
+ 
+Години відсутності електропостачання по чергам (підчергам): 
+ 
+1.І 07:00-10:30, 17:30-21:00 
+1.ІІ 07:00-10:30, 17:30-21:00 
+
+2.І 07:00-10:30, 14:00-21:00 
+2.ІІ 07:00-10:30, 14:00-21:00 
+
+3.І 10:30-14:00, 17:30-00:00 
+3.ІІ 10:30-14:00, 17:30-00:00 
+
+4.І 07:00-14:00, 21:00-00:00 
+4.ІІ 07:00-14:00, 21:00-00:00 
+
+5.І 06:00-07:00, 14:00-17:30, 21:00-00:00 
+5.ІІ 06:00-07:00, 14:00-17:30, 21:00-00:00 
+
+6.І 10:30-17:30 
+6.ІІ 10:30-17:30 
+
+Перелік адрес, що знеструмлюються по чергах (підчергах) ГПВ можна переглянути за посиланням https://www.cherkasyoblenergo.com/news/3629 
+ 
+Також для промисловості та бізнесу з 07:00 до 21:00 будуть застосовані графіки обмеження потужності (ГОП). 
+ 
+Сторінка у Telegram: t.me/pat_cherkasyoblenergo`,
+    //@ts-ignore
+    expectedResult: {
+      eventsList: [
+        {
+          date: '2024-09-25',
+          electricity: 'off',
+          endTime: '10:30',
+          provider: 'CHERKOE',
+          queue: '1.1',
+          startTime: '07:00',
+        },
+        {
+          date: '2024-09-25',
+          electricity: 'off',
+          endTime: '21:00',
+          provider: 'CHERKOE',
+          queue: '1.1',
+          startTime: '17:30',
+        },
+        {
+          date: '2024-09-25',
+          electricity: 'off',
+          endTime: '10:30',
+          provider: 'CHERKOE',
+          queue: '1.2',
+          startTime: '07:00',
+        },
+        {
+          date: '2024-09-25',
+          electricity: 'off',
+          endTime: '21:00',
+          provider: 'CHERKOE',
+          queue: '1.2',
+          startTime: '17:30',
+        },
+        {
+          date: '2024-09-25',
+          electricity: 'off',
+          endTime: '10:30',
+          provider: 'CHERKOE',
+          queue: '2.1',
+          startTime: '07:00',
+        },
+        {
+          date: '2024-09-25',
+          electricity: 'off',
+          endTime: '21:00',
+          provider: 'CHERKOE',
+          queue: '2.1',
+          startTime: '14:00',
+        },
+        {
+          date: '2024-09-25',
+          electricity: 'off',
+          endTime: '10:30',
+          provider: 'CHERKOE',
+          queue: '2.2',
+          startTime: '07:00',
+        },
+        {
+          date: '2024-09-25',
+          electricity: 'off',
+          endTime: '21:00',
+          provider: 'CHERKOE',
+          queue: '2.2',
+          startTime: '14:00',
+        },
+        {
+          date: '2024-09-25',
+          electricity: 'off',
+          endTime: '14:00',
+          provider: 'CHERKOE',
+          queue: '3.1',
+          startTime: '10:30',
+        },
+        {
+          date: '2024-09-25',
+          electricity: 'off',
+          endTime: '24:00',
+          provider: 'CHERKOE',
+          queue: '3.1',
+          startTime: '17:30',
+        },
+        {
+          date: '2024-09-25',
+          electricity: 'off',
+          endTime: '14:00',
+          provider: 'CHERKOE',
+          queue: '3.2',
+          startTime: '10:30',
+        },
+        {
+          date: '2024-09-25',
+          electricity: 'off',
+          endTime: '24:00',
+          provider: 'CHERKOE',
+          queue: '3.2',
+          startTime: '17:30',
+        },
+        {
+          date: '2024-09-25',
+          electricity: 'off',
+          endTime: '14:00',
+          provider: 'CHERKOE',
+          queue: '4.1',
+          startTime: '07:00',
+        },
+        {
+          date: '2024-09-25',
+          electricity: 'off',
+          endTime: '24:00',
+          provider: 'CHERKOE',
+          queue: '4.1',
+          startTime: '21:00',
+        },
+        {
+          date: '2024-09-25',
+          electricity: 'off',
+          endTime: '14:00',
+          provider: 'CHERKOE',
+          queue: '4.2',
+          startTime: '07:00',
+        },
+        {
+          date: '2024-09-25',
+          electricity: 'off',
+          endTime: '24:00',
+          provider: 'CHERKOE',
+          queue: '4.2',
+          startTime: '21:00',
+        },
+        {
+          date: '2024-09-25',
+          electricity: 'off',
+          endTime: '07:00',
+          provider: 'CHERKOE',
+          queue: '5.1',
+          startTime: '06:00',
+        },
+        {
+          date: '2024-09-25',
+          electricity: 'off',
+          endTime: '17:30',
+          provider: 'CHERKOE',
+          queue: '5.1',
+          startTime: '14:00',
+        },
+        {
+          date: '2024-09-25',
+          electricity: 'off',
+          endTime: '24:00',
+          provider: 'CHERKOE',
+          queue: '5.1',
+          startTime: '21:00',
+        },
+        {
+          date: '2024-09-25',
+          electricity: 'off',
+          endTime: '07:00',
+          provider: 'CHERKOE',
+          queue: '5.2',
+          startTime: '06:00',
+        },
+        {
+          date: '2024-09-25',
+          electricity: 'off',
+          endTime: '17:30',
+          provider: 'CHERKOE',
+          queue: '5.2',
+          startTime: '14:00',
+        },
+        {
+          date: '2024-09-25',
+          electricity: 'off',
+          endTime: '24:00',
+          provider: 'CHERKOE',
+          queue: '5.2',
+          startTime: '21:00',
+        },
+        {
+          date: '2024-09-25',
+          electricity: 'off',
+          endTime: '17:30',
+          provider: 'CHERKOE',
+          queue: '6.1',
+          startTime: '10:30',
+        },
+        {
+          date: '2024-09-25',
+          electricity: 'off',
+          endTime: '17:30',
+          provider: 'CHERKOE',
+          queue: '6.2',
+          startTime: '10:30',
+        },
+      ],
+      targetDate: '2024-09-25',
+    },
+  },
   // {
   //   messageNumber: 1,
   //   message: ``,
