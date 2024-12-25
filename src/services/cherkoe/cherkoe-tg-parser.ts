@@ -162,7 +162,15 @@ export class CherkoeTgParser {
 
       queues.forEach((queue) => {
         allTimeMatches.forEach((timeMatch) => {
-          const [_, startTime, endTime] = timeMatch;
+          let [_, startTime, endTime] = timeMatch;
+
+          if (startTime.startsWith('00:')) {
+            startTime = startTime.replace('00:', '24:');
+          }
+          if (endTime.startsWith('00:')) {
+            endTime = endTime.replace('00:', '24:');
+          }
+
           offlineHours.push({ queue, startTime, endTime });
         });
       });
