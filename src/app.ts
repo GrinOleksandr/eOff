@@ -37,8 +37,19 @@ export class App {
 
     this.useMiddlewares();
     this.useRoutes();
-    this.app.listen(this.port, () => {
-      console.log(`Server running on http://localhost:${this.port}`);
-    });
+
+    // Only start the server if running locally (not on Vercel)
+    if (typeof process.env.VERCEL === 'undefined') {
+      this.app.listen(this.port, () => {
+        console.log(`Server running on http://localhost:${this.port}`);
+      });
+    }
   }
 }
+
+// Instantiate and initialize the app
+const appInstance = new App();
+appInstance.init();
+
+// Export the Express app instance as default for Vercel serverless runtime
+export default appInstance.app;
