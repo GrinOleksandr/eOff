@@ -472,6 +472,7 @@ export const regularMessages: TestMessageData[] = [
 ];
 
 export const messagesWithMinutes: TestMessageData[] = [
+  //ToDo temporary disabled first 4 messages as they are outdated and looks not working
   //   {
   //     messageNumber: 1,
   //     message: `Графіки погодинних відключень на 19 вересня
