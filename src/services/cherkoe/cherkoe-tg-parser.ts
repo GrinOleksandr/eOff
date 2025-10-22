@@ -65,29 +65,31 @@ export class CherkoeTgParser {
     const parts: string[] = line.split(' ');
 
     // Extract the last part (which should contain queue numbers)
-    const queuePart: string = parts[0];
+    const queuePart: string = parts[0].trim();
 
-    const queuesMap = {
-      '1.І': '1.1',
-      '1.ІІ': '1.2',
-      '2.І': '2.1',
-      '2.ІІ': '2.2',
-      '3.І': '3.1',
-      '3.ІІ': '3.2',
-      '4.І': '4.1',
-      '4.ІІ': '4.2',
-      '5.І': '5.1',
-      '5.ІІ': '5.2',
-      '6.І': '6.1',
-      '6.ІІ': '6.2',
-    };
+    // Regex to match patterns like "2.1", "2.І", "2.II", "3.2", "3.ІІ"
+    const match = queuePart.match(/^(\d+)\.(І|ІІ|I|II|\d+)$/);
+
+    if (!match) {
+      // @ts-ignore
+      console.log('scv_queuePart NO MATCH', queuePart);
+      return null;
+    }
+
+    let sub = match[2];
+    if (sub === 'І' || sub === 'I') {
+      sub = '1';
+    } else if (sub === 'ІІ' || sub === 'II') {
+      sub = '2';
+    }
+    // If it's already a digit (e.g., '1' or '2'), sub remains as-is
+
+    const normalizedQueue = `${match[1]}.${sub}`;
 
     // @ts-ignore
-    console.log('scv_queuePart', queuePart, ' ->> ', queuesMap[queuePart]);
+    console.log('scv_queuePart', queuePart, ' ->> ', normalizedQueue);
 
-    return queuePart && queuesMap[queuePart as keyof typeof queuesMap]
-      ? [queuesMap[queuePart as keyof typeof queuesMap]]
-      : null;
+    return [normalizedQueue];
   };
 
   private parseSchedule = (
@@ -129,12 +131,15 @@ export class CherkoeTgParser {
 
     // Parse the stringified lines back into an array
     let parsedLines: string[] = JSON.parse(stringifiedLines);
-
-    const regex: RegExp = /^\d+\.\І{1,2}.*$/;
+    console.log('scv_parsedLines', parsedLines);
+    const regex: RegExp = /^\d+\.(?:\d+|І{1,2})\s*.*$/;
 
     // Filter lines that match the pattern
-    const filteredLines: string[] = parsedLines.filter((line) => regex.test(line));
-
+    let filteredLines: string[] = parsedLines.filter((line) => regex.test(line));
+    // if(!filteredLines.length){
+    //   const regex2 =
+    // }
+    console.log('scv_filteredLines', filteredLines);
     // Convert filtered lines to JSON for clear output
     const stringedSchedule: string = JSON.stringify(filteredLines, null, 2);
     console.log('scv_jsonString', stringedSchedule);

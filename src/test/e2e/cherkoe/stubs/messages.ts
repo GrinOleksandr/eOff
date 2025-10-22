@@ -771,7 +771,7 @@ export const messagesWithMinutes: TestMessageData[] = [
     expectedResult: {
       eventsList: [
         {
-          date: '2025-09-19',
+          date: '2025-10-22',
           electricity: 'off',
           endTime: '15:30',
           provider: 'CHERKOE',
@@ -779,7 +779,7 @@ export const messagesWithMinutes: TestMessageData[] = [
           startTime: '13:30',
         },
         {
-          date: '2025-09-19',
+          date: '2025-10-22',
           electricity: 'off',
           endTime: '15:30',
           provider: 'CHERKOE',
@@ -787,7 +787,58 @@ export const messagesWithMinutes: TestMessageData[] = [
           startTime: '13:30',
         },
       ],
-      targetDate: '2025-09-19',
+      targetDate: '2025-10-22',
+    },
+  },
+  {
+    messageNumber: 6,
+    message: `Відповідно до команди НЕК «Укренерго», 22 жовтня з 15:30 введено дві черги ГПВ по Черкаській області.
+
+Години відсутності електропостачання по чергам (підчергам):
+
+2.1 15:30 - 17:30
+2.2 15:30 - 17:30
+
+3.1 15:30 - 17:30
+3.2 15:30 - 17:30
+
+Перелік адрес, що знеструмлюються по чергах (підчергах) ГПВ можна переглянути за посиланням https://www.cherkasyoblenergo.com/off`,
+    expectedResult: {
+      eventsList: [
+        {
+          date: '2025-10-22',
+          electricity: 'off',
+          endTime: '17:30',
+          provider: 'CHERKOE',
+          queue: '2.1',
+          startTime: '15:30',
+        },
+        {
+          date: '2025-10-22',
+          electricity: 'off',
+          endTime: '17:30',
+          provider: 'CHERKOE',
+          queue: '2.2',
+          startTime: '15:30',
+        },
+        {
+          date: '2025-10-22',
+          electricity: 'off',
+          endTime: '17:30',
+          provider: 'CHERKOE',
+          queue: '3.1',
+          startTime: '15:30',
+        },
+        {
+          date: '2025-10-22',
+          electricity: 'off',
+          endTime: '17:30',
+          provider: 'CHERKOE',
+          queue: '3.2',
+          startTime: '15:30',
+        },
+      ],
+      targetDate: '2025-10-22',
     },
   },
 ];
