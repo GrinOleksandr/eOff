@@ -27,6 +27,8 @@ export const MONTH_NAMES: string[] = [
 
 const getCurrentMonth = (): DateObj => {
   const currentDate = getNewKyivDate();
+  console.log('scv_getNewKyivDate', currentDate);
+
   const currentMonth = currentDate.month(); // Returns a number (0-11)
 
   return { index: currentMonth + 1, name: MONTH_NAMES[currentMonth], year: currentDate.year() };

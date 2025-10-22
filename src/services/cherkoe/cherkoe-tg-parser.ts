@@ -111,6 +111,7 @@ export class CherkoeTgParser {
       console.log('scv_passPhrase2');
       schedule = message.split(phrase2)[1];
     } else {
+      console.error('scv_noPassPhrase_FOUND! in message: ', message);
       return null;
     }
 
@@ -154,10 +155,12 @@ export class CherkoeTgParser {
     const offlineHours: ParsedScheduleString[] = [];
 
     filteredLines.forEach((line) => {
+      console.log('scv_parsing_line', line);
       const queues: string[] | null = this.parseQueueNumbers(line);
-
-      const allTimeMatches = [...line.matchAll(/(\d{2}:\d{2})-(\d{2}:\d{2})/g)];
-
+      console.log('scv_queues_parsed', queues);
+      let allTimeMatches = [...line.matchAll(/(\d{2}:\d{2})-(\d{2}:\d{2})/g)];
+      if (!allTimeMatches.length) allTimeMatches = [...line.matchAll(/(\d{2}:\d{2})\s*-\s*(\d{2}:\d{2})/g)];
+      console.log('scv_allTimeMatches', allTimeMatches);
       if (!queues || !allTimeMatches?.length) return;
 
       queues.forEach((queue) => {

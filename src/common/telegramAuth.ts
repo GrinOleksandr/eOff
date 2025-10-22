@@ -5,9 +5,9 @@ import { TelegramClient } from 'telegram';
 import { StringSession } from 'telegram/sessions/index.js';
 import config from '../config';
 
-const apiId = 0; // Replace with your actual api_id
-const apiHash = ''; // Replace with your actual api_hash
-const stringSession = new StringSession(''); // Empty string to start with a new session
+const apiId = 23459920; // Replace with your actual api_id
+const apiHash = 'b7095f3da2c7edadb11fcd95240c4067'; // Replace with your actual api_hash
+const stringSession = new StringSession(''); // Empty string to start with a new session, don't edit it here
 
 import * as readline from 'readline';
 

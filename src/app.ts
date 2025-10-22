@@ -9,7 +9,7 @@ import { getTelegramClient } from './services/cherkoe/utils';
 
 export class App {
   app = express();
-  port = 8000;
+  port = 9000;
 
   constructor() {}
 
