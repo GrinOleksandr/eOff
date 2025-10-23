@@ -35,6 +35,10 @@ export interface IConfig {
     cherkoeChannel: EntityLike;
     MESSAGES_LIMIT: number;
   };
+  ai: {
+    geminiApiKey: string;
+    isAiEnabled: boolean;
+  };
 }
 
 export interface ITargetDateObject {

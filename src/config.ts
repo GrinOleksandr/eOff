@@ -10,6 +10,10 @@ const config: IConfig = {
     cherkoeChannel: process.env.TELEGRAM_CHERKOE_CHANNEL_NAME || 'pat_cherkasyoblenergo', //channel to listen
     MESSAGES_LIMIT: parseInt(process.env.MESSAGES_LIMIT || '') || 30,
   },
+  ai: {
+    geminiApiKey: process.env.GEMINI_API_KEY || '',
+    isAiEnabled: !!process.env.IS_AI_ENABLED,
+  },
 };
 
 export default config;

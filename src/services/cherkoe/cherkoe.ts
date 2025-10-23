@@ -1,75 +1,77 @@
 import config from '../../config';
-import {getFormattedDate, getNewKyivDate, getTelegramClient, getTodayAndTomorrowDate, MONTH_NAMES} from './utils';
-import {cherkoeTgParser, IParsedTgMessage} from './cherkoe-tg-parser';
-import {TotalList} from "telegram/Helpers";
-import {Api} from "telegram";
-import {IEoffEvent} from "../../common/types-and-interfaces";
+import { getFormattedDate, getNewKyivDate, getTelegramClient, getTodayAndTomorrowDate, MONTH_NAMES } from './utils';
+import { cherkoeTgParser, IParsedTgMessage } from './cherkoe-tg-parser';
+import { TotalList } from 'telegram/Helpers';
+import { Api } from 'telegram';
+import { IEoffEvent } from '../../common/types-and-interfaces';
+import { aiService } from './ai';
 
 export interface EoffEvent {
-    startTime: string; // e.g. "18:00"
-    endTime: string; // e.g. "18:00"
-    queue: string; // e.g. "2"
-    date: string; // e.g. "2024-09-02"
-    electricity: string; // "on"/"off"
-    provider: string; // "CHERKOE"
+  startTime: string; // e.g. "18:00"
+  endTime: string; // e.g. "18:00"
+  queue: string; // e.g. "2"
+  date: string; // e.g. "2024-09-02"
+  electricity: string; // "on"/"off"
+  provider: string; // "CHERKOE"
 }
 
 export interface ISchedule {
-    events: IEoffEvent[];
-    hasTodayData: boolean;
-    hasTomorrowData: boolean;
+  events: IEoffEvent[];
+  hasTodayData: boolean;
+  hasTomorrowData: boolean;
 }
 
 export class CherkoeService {
-    private daysScheduleData: { [index: string]: EoffEvent[] } = {};
+  private daysScheduleData: { [index: string]: EoffEvent[] } = {};
 
-    constructor() {
+  constructor() {}
+
+  async getSchedule(): Promise<ISchedule> {
+    let lastMessages: TotalList<Api.Message> = [];
+
+    try {
+      const client = await getTelegramClient();
+
+      // Getting the channel entity
+      const cherkoeChannel = await client.getEntity(config.telegram.cherkoeChannel);
+
+      // Fetching the last 20 messages from the channel
+      lastMessages = await client.getMessages(cherkoeChannel, {
+        limit: config.telegram.MESSAGES_LIMIT,
+      });
+
+      lastMessages.reverse();
+    } catch (e) {
+      console.error('Telegram API error: ', e);
     }
 
-    async getSchedule(): Promise<ISchedule> {
-        let lastMessages: TotalList<Api.Message> = []
+    return config.ai.isAiEnabled
+      ? aiService.convertMessagesToEvents(lastMessages)
+      : cherkoeTgParser.convertMessagesToEvents(lastMessages);
+  }
 
-        try {
-            const client = await getTelegramClient();
+  async getMessage(type: string, queue: string, day: string): Promise<string> {
+    const schedule: ISchedule = await this.getSchedule();
 
-            // Getting the channel entity
-            const cherkoeChannel = await client.getEntity(config.telegram.cherkoeChannel);
+    const { todayDate, tomorrowDate } = getTodayAndTomorrowDate();
 
-            // Fetching the last 20 messages from the channel
-            lastMessages = await client.getMessages(cherkoeChannel, {
-                limit: config.telegram.MESSAGES_LIMIT,
-            });
+    const targetDate = day === 'today' ? todayDate : tomorrowDate;
 
-            lastMessages.reverse();
-        } catch (e) {
-            console.error('Telegram API error: ', e)
-        }
+    const filteredSchedule: EoffEvent[] = schedule.events.filter(
+      (event) => event.queue === queue && event.date === targetDate
+    );
 
-        return cherkoeTgParser.convertMessagesToEvents(lastMessages);
-    }
+    const preparedSchedule = filteredSchedule.map((item) => `${item.startTime} - ${item.endTime}`);
 
-    async getMessage(type: string, queue: string, day: string): Promise<string> {
-        const schedule: ISchedule = await this.getSchedule();
+    const monthNumber: number = parseInt(targetDate.split('-')[1]);
+    const month = MONTH_NAMES[monthNumber - 1];
 
-        const {todayDate, tomorrowDate} = getTodayAndTomorrowDate();
+    const dayNumber = targetDate.split('-')[2];
 
-        const targetDate = day === 'today' ? todayDate : tomorrowDate;
-
-        const filteredSchedule: EoffEvent[] = schedule.events.filter(
-            (event) => event.queue === queue && event.date === targetDate
-        );
-
-        const preparedSchedule = filteredSchedule.map((item) => `${item.startTime} - ${item.endTime}`);
-
-        const monthNumber: number = parseInt(targetDate.split('-')[1]);
-        const month = MONTH_NAMES[monthNumber - 1];
-
-        const dayNumber = targetDate.split('-')[2];
-
-        return type === 'update'
-            ? `(!)Оновлений графік на ${dayNumber} ${month}:<br>${preparedSchedule.join('</br>')}`
-            : `(lightening)${dayNumber} ${month} відключення:<br>${preparedSchedule.join('</br>')}`;
-    }
+    return type === 'update'
+      ? `(!)Оновлений графік на ${dayNumber} ${month}:<br>${preparedSchedule.join('</br>')}`
+      : `(lightening)${dayNumber} ${month} відключення:<br>${preparedSchedule.join('</br>')}`;
+  }
 }
 
 export const cherkoeService = new CherkoeService();
