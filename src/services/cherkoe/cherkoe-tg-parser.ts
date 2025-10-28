@@ -103,6 +103,8 @@ export class CherkoeTgParser {
 
     const phrase1 = 'Години відсутності електропостачання по чергам (підчергам):';
     const phrase2 = 'Години відсутності електропостачання по чергам (підчергам)';
+    const phrase3 = 'Оновлений графік погодинних відключень (ГПВ)';
+    const phrase4 = 'Години відсутності електропостачання:';
 
     let schedule;
 
@@ -112,6 +114,9 @@ export class CherkoeTgParser {
     } else if (message.includes(phrase2)) {
       console.log('scv_passPhrase2');
       schedule = message.split(phrase2)[1];
+    } else if (message.includes(phrase3) && message.includes(phrase4)) {
+      console.log('scv_passPhrase3');
+      schedule = message.split(phrase4)[1];
     } else {
       console.error('scv_noPassPhrase_FOUND! in message: ', message);
       return null;
