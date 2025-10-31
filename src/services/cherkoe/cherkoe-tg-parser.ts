@@ -187,11 +187,6 @@ export class CherkoeTgParser {
             endTime = endTime.replace('00:', '24:');
           }
 
-          //ToDo remove this next block when it is fixed on mobile app side
-          if (endTime === '24:00') {
-            endTime = '23:59';
-          }
-
           offlineHours.push({ queue, startTime, endTime });
         });
       });
