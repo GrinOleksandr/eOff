@@ -67,8 +67,8 @@ export class CherkoeTgParser {
     // Extract the last part (which should contain queue numbers)
     const queuePart: string = parts[0].trim();
 
-    // Regex to match patterns like "2.1", "2.І", "2.II", "3.2", "3.ІІ"
-    const match = queuePart.match(/^(\d+)\.(І|ІІ|I|II|\d+)$/);
+    // Regex to match patterns like "2.1", "2.І", "2.II", "3.2", "3.ІІ" with optional trailing dot
+    const match = queuePart.match(/^(\d+)\.(І|ІІ|I|II|\d+)(\.)?$/);
 
     if (!match) {
       // @ts-ignore
