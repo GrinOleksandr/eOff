@@ -107,6 +107,8 @@ export class CherkoeTgParser {
     const phrase4 = 'Години відсутності електропостачання:';
     const phrase5 = 'Будуть застосовані графіки погодинних відключень';
     const phrase6 = 'ГПВ діятиме з';
+    const phrase7 = 'погодинних відключень';
+    const phrase8 = 'погодинних вимкнень';
 
     let schedule;
 
@@ -118,8 +120,13 @@ export class CherkoeTgParser {
       schedule = message.split(phrase2)[1];
     } else if (
       (message.includes(phrase3) && message.includes(phrase4)) ||
-      (message.toLowerCase().includes(phrase5.toLowerCase()) && message.includes(phrase4)) ||
-      (message.toLowerCase().includes(phrase6.toLowerCase()) && message.includes(phrase4))
+      (message.toLowerCase().includes(phrase5.toLowerCase()) &&
+        message.toUpperCase().includes(phrase4.toUpperCase())) ||
+      (message.toLowerCase().includes(phrase6.toLowerCase()) &&
+        message.toUpperCase().includes(phrase4.toUpperCase())) ||
+      (message.toLowerCase().includes(phrase7.toLowerCase()) &&
+        message.toUpperCase().includes(phrase4.toUpperCase())) ||
+      (message.toLowerCase().includes(phrase8.toLowerCase()) && message.toUpperCase().includes(phrase4.toUpperCase()))
     ) {
       console.log('scv_passPhrase3');
       schedule = message.split(phrase4)[1];
