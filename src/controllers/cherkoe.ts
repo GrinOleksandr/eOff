@@ -24,6 +24,7 @@ export class CherkoeController {
     }
 
     try {
+      console.log('scv_url', url);
       const response = await axios.get(url, {
         headers: {
           'User-Agent': 'Mozilla/5.0 (compatible; CustomFetcher/1.0)', // Optional: Mimic a browser to avoid blocks
