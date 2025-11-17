@@ -29,7 +29,7 @@ export class CherkoeController {
         headers: {
           'User-Agent': 'Mozilla/5.0 (compatible; CustomFetcher/1.0)', // Optional: Mimic a browser to avoid blocks
         },
-        timeout: 10000, // 10s timeout
+        // timeout: 10000, // 10s timeout
       });
       res.set('Content-Type', 'text/html; charset=utf-8');
       res.send(response.data); // Sends the raw HTML content
