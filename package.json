@@ -13,6 +13,7 @@
 	"author": "Sasha Grin",
 	"license": "ISC",
 	"dependencies": {
+		"axios": "^1.13.2",
 		"body-parser": "^1.20.2",
 		"cors": "^2.8.5",
 		"cors-ts": "^1.0.3",
