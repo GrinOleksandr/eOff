@@ -28,6 +28,79 @@ export interface IParsedTgMessage {
   eventsList: void | IEoffEvent[];
 }
 
+function getMessageTimeObjNow(messageTime: number): { dateStr: string; totalMinutes: number } {
+  const time = new Date(messageTime);
+
+  const year = time.getFullYear();
+  const month = String(time.getMonth() + 1).padStart(2, '0');
+  const day = String(time.getDate()).padStart(2, '0');
+
+  const dateStr = `${year}-${month}-${day}`;
+  const totalMinutes = time.getHours() * 60 + time.getMinutes();
+
+  return { dateStr, totalMinutes };
+}
+
+function timeToMinutes(timeStr: string): number {
+  const [hours, minutes] = timeStr.split(':').map(Number);
+  // Handle "24:00" as end of day (1440 minutes)
+  if (hours === 24) {
+    return 24 * 60;
+  }
+  return hours * 60 + minutes;
+}
+
+function mergeScheduleEvents(
+  existingEvents: IEoffEvent[] | undefined,
+  newEvents: IEoffEvent[],
+  targetDate: string,
+  messageTime: number
+): IEoffEvent[] {
+  // If no existing events, just return new ones
+  if (!existingEvents || existingEvents.length === 0) {
+    return newEvents;
+  }
+
+  const { dateStr: todayDateStr, totalMinutes: currentTimeMinutes } = getMessageTimeObjNow(messageTime);
+  console.log('scv_currentTime', { dateStr: todayDateStr, totalMinutes: currentTimeMinutes });
+  // If target date is in the past, keep new if present, otherwise existing
+  if (targetDate < todayDateStr) {
+    return newEvents.length > 0 ? newEvents : existingEvents;
+  }
+
+  // If target date is in the future, just use new events
+  if (targetDate > todayDateStr) {
+    return newEvents;
+  }
+
+  // Target date is TODAY - need smart merging
+  const eventsToPreserve: IEoffEvent[] = [];
+
+  for (const oldEvent of existingEvents) {
+    // Check if this exact event exists in new data
+    const existsInNew = newEvents.some(
+      (newEvent) =>
+        newEvent.queue === oldEvent.queue &&
+        newEvent.startTime === oldEvent.startTime &&
+        newEvent.endTime === oldEvent.endTime
+    );
+
+    if (!existsInNew) {
+      // Event is missing from new data - check if it has completely passed
+      const startMinutes = timeToMinutes(oldEvent.startTime);
+      const endMinutes = timeToMinutes(oldEvent.endTime);
+
+      // Both start AND end must be in the past to preserve
+      if (startMinutes < currentTimeMinutes && endMinutes <= currentTimeMinutes) {
+        eventsToPreserve.push(oldEvent);
+      }
+    }
+  }
+  console.log('scv_before_result', eventsToPreserve, newEvents);
+  // Combine preserved old events with all new events
+  return [...eventsToPreserve, ...newEvents];
+}
+
 export class CherkoeTgParser {
   private daysScheduleData: { [index: string]: IEoffEvent[] } = {};
 
@@ -283,7 +356,12 @@ export class CherkoeTgParser {
           return;
         }
 
-        this.daysScheduleData[parsedMessage.targetDate] = parsedMessage.eventsList || [];
+        this.daysScheduleData[parsedMessage.targetDate] = mergeScheduleEvents(
+          this.daysScheduleData[parsedMessage.targetDate],
+          parsedMessage.eventsList || [],
+          parsedMessage.targetDate,
+          message.date * 1000
+        );
       }
     });
 
@@ -301,6 +379,15 @@ export class CherkoeTgParser {
       result.events = [...result.events, ...this.daysScheduleData[tomorrowDate]];
       result.hasTomorrowData = true;
     }
+
+    result.events.sort((a, b) => {
+      // First sort by queue
+      if (a.queue !== b.queue) {
+        return parseFloat(a.queue) - parseFloat(b.queue);
+      }
+      // Then by startTime
+      return a.startTime.localeCompare(b.startTime);
+    });
 
     return result;
   }
