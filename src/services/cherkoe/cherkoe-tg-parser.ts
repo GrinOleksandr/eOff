@@ -30,15 +30,12 @@ export interface IParsedTgMessage {
 
 function getMessageTimeObjNow(messageTime: number): { dateStr: string; totalMinutes: number } {
   const time = new Date(messageTime);
+  const tz = { timeZone: 'Europe/Kyiv' };
 
-  const year = time.getUTCFullYear();
-  const month = String(time.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(time.getUTCDate()).padStart(2, '0');
+  const dateStr = time.toLocaleDateString('sv-SE', tz);
+  const [h, m] = time.toLocaleTimeString('en-GB', tz).split(':');
 
-  const dateStr = `${year}-${month}-${day}`;
-  const totalMinutes = time.getUTCHours() * 60 + time.getUTCMinutes();
-
-  return { dateStr, totalMinutes };
+  return { dateStr, totalMinutes: Number(h) * 60 + Number(m) };
 }
 
 function timeToMinutes(timeStr: string): number {
