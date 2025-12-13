@@ -1,5 +1,6 @@
 const yesterday_20 = 1765562513;
 const today_8_13 = 1765606433;
+const today_14_55 = 1765630553;
 
 export const messages = [
   {
@@ -73,6 +74,42 @@ export const messages = [
 
 Сторінка у Telegram: t.me/pat_cherkasyoblenergo (https://gita.cherkasyoblenergo.com/obl-main-controller/admin/news/t.me/pat_cherkasyoblenergo)`,
     date: today_8_13,
+  },
+  {
+    message: `Оновлений графік погодинних вимкнень на 13 грудня за командою НЕК «Укренерго».
+
+Години відсутності електропостачання:
+
+1.1 14:00 - 16:00, 20:00 - 22:00
+
+1.2 14:00 - 16:00, 19:00 - 22:00
+
+2.1 15:00 - 18:00, 22:00 - 24:00
+
+2.2 16:00 - 18:00, 20:00 - 22:00
+
+3.1 18:00-20:00, 22:00 - 24:00
+
+3.2 14:00 - 16:00, 18:00-21:00
+
+4.1 18:00-20:00
+
+4.2 14:00 - 16:00, 18:00-20:00
+
+5.1 16:00 - 19:00, 22:00 - 24:00
+
+5.2 16:00 - 19:00
+
+6.1 16:00 - 18:00, 20:00 - 22:00
+
+6.2 16:00 - 18:00, 22:00 - 24:00
+
+Перелік адрес, що знеструмлюються по чергах (підчергах) ГПВ можна переглянути за посиланням https://www.cherkasyoblenergo.com/off
+
+ (https://www.cherkasyoblenergo.com/off)Зверніть увагу, ситуація в енергосистемі може змінюватися, тому стежте за нашими оновленнями.
+
+Сторінка у Telegram: t.me/pat_cherkasyoblenergo (https://gita.cherkasyoblenergo.com/obl-main-controller/admin/news/t.me/pat_cherkasyoblenergo)`,
+    date: today_14_55,
   },
 ];
 

@@ -1,7 +1,7 @@
 import { CherkoeTgParser } from '../../../services/cherkoe/cherkoe-tg-parser';
 import * as utilsModule from '../../../services/cherkoe/utils';
 import { MONTH_NAMES } from '../../../services/cherkoe/utils';
-import { messages, expectedResult } from './stubs/preserve-past-events';
+import { messages, expectedResult } from './stubs/preserve-past-events-2';
 
 const sut = new CherkoeTgParser();
 

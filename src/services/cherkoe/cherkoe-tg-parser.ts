@@ -387,7 +387,7 @@ export class CherkoeTgParser {
       // Then by startTime
       return a.startTime.localeCompare(b.startTime);
     });
-
+    console.log('scv_final_res', result);
     return result;
   }
 }
