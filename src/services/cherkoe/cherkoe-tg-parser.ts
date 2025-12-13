@@ -254,8 +254,7 @@ export class CherkoeTgParser {
       console.log('scv_parsing_line', line);
       const queues: string[] | null = this.parseQueueNumbers(line);
       console.log('scv_queues_parsed', queues);
-      let allTimeMatches = [...line.matchAll(/(\d{2}:\d{2})-(\d{2}:\d{2})/g)];
-      if (!allTimeMatches.length) allTimeMatches = [...line.matchAll(/(\d{2}:\d{2})\s*-\s*(\d{2}:\d{2})/g)];
+      const allTimeMatches = [...line.matchAll(/(\d{2}:\d{2})\s*-\s*(\d{2}:\d{2})/g)];
       console.log('scv_allTimeMatches', allTimeMatches);
       if (!queues || !allTimeMatches?.length) return;
 
