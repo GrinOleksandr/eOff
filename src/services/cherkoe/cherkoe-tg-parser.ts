@@ -31,12 +31,12 @@ export interface IParsedTgMessage {
 function getMessageTimeObjNow(messageTime: number): { dateStr: string; totalMinutes: number } {
   const time = new Date(messageTime);
 
-  const year = time.getFullYear();
-  const month = String(time.getMonth() + 1).padStart(2, '0');
-  const day = String(time.getDate()).padStart(2, '0');
+  const year = time.getUTCFullYear();
+  const month = String(time.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(time.getUTCDate()).padStart(2, '0');
 
   const dateStr = `${year}-${month}-${day}`;
-  const totalMinutes = time.getHours() * 60 + time.getMinutes();
+  const totalMinutes = time.getUTCHours() * 60 + time.getUTCMinutes();
 
   return { dateStr, totalMinutes };
 }
