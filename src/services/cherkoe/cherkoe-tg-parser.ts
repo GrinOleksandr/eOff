@@ -88,8 +88,22 @@ function mergeScheduleEvents(
       const endMinutes = timeToMinutes(oldEvent.endTime);
 
       // Both start AND end must be in the past to preserve
+      // AND no new event should overlap with this old event's time range
       if (startMinutes < currentTimeMinutes && endMinutes <= currentTimeMinutes) {
-        eventsToPreserve.push(oldEvent);
+        // Check if any new event overlaps with this old event (same queue)
+        const hasOverlappingNewEvent = newEvents.some((newEvent) => {
+          if (newEvent.queue !== oldEvent.queue) return false;
+
+          const newStartMinutes = timeToMinutes(newEvent.startTime);
+          const newEndMinutes = timeToMinutes(newEvent.endTime);
+
+          // Ranges overlap if: startA < endB AND startB < endA
+          return startMinutes < newEndMinutes && newStartMinutes < endMinutes;
+        });
+
+        if (!hasOverlappingNewEvent) {
+          eventsToPreserve.push(oldEvent);
+        }
       }
     }
   }
