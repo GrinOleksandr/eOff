@@ -1,28 +1,11 @@
 import config from '../../config';
-import { getFormattedDate, getNewKyivDate, getTelegramClient, getTodayAndTomorrowDate, MONTH_NAMES } from './utils';
-import { cherkoeTgParser, IParsedTgMessage } from './cherkoe-tg-parser';
+import { getTelegramClient, getTodayAndTomorrowDate, MONTH_NAMES } from '../../common/utils';
+import { cherkoeTgParser } from './cherkoe-tg-parser';
 import { TotalList } from 'telegram/Helpers';
 import { Api } from 'telegram';
-import { IEoffEvent } from '../../common/types-and-interfaces';
-
-export interface EoffEvent {
-  startTime: string; // e.g. "18:00"
-  endTime: string; // e.g. "18:00"
-  queue: string; // e.g. "2"
-  date: string; // e.g. "2024-09-02"
-  electricity: string; // "on"/"off"
-  provider: string; // "CHERKOE"
-}
-
-export interface ISchedule {
-  events: IEoffEvent[];
-  hasTodayData: boolean;
-  hasTomorrowData: boolean;
-}
+import { EoffEvent, ISchedule } from '../../common/types-and-interfaces';
 
 export class CherkoeService {
-  private daysScheduleData: { [index: string]: EoffEvent[] } = {};
-
   constructor() {}
 
   async getSchedule(): Promise<ISchedule> {

@@ -1,7 +1,4 @@
-import { CherkoeTgParser } from '../../services/cherkoe/cherkoe-tg-parser';
 import { cherkoeService } from '../../services/cherkoe/cherkoe';
-
-const sut = new CherkoeTgParser();
 
 describe('LocalRun', () => {
   it(`Run Locally`, async () => {
