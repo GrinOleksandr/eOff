@@ -11,7 +11,18 @@ export class KhoeApi {
   async fetchOnePageNewsHeaders(pageNumber: number): Promise<KhoeNewsHeaderItem[]> {
     const pageUrl = `${BASE_URL}/uk?page=${pageNumber}`;
 
-    const { data: html } = await axios.get(pageUrl);
+    const { data: html } = await axios.get(pageUrl, {
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'uk-UA,uk;q=0.9,en-US;q=0.8,en;q=0.7',
+        'Accept-Encoding': 'gzip, deflate, br',
+        Connection: 'keep-alive',
+        'Cache-Control': 'no-cache',
+        Referer: 'https://www.oblenergo.kharkov.ua/',
+      },
+    });
     const $ = cheerio.load(html);
 
     const news: KhoeNewsHeaderItem[] = [];
