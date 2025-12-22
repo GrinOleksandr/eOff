@@ -5,12 +5,7 @@ export class KhoeController {
   router: Router = express.Router();
 
   constructor() {
-    this.router.get('/', this.healthCheck);
-    this.router.get('/khoe', this.getSchedule);
-  }
-
-  async healthCheck(req: Request, res: Response) {
-    res.send({ status: 'ok' });
+    this.router.get('/', this.getSchedule);
   }
 
   async getSchedule(req: Request, res: Response) {
@@ -18,4 +13,4 @@ export class KhoeController {
   }
 }
 
-export const khoe = new KhoeController();
+export const khoeController = new KhoeController();

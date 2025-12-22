@@ -1,7 +1,7 @@
 import express from 'express';
 import { urlencoded } from 'body-parser';
 
-import { cherkoeController } from './controllers';
+import { cherkoeController, khoeController } from './controllers';
 import cors from 'cors-ts';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -18,6 +18,7 @@ export class App {
       next();
     });
     this.app.use('/', cherkoeController.router);
+    this.app.use('/khoe', khoeController.router);
   }
 
   useMiddlewares() {
