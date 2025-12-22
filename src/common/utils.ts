@@ -35,7 +35,6 @@ export const MONTH_NAMES: string[] = [
 
 const getCurrentMonth = (): DateObj => {
   const currentDate = getNewKyivDate();
-  console.log('scv_getNewKyivDate', currentDate);
 
   const currentMonth = currentDate.month(); // Returns a number (0-11)
 
@@ -60,7 +59,6 @@ const getNextMonth = (): DateObj => {
 };
 
 function formatDateFromObject(obj: { day: any; index: any; name?: string; year?: number }): string {
-  console.log('scv_formatting_date', obj);
   const year = new Date().getFullYear(); // Get the current year
   const monthIndex = obj.index - 1; // Convert month index to zero-based
   const month = (monthIndex + 1).toString().padStart(2, '0'); // Convert to one-based index and pad to two digits
@@ -112,13 +110,11 @@ const getTodayAndTomorrowDate = (): { todayDate: string; tomorrowDate: string } 
 const getTargetDate = (message: string): null | ITargetDateObject => {
   const currentMonth: DateObj = getCurrentMonth();
   const nextMonth: DateObj = getNextMonth();
-  console.log('scv_currentMonth', currentMonth, nextMonth);
+
   let target;
   if (message.toUpperCase().includes(currentMonth.name.toUpperCase())) {
-    console.log('scv_case_1');
     target = currentMonth;
   } else if (message.toUpperCase().includes(nextMonth.name.toUpperCase())) {
-    console.log('scv_case_2');
     target = nextMonth;
   } else {
     return null;
@@ -212,8 +208,6 @@ const parseQueueNumbers = (line: string): string[] | null => {
   const match = queuePart.match(/^(\d+)\.(І|ІІ|I|II|\d+)(\.)?$/);
 
   if (!match) {
-    // @ts-ignore
-    console.log('scv_queuePart NO MATCH', queuePart);
     return null;
   }
 
@@ -226,9 +220,6 @@ const parseQueueNumbers = (line: string): string[] | null => {
   // If it's already a digit (e.g., '1' or '2'), sub remains as-is
 
   const normalizedQueue = `${match[1]}.${sub}`;
-
-  // @ts-ignore
-  console.log('scv_queuePart', queuePart, ' ->> ', normalizedQueue);
 
   return [normalizedQueue];
 };

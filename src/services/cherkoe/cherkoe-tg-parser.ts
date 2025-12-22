@@ -37,11 +37,15 @@ function timeToMinutes(timeStr: string): number {
 }
 
 function mergeScheduleEvents(
-  existingEvents: IEoffEvent[] | undefined,
+  existingEvents: IEoffEvent[],
   newEvents: IEoffEvent[],
   targetDate: string,
   messageTime: number
 ): IEoffEvent[] {
+  if (!newEvents?.length) {
+    return existingEvents;
+  }
+
   // If no existing events, just return new ones
   if (!existingEvents || existingEvents.length === 0) {
     return newEvents;
@@ -124,15 +128,13 @@ export class CherkoeTgParser {
     let filteredLines: string[] = parsedLines.filter((line) => regex.test(line));
     console.log('scv_filteredLines', filteredLines);
 
-    console.log('scv_filteredSchedule', filteredLines);
     const offlineHours: ParsedScheduleString[] = [];
 
     filteredLines.forEach((line) => {
-      console.log('scv_parsing_line', line);
       const queues: string[] | null = parseQueueNumbers(line);
-      console.log('scv_queues_parsed', queues);
+
       const allTimeMatches = [...line.matchAll(/(\d{2}:\d{2})\s*-\s*(\d{2}:\d{2})/g)];
-      console.log('scv_allTimeMatches', allTimeMatches);
+
       if (!queues || !allTimeMatches?.length) return;
 
       queues.forEach((queue) => {
