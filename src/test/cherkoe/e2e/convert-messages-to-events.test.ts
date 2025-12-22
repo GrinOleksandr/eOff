@@ -7,8 +7,8 @@ import {
   resultAfterSecondUpdate,
 } from './stubs/messages-to-convert-2';
 import * as parserModule from '../../../services/cherkoe/cherkoe-tg-parser';
-import * as utilsModule from '../../../services/cherkoe/utils';
-import { MONTH_NAMES } from '../../../services/cherkoe/utils';
+import * as utilsModule from '../../../common/utils';
+import { MONTH_NAMES } from '../../../common/utils';
 
 const sut = new parserModule.CherkoeTgParser();
 
