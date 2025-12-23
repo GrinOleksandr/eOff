@@ -1,38 +1,9 @@
 import { KhoeNewsHeaderItem, KhoeNewsItem } from '../../common/types-and-interfaces';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import { log } from '../../common/utils';
+import { fetchWithUkrProxy, log } from '../../common/utils';
 
 const BASE_URL = 'https://www.oblenergo.kharkov.ua';
-
-const freeProxies = [
-  { host: '195.123.8.186', port: 8080 },
-  { host: '91.205.172.26', port: 8080 },
-  { host: '45.85.119.250', port: 80 },
-  // ... add more
-];
-
-async function fetchWithProxy(url: string, proxies: any) {
-  for (const proxy of proxies) {
-    try {
-      const response = await axios.get(url, {
-        headers: {
-          'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-        },
-        proxy: {
-          host: proxy.host,
-          port: proxy.port,
-        },
-        timeout: 10000,
-      });
-      return response;
-    } catch (err) {
-      console.log(`Proxy ${proxy.host}:${proxy.port} failed, trying next...`);
-    }
-  }
-  throw new Error('All proxies failed');
-}
 
 export class KhoeApi {
   constructor() {}
@@ -40,7 +11,7 @@ export class KhoeApi {
   async fetchOnePageNewsHeaders(pageNumber: number): Promise<KhoeNewsHeaderItem[]> {
     const pageUrl = `${BASE_URL}/uk?page=${pageNumber}`;
 
-    const { data: html } = await fetchWithProxy(pageUrl, freeProxies);
+    const { data: html } = await fetchWithUkrProxy(pageUrl);
     const $ = cheerio.load(html);
 
     const news: KhoeNewsHeaderItem[] = [];

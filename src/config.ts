@@ -10,6 +10,11 @@ const config: IConfig = {
     cherkoeChannel: process.env.TELEGRAM_CHERKOE_CHANNEL_NAME || 'pat_cherkasyoblenergo', //channel to listen
     MESSAGES_LIMIT: parseInt(process.env.MESSAGES_LIMIT || '') || 30,
   },
+  ukrProxy: {
+    //config for UkrProxy - we use it for calls whic are not available from cloud directly
+    apiKey: process.env.UKR_PROXY_API_KEY,
+    url: process.env.UKR_PROXY_URL,
+  },
 };
 
 export default config;

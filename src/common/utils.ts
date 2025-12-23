@@ -9,6 +9,7 @@ import {
   ITargetDateObject,
   ParsedScheduleString,
 } from './types-and-interfaces';
+import axios from 'axios';
 
 export interface DateObj {
   year: number;
@@ -224,6 +225,46 @@ const parseQueueNumbers = (line: string): string[] | null => {
   return [normalizedQueue];
 };
 
+const getAxiosMethod = (method: string) => {
+  switch (method) {
+    case 'POST':
+      return axios.post;
+      break;
+    case 'PUT':
+      return axios.put;
+      break;
+    case 'PATCH':
+      return axios.patch;
+      break;
+    case 'GET':
+    default:
+      return axios.get;
+      break;
+  }
+};
+
+async function fetchWithUkrProxy(url: string, method: string = 'GET', options = {}) {
+  const ukrProxyUrl = config.ukrProxy.url;
+  const ukrProxyApiKey = config.ukrProxy.apiKey;
+
+  if (ukrProxyUrl && ukrProxyApiKey) {
+    return axios.post(
+      ukrProxyUrl,
+      { url, method },
+      {
+        headers: {
+          'x-api-key': ukrProxyApiKey,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+  }
+
+  const axiosCall = getAxiosMethod(method);
+
+  return axiosCall(url, options);
+}
+
 export {
   getCurrentMonth,
   getNextMonth,
@@ -238,4 +279,5 @@ export {
   groupByQueue,
   convertToEvents,
   parseQueueNumbers,
+  fetchWithUkrProxy,
 };

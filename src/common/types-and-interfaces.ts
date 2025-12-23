@@ -35,6 +35,10 @@ export interface IConfig {
     cherkoeChannel: EntityLike;
     MESSAGES_LIMIT: number;
   };
+  ukrProxy: {
+    apiKey?: string;
+    url?: string;
+  };
 }
 
 export interface ITargetDateObject {
