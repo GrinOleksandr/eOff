@@ -1,28 +1,29 @@
 import { KhoeNewsHeaderItem, KhoeNewsItem } from '../../common/types-and-interfaces';
-import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { fetchWithUkrProxy, log } from '../../common/utils';
+import axios from 'axios';
 
 const BASE_URL = 'https://www.oblenergo.kharkov.ua';
 
-// Using axios interceptors
-axios.interceptors.request.use((config) => {
-  console.log('➡️ Request:', config.method?.toUpperCase(), config.url);
-  console.log('   Headers:', config.headers);
-  console.log('   Params:', config.params);
-  return config;
-});
-
-axios.interceptors.response.use(
-  (response) => {
-    console.log('✅ Response:', response.status, response.config.url);
-    return response;
-  },
-  (error) => {
-    console.log('❌ Error:', error.response?.status, error.config?.url);
-    return Promise.reject(error);
-  }
-);
+// Uncomment intercepros for network requests debugging
+// // Using axios interceptors
+// axios.interceptors.request.use((config) => {
+//   console.log('➡️ Request:', config.method?.toUpperCase(), config.url);
+//   console.log('   Headers:', config.headers);
+//   console.log('   Params:', config.params);
+//   return config;
+// });
+//
+// axios.interceptors.response.use(
+//   (response) => {
+//     console.log('✅ Response:', response.status, response.config.url);
+//     return response;
+//   },
+//   (error) => {
+//     console.log('❌ Error:', error.response?.status, error.config?.url);
+//     return Promise.reject(error);
+//   }
+// );
 
 export class KhoeApi {
   constructor() {}
@@ -66,7 +67,7 @@ export class KhoeApi {
     const url = `${BASE_URL}${item.url}`;
     log('fetching_details', url);
 
-    const { data: html } = await axios.get(url);
+    const { data: html } = await fetchWithUkrProxy(url);
     const $ = cheerio.load(html);
 
     const label_1 = 'Години відсутності електропостачання по чергам/підчергам з урахуванням часу на перемикання';
