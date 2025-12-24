@@ -2,6 +2,7 @@ import express, { Request, Response, Router } from 'express';
 import { cherkoeService } from '../services/cherkoe/cherkoe';
 import axios from 'axios';
 import { getDtekData } from '../services/cherkoe/parse-kyiv-obl';
+import { fetchWithUkrProxy } from '../common/utils';
 
 export class CherkoeController {
   router: Router = express.Router();
@@ -21,18 +22,21 @@ export class CherkoeController {
   // @ts-ignore
   async getHtml(req: Request, res: Response) {
     const url = req.query.url as string;
+    const useProxy = (!!req.query.useProxy || false) as boolean;
     if (!url) {
       return res.status(400).send({ error: 'URL query parameter is required' });
     }
 
     try {
       console.log('scv_url', url);
-      const response = await axios.get(url, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (compatible; CustomFetcher/1.0)', // Optional: Mimic a browser to avoid blocks
-        },
-        timeout: 60000,
-      });
+      const response = useProxy
+        ? await fetchWithUkrProxy(url)
+        : await axios.get(url, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (compatible; CustomFetcher/1.0)', // Optional: Mimic a browser to avoid blocks
+            },
+            timeout: 60000,
+          });
       res.set('Content-Type', 'text/html; charset=utf-8');
       res.send(response.data); // Sends the raw HTML content
     } catch (error) {

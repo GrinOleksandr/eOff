@@ -71,6 +71,22 @@ export async function getDtekData(city: string, street: string) {
 
   console.log('pageData:', pageData);
 
+  const fullData = await page.evaluate(() => {
+    const html = document.body.innerHTML;
+    const factMatch = html.match(/DisconSchedule\.fact\s*=\s*(\{[\s\S]*?\})\s*<\/script>/);
+
+    if (factMatch) {
+      try {
+        return JSON.parse(factMatch[1]);
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  });
+
+  console.log('scv_fullData:', JSON.stringify(fullData, null, 2));
+
   const { csrfToken, updateFact } = pageData;
 
   if (!csrfToken || !updateFact) {
