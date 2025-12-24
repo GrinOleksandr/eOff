@@ -23,7 +23,7 @@ const BASE_URL = 'https://www.oblenergo.kharkov.ua';
 //     console.log('❌ Error:', error.response?.status, error.config?.url);
 //     return Promise.reject(error);
 //   }
-// );
+// );ﬁ
 
 export class KhoeApi {
   constructor() {}
@@ -68,29 +68,10 @@ export class KhoeApi {
     log('fetching_details', url);
 
     const { data: html } = await fetchWithUkrProxy(url);
-    const $ = cheerio.load(html);
 
-    const label_1 = 'Години відсутності електропостачання по чергам/підчергам з урахуванням часу на перемикання';
+    const scheduleText = this.extractScheduleLines(html);
 
-    const scheduleText = $('p')
-      .filter((i, el) => $(el).text().includes(label_1))
-      .next('p')
-      .html()
-      ?.split(/<br\s*\/?>/i)
-      .map((line) => {
-        return line
-          .replace(/&nbsp;/gi, ' ') // &nbsp; to space
-          .replace(/&amp;/gi, '&') // &amp; to &
-          .replace(/&lt;/gi, '<') // &lt; to
-          .replace(/&gt;/gi, '>') // &gt; to >
-          .replace(/&#?\w+;/gi, '') // any remaining HTML entities
-          .replace(/<[^>]*>/g, '') // strip any remaining HTML tags
-          .replace(/\s+/g, ' ') // collapse multiple spaces
-          .trim();
-      })
-      .filter((line) => line.length);
-
-    log('scv', scheduleText);
+    log('scheduleText', scheduleText);
 
     return {
       path: item.url,
@@ -98,8 +79,34 @@ export class KhoeApi {
     };
   }
 
+  extractScheduleLines(html: string): string[] {
+    const text = html
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/&nbsp;/gi, ' ')
+      .replace(/\s+/g, ' ');
+
+    const pattern = /(\d\.(?:[12]|[IІ]{1,2}))\s+((?:\d{1,2}:\d{2}\s*[-–—]\s*\d{1,2}:\d{2}[\s;,]*)+)/g;
+
+    const results: string[] = [];
+    const seen = new Set<string>();
+    let match;
+
+    while ((match = pattern.exec(text)) !== null) {
+      const queue = match[1].replace(/[IІ]{2}/g, '2').replace(/[IІ]/g, '1');
+
+      if (seen.has(queue)) continue;
+      seen.add(queue);
+
+      const timeRanges = match[2].trim().replace(/[;,]\s*$/, '');
+      results.push(`${queue} ${timeRanges}`);
+    }
+
+    return results.sort((a, b) => parseFloat(a) - parseFloat(b));
+  }
+
   async injectNewsDetails(news: KhoeNewsItem[]): Promise<KhoeNewsItem[]> {
     const allDetails = await Promise.all(news.map((item) => this.fetchOneNewsDetails(item)));
+    log('all_news', news);
     log('all_details', allDetails);
     return news.map((newsItem: KhoeNewsItem) => {
       const details = allDetails.find((detail) => detail.path === newsItem.url);

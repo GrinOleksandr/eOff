@@ -17,12 +17,15 @@ export class KhoeParser {
     const phrase1: string = 'У Харківській області'.toUpperCase();
     const phrase2: string = 'діятимуть погодинні відключення'.toUpperCase();
     const phrase3: string = 'будуть діяти графіки погодинних відключень'.toUpperCase();
+    const phrase4: string = 'діятимуть графіки погодинних відключень'.toUpperCase();
+
     log('filteringNews', news);
     const hourlyBlackouts: KhoeNewsItem[] = news.filter(
       (item) =>
         item.targetDate &&
         ((item.title.toUpperCase().includes(phrase1) && item.title.toUpperCase().includes(phrase2)) ||
-          (item.title.toUpperCase().includes(phrase1) && item.title.toUpperCase().includes(phrase3)))
+          (item.title.toUpperCase().includes(phrase1) && item.title.toUpperCase().includes(phrase3)) ||
+          (item.title.toUpperCase().includes(phrase1) && item.title.toUpperCase().includes(phrase4)))
     );
 
     const { todayDate, tomorrowDate } = getTodayAndTomorrowDate();
