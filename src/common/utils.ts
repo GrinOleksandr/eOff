@@ -265,6 +265,8 @@ async function fetchWithUkrProxy(url: string, method: string = 'GET', options = 
   return axiosCall(url, options);
 }
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export {
   getCurrentMonth,
   getNextMonth,
@@ -280,4 +282,5 @@ export {
   convertToEvents,
   parseQueueNumbers,
   fetchWithUkrProxy,
+  delay,
 };

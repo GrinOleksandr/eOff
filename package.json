@@ -28,6 +28,7 @@
 		"moment-timezone": "^0.5.45",
 		"morgan": "^1.10.0",
 		"npm": "^11.7.0",
+		"puppeteer": "^24.34.0",
 		"telegram": "^2.22.2"
 	},
 	"devDependencies": {

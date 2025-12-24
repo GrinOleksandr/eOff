@@ -1,6 +1,7 @@
 import express, { Request, Response, Router } from 'express';
 import { cherkoeService } from '../services/cherkoe/cherkoe';
 import axios from 'axios';
+import { getDtekData } from '../services/cherkoe/parse-kyiv-obl';
 
 export class CherkoeController {
   router: Router = express.Router();
@@ -10,6 +11,7 @@ export class CherkoeController {
     this.router.get('/cherkoe', this.getSchedule);
     this.router.get('/cherkoe/message', this.getMessage);
     this.router.get('/get-html', this.getHtml);
+    this.router.get('/dtek', this.getKyivOblData);
   }
 
   async healthCheck(req: Request, res: Response) {
@@ -52,6 +54,18 @@ export class CherkoeController {
         req.query?.day?.toString() || 'today'
       )
     );
+  }
+
+  async getKyivOblData(req: Request, res: Response) {
+    const city = req.query?.city;
+    const street = req.query?.street;
+
+    if (!city || !street) {
+      console.error('No street or city provided');
+      res.status(500).send({ error: "'No street or city provided'" });
+    }
+
+    res.send(await getDtekData(city as string, street as string));
   }
 }
 
