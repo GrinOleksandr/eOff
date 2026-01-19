@@ -344,7 +344,7 @@ describe('CherkoeService.getSchedule() - Comprehensive E2E Tests', () => {
       ]);
 
       // Should only have events from schedules, not from announcements or info messages
-      expect(result.hasTomorrowData).toBe(true); // jan15InitialSchedule is for tomorrow when viewed from Jan 14
+      expect(result.hasTodayData).toBe(true); // jan15InitialSchedule and jan15ReducedSchedule are for Jan 15 (today)
       expect(result.events.length).toBeGreaterThan(0);
 
       // All events should have valid queue, date, and times
