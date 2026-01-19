@@ -93,36 +93,9 @@ export async function getDtekData(city: string, street: string) {
     throw new Error('Failed to extract required page data');
   }
 
-  // Make the AJAX request
-  const result = await page.evaluate(
-    async (csrf: string, cityVal: string, streetVal: string, updateFactVal: string) => {
-      const response = await fetch('/ua/ajax', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'X-CSRF-Token': csrf,
-          'X-Requested-With': 'XMLHttpRequest',
-        },
-        body: new URLSearchParams({
-          method: 'getHomeNum',
-          'data[0][name]': 'city',
-          'data[0][value]': cityVal,
-          'data[1][name]': 'street',
-          'data[1][value]': streetVal,
-          'data[2][name]': 'updateFact',
-          'data[2][value]': updateFactVal,
-        }),
-      });
-      return response.json();
-    },
-    csrfToken,
-    city,
-    street,
-    updateFact
-  );
-
   await browser.close();
-  return result;
+
+  return fullData;
 }
 
 // Usage

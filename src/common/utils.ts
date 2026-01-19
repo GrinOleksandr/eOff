@@ -267,6 +267,15 @@ async function fetchWithUkrProxy(url: string, method: string = 'GET', options = 
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const sortOutputEvents = (a: IEoffEvent, b: IEoffEvent) => {
+  // First sort by queue
+  if (a.queue !== b.queue) {
+    return parseFloat(a.queue) - parseFloat(b.queue);
+  }
+  // Then by startTime
+  return a.startTime.localeCompare(b.startTime);
+};
+
 export {
   getCurrentMonth,
   getNextMonth,
@@ -283,4 +292,5 @@ export {
   parseQueueNumbers,
   fetchWithUkrProxy,
   delay,
+  sortOutputEvents,
 };

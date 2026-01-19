@@ -4,6 +4,7 @@ import {
   getTodayAndTomorrowDate,
   groupByQueue,
   parseQueueNumbers,
+  sortOutputEvents,
 } from '../../common/utils';
 import { TotalList } from 'telegram/Helpers';
 import { Api } from 'telegram';
@@ -201,14 +202,8 @@ export class CherkoeTgParser {
       result.hasTomorrowData = true;
     }
 
-    result.events.sort((a, b) => {
-      // First sort by queue
-      if (a.queue !== b.queue) {
-        return parseFloat(a.queue) - parseFloat(b.queue);
-      }
-      // Then by startTime
-      return a.startTime.localeCompare(b.startTime);
-    });
+    result.events.sort(sortOutputEvents);
+
     console.log('scv_final_res', result);
     return result;
   }

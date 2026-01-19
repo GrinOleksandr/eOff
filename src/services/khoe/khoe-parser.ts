@@ -7,7 +7,14 @@ import {
   KhoeNewsItem,
   ParsedScheduleString,
 } from '../../common/types-and-interfaces';
-import { convertToEvents, getTodayAndTomorrowDate, groupByQueue, log, parseQueueNumbers } from '../../common/utils';
+import {
+  convertToEvents,
+  getTodayAndTomorrowDate,
+  groupByQueue,
+  log,
+  parseQueueNumbers,
+  sortOutputEvents,
+} from '../../common/utils';
 
 export class KhoeParser {
   private daysScheduleData: { [index: string]: IEoffEvent[] } = {};
@@ -119,14 +126,8 @@ export class KhoeParser {
       result.hasTomorrowData = true;
     }
 
-    result.events.sort((a, b) => {
-      // First sort by queue
-      if (a.queue !== b.queue) {
-        return parseFloat(a.queue) - parseFloat(b.queue);
-      }
-      // Then by startTime
-      return a.startTime.localeCompare(b.startTime);
-    });
+    result.events.sort(sortOutputEvents);
+
     log('final_res', result);
     return result;
   }

@@ -7,4 +7,5 @@ module.exports = {
   setupFiles: ['dotenv/config'],
   testTimeout: 15000,
   moduleDirectories: ['node_modules', 'src'],
+  transformIgnorePatterns: ['/node_modules/(?!(puppeteer-real-browser|rebrowser-puppeteer-core|@puppeteer)/)'],
 };

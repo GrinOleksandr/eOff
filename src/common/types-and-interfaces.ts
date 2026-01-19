@@ -55,12 +55,6 @@ export interface EoffEvent {
   provider: string; // "CHERKOE"
 }
 
-export interface ISchedule {
-  events: IEoffEvent[];
-  hasTodayData: boolean;
-  hasTomorrowData: boolean;
-}
-
 export interface ParsedScheduleString {
   queue: string;
   startTime: string;
