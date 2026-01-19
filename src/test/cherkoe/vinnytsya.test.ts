@@ -8,7 +8,7 @@ describe('LocalRun', () => {
     const result = await scrapeVOE();
     console.log('scv_result', JSON.stringify(result, null, 2));
     expect(1).toEqual(1);
-  }, 120000);
+  }, 180000); // Increased to 180s (3 min) for CloudFlare challenges
 });
 
 // console.log(JSON.stringify(DisconSchedule.fact, null, 2))

@@ -3,6 +3,7 @@ import { cherkoeService } from '../services/cherkoe/cherkoe';
 import axios from 'axios';
 import { getDtekData } from '../services/cherkoe/parse-kyiv-obl';
 import { fetchWithUkrProxy } from '../common/utils';
+import { scrapeVOE } from '../services/cherkoe/parse-vinnytsya';
 
 export class CherkoeController {
   router: Router = express.Router();
@@ -12,7 +13,7 @@ export class CherkoeController {
     this.router.get('/cherkoe', this.getSchedule);
     this.router.get('/cherkoe/message', this.getMessage);
     this.router.get('/get-html', this.getHtml);
-    this.router.get('/dtek', this.getKyivOblData);
+    this.router.get('/voe', this.getVoeData);
   }
 
   async healthCheck(req: Request, res: Response) {
@@ -60,16 +61,8 @@ export class CherkoeController {
     );
   }
 
-  async getKyivOblData(req: Request, res: Response) {
-    const city = req.query?.city;
-    const street = req.query?.street;
-
-    if (!city || !street) {
-      console.error('No street or city provided');
-      res.status(500).send({ error: "'No street or city provided'" });
-    }
-
-    res.send(await getDtekData(city as string, street as string));
+  async getVoeData(req: Request, res: Response) {
+    res.send(await scrapeVOE());
   }
 }
 
