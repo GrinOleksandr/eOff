@@ -238,7 +238,8 @@ export class CherkoeTgParser {
         allTimeMatches.forEach((timeMatch) => {
           let [_, startTime, endTime] = timeMatch;
 
-          if (endTime.startsWith('00:')) {
+          // Only convert 00: to 24: if startTime is not also 00: (to handle midnight crossing)
+          if (endTime.startsWith('00:') && !startTime.startsWith('00:')) {
             endTime = endTime.replace('00:', '24:');
           }
 
