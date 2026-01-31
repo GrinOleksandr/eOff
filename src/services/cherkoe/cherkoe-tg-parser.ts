@@ -230,17 +230,22 @@ export class CherkoeTgParser {
     filteredLines.forEach((line) => {
       const queues: string[] | null = parseQueueNumbers(line);
 
-      const allTimeMatches = [...line.matchAll(/(\d{2}:\d{2})\s*-\s*(\d{2}:\d{2})/g)];
+      const allTimeMatches = [...line.matchAll(/(\d{2}:\d{2})\s*[–—\-−]\s*(\d{2}:\d{2})/g)];
 
-      if (!queues || !allTimeMatches?.length) return;
+      if (!queues || !allTimeMatches?.length) {
+        console.log('scv_no-time_matches', allTimeMatches);
+        console.log('scv_no-time_matches_queues', queues);
+        return;
+      }
 
       queues.forEach((queue) => {
         allTimeMatches.forEach((timeMatch) => {
           let [_, startTime, endTime] = timeMatch;
 
-          // Only convert 00: to 24: if startTime is not also 00: (to handle midnight crossing)
+          // Only convert 00: to 24:00 if startTime is not also 00: (midnight crossing)
+          // Events never cross midnight, so cap at exactly 24:00
           if (endTime.startsWith('00:') && !startTime.startsWith('00:')) {
-            endTime = endTime.replace('00:', '24:');
+            endTime = '24:00';
           }
 
           offlineHours.push({ queue, startTime, endTime });

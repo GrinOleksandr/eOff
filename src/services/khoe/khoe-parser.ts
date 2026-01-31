@@ -72,9 +72,10 @@ export class KhoeParser {
         allTimeMatches.forEach((timeMatch) => {
           let [_, startTime, endTime] = timeMatch;
 
-          // Only convert 00: to 24: if startTime is not also 00: (to handle midnight crossing)
+          // Only convert 00: to 24:00 if startTime is not also 00: (midnight crossing)
+          // Events never cross midnight, so cap at exactly 24:00
           if (endTime.startsWith('00:') && !startTime.startsWith('00:')) {
-            endTime = endTime.replace('00:', '24:');
+            endTime = '24:00';
           }
 
           offlineHours.push({ queue, startTime, endTime });
