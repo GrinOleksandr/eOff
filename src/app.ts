@@ -71,4 +71,6 @@ export class App {
   }
 }
 
-// DO NOT auto-start here - let bootstrap.ts control it
+// Export for Vercel serverless (if imported directly)
+const appInstance = new App();
+export default appInstance.app;
