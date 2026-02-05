@@ -9,6 +9,7 @@ const config: IConfig = {
     stringSession: new StringSession(process.env.TELEGRAM_SESSION_STRING || ''), // Empty string for new session
     cherkoeChannel: process.env.TELEGRAM_CHERKOE_CHANNEL_NAME || 'pat_cherkasyoblenergo', //channel to listen
     MESSAGES_LIMIT: parseInt(process.env.MESSAGES_LIMIT || '') || 30,
+    messageSource: process.env.TELEGRAM_MESSAGE_SOURCE || 'TG_CLIENT',
   },
   ukrProxy: {
     //config for UkrProxy - we use it for calls whic are not available from cloud directly
