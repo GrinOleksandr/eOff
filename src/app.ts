@@ -1,14 +1,13 @@
-import express from 'express';
-import { urlencoded } from 'body-parser';
-
+import express, { urlencoded } from 'express';
 import { cherkoeController, khoeController } from './controllers';
+import morgan from 'morgan';
 import cors from 'cors-ts';
 import helmet from 'helmet';
-import morgan from 'morgan';
 
 export class App {
   app = express();
   port = process.env.PORT || 8000;
+  server: any = null; // Store server reference
 
   constructor() {}
 
@@ -29,27 +28,33 @@ export class App {
   }
 
   public async init() {
-    // try{
-    //   await getTelegramClient();
-    // } catch (e) {
-    //   console.error('Telegram API error: ', e)
-    // }
-
     this.useMiddlewares();
     this.useRoutes();
 
     // Only start the server if running locally (not on Vercel)
     if (typeof process.env.VERCEL === 'undefined') {
-      this.app.listen(this.port, () => {
+      //@ts-ignore
+      this.server = this.app.listen(this.port, '0.0.0.0', () => {
         console.log(`Server running on http://localhost:${this.port}`);
       });
+
+      // Graceful shutdown handler
+      const shutdown = () => {
+        console.log('Received kill signal, shutting down gracefully');
+        this.server.close(() => {
+          console.log('Closed out remaining connections');
+          process.exit(0);
+        });
+
+        // Force close after 10s if not finished
+        setTimeout(() => {
+          console.error('Could not close connections in time, forcefully shutting down');
+          process.exit(1);
+        }, 10000);
+      };
+
+      process.on('SIGTERM', shutdown);
+      process.on('SIGINT', shutdown);
     }
   }
 }
-
-// Instantiate and initialize the app
-const appInstance = new App();
-appInstance.init();
-
-// Export the Express app instance as default for Vercel serverless runtime
-export default appInstance.app;
