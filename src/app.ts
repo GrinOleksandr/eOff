@@ -1,17 +1,27 @@
-import express, { urlencoded } from 'express';
+import express from 'express';
+import { urlencoded } from 'body-parser';
 import { cherkoeController, khoeController } from './controllers';
-import morgan from 'morgan';
 import cors from 'cors-ts';
 import helmet from 'helmet';
+import morgan from 'morgan';
 
 export class App {
   app = express();
-  port = process.env.PORT || 9000;
-  server: any = null; // Store server reference
+  port = process.env.PORT || 8000;
+  server: any = null;
 
-  constructor() {}
+  constructor() {
+    // Set up everything synchronously in constructor
+    this.useMiddlewares();
+    this.useRoutes();
+  }
 
   useRoutes() {
+    // Health check for Render
+    this.app.get('/health', (req, res) => {
+      res.status(200).json({ status: 'ok' });
+    });
+
     this.app.use((req: { method: string; url: any }, res: any, next: () => void) => {
       console.log(`${req.method.toUpperCase()} ${req.url}`);
       next();
@@ -27,34 +37,45 @@ export class App {
     this.app.use(urlencoded({ extended: true }));
   }
 
-  public async init() {
-    this.useMiddlewares();
-    this.useRoutes();
+  public startServer() {
+    // Only start server if NOT on Vercel
+    if (process.env.VERCEL) {
+      console.log('Running on Vercel - serverless mode');
+      return;
+    }
 
-    // Only start the server if running locally (not on Vercel)
-    if (typeof process.env.VERCEL === 'undefined') {
-      //@ts-ignore
-      this.server = this.app.listen(this.port, '0.0.0.0', () => {
-        console.log(`Server running on http://localhost:${this.port}`);
-      });
+    // Start server for Render/local
+    //@ts-ignore
+    this.server = this.app.listen(this.port, '0.0.0.0', () => {
+      console.log(`Server running on http://localhost:${this.port}`);
+    });
 
-      // Graceful shutdown handler
-      const shutdown = () => {
-        console.log('Received kill signal, shutting down gracefully');
+    // Graceful shutdown handlers
+    const shutdown = () => {
+      console.log('Received kill signal, shutting down gracefully');
+      if (this.server) {
         this.server.close(() => {
           console.log('Closed out remaining connections');
           process.exit(0);
         });
 
-        // Force close after 10s if not finished
         setTimeout(() => {
           console.error('Could not close connections in time, forcefully shutting down');
           process.exit(1);
         }, 10000);
-      };
+      }
+    };
 
-      process.on('SIGTERM', shutdown);
-      process.on('SIGINT', shutdown);
-    }
+    process.on('SIGTERM', shutdown);
+    process.on('SIGINT', shutdown);
   }
 }
+
+// Instantiate the app (sets up routes/middleware immediately)
+const appInstance = new App();
+
+// Start server only if not on Vercel
+appInstance.startServer();
+
+// Export for Vercel serverless
+export default appInstance.app;

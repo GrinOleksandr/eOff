@@ -1,8 +1,8 @@
 import { App } from './app';
 
-async function bootstrap() {
-  const app = new App();
-  await app.init();
-}
+// Create and start the app
+const appInstance = new App();
+appInstance.startServer();
 
-bootstrap();
+// Export for Vercel (if this is your entry point for Vercel)
+export default appInstance.app;
