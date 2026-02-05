@@ -86,6 +86,23 @@ const getTelegramClient = async (): Promise<TelegramClient> => {
   return tgClient;
 };
 
+// Graceful shutdown handlers
+const gracefulShutdown = async () => {
+  console.log('Telegram client shutting down...');
+  if (tgClient) {
+    try {
+      await tgClient.disconnect();
+      console.log('Telegram client disconnected');
+    } catch (e) {
+      console.error('Disconnect error:', e);
+    }
+  }
+  process.exit(0);
+};
+
+process.on('SIGINT', gracefulShutdown);
+process.on('SIGTERM', gracefulShutdown);
+
 const getFormattedDate = (date: moment.Moment): string => {
   const year = date.year();
   const month = (date.month() + 1).toString().padStart(2, '0'); // Months are zero-based, so add 1
