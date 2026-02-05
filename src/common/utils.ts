@@ -268,11 +268,17 @@ async function fetchWithUkrProxy(url: string, method: string = 'GET', options = 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const sortOutputEvents = (a: IEoffEvent, b: IEoffEvent) => {
-  // First sort by queue
+  // First sort by queue (ascending)
   if (a.queue !== b.queue) {
     return parseFloat(a.queue) - parseFloat(b.queue);
   }
-  // Then by startTime
+
+  // Then by date (ascending)
+  if (a.date !== b.date) {
+    return a.date.localeCompare(b.date);
+  }
+
+  // Then by startTime (ascending)
   return a.startTime.localeCompare(b.startTime);
 };
 

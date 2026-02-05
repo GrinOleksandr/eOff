@@ -34,6 +34,7 @@ export interface IConfig {
     stringSession: StringSession | string;
     cherkoeChannel: EntityLike;
     MESSAGES_LIMIT: number;
+    messageSource: string;
   };
   ukrProxy: {
     apiKey?: string;
