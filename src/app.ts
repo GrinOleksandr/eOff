@@ -8,7 +8,7 @@ import morgan from 'morgan';
 
 export class App {
   app = express();
-  port = 9000;
+  port = 8000;
 
   constructor() {}
 
