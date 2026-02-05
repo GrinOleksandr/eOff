@@ -71,11 +71,4 @@ export class App {
   }
 }
 
-// Instantiate the app (sets up routes/middleware immediately)
-const appInstance = new App();
-
-// Start server only if not on Vercel
-appInstance.startServer();
-
-// Export for Vercel serverless
-export default appInstance.app;
+// DO NOT auto-start here - let bootstrap.ts control it
