@@ -11,21 +11,17 @@ export class CherkoeService {
   async getSchedule(): Promise<ISchedule> {
     let lastMessages: TotalList<Api.Message> = [];
 
-    try {
-      const client = await getTelegramClient();
+    const client = await getTelegramClient();
 
-      // Getting the channel entity
-      const cherkoeChannel = await client.getEntity(config.telegram.cherkoeChannel);
+    // Getting the channel entity
+    const cherkoeChannel = await client.getEntity(config.telegram.cherkoeChannel);
 
-      // Fetching the last 20 messages from the channel
-      lastMessages = await client.getMessages(cherkoeChannel, {
-        limit: config.telegram.MESSAGES_LIMIT,
-      });
+    // Fetching the last 20 messages from the channel
+    lastMessages = await client.getMessages(cherkoeChannel, {
+      limit: config.telegram.MESSAGES_LIMIT,
+    });
 
-      lastMessages.reverse();
-    } catch (e) {
-      console.error('Telegram API error: ', e);
-    }
+    lastMessages.reverse();
 
     return cherkoeTgParser.convertMessagesToEvents(lastMessages);
   }
