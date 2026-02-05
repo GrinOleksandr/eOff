@@ -13,7 +13,6 @@
 	"author": "Sasha Grin",
 	"license": "ISC",
 	"dependencies": {
-		"@upstash/redis": "^1.36.2",
 		"axios": "^1.13.2",
 		"body-parser": "^1.20.2",
 		"cheerio": "^1.0.0-rc.12",

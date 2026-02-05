@@ -4,29 +4,26 @@ import { cherkoeTgParser } from './cherkoe-tg-parser';
 import { TotalList } from 'telegram/Helpers';
 import { Api } from 'telegram';
 import { EoffEvent, ISchedule } from '../../common/types-and-interfaces';
-import { withTelegramLock } from '../../common/telegram-lock';
 
 export class CherkoeService {
   constructor() {}
 
   async getSchedule(): Promise<ISchedule> {
-    return withTelegramLock(async () => {
-      const client = await getTelegramClient();
+    let lastMessages: TotalList<Api.Message> = [];
 
-      try {
-        const cherkoeChannel = await client.getEntity(config.telegram.cherkoeChannel);
+    const client = await getTelegramClient();
 
-        const lastMessages: TotalList<Api.Message> = await client.getMessages(cherkoeChannel, {
-          limit: config.telegram.MESSAGES_LIMIT,
-        });
+    // Getting the channel entity
+    const cherkoeChannel = await client.getEntity(config.telegram.cherkoeChannel);
 
-        lastMessages.reverse();
-
-        return cherkoeTgParser.convertMessagesToEvents(lastMessages);
-      } finally {
-        await client.disconnect();
-      }
+    // Fetching the last 20 messages from the channel
+    lastMessages = await client.getMessages(cherkoeChannel, {
+      limit: config.telegram.MESSAGES_LIMIT,
     });
+
+    lastMessages.reverse();
+
+    return cherkoeTgParser.convertMessagesToEvents(lastMessages);
   }
 
   async getMessage(type: string, queue: string, day: string): Promise<string> {
