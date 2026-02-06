@@ -15,9 +15,11 @@ export class CherkoeService {
     // Getting the channel entity
     const cherkoeChannel = await client.getEntity(config.telegram.cherkoeChannel);
 
-    return client.getMessages(cherkoeChannel, {
+    const messages = await client.getMessages(cherkoeChannel, {
       limit: config.telegram.MESSAGES_LIMIT,
     });
+
+    return messages.reverse();
   }
 
   async getMessagesByTelegramWebsite(): Promise<TotalList<Api.Message>> {
@@ -121,7 +123,7 @@ export class CherkoeService {
       lastMessages = await this.getMessagesByTelegramWebsite();
     }
 
-    lastMessages.reverse();
+    // lastMessages.reverse();
 
     return cherkoeTgParser.convertMessagesToEvents(lastMessages);
   }
