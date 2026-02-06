@@ -123,8 +123,6 @@ export class CherkoeService {
       lastMessages = await this.getMessagesByTelegramWebsite();
     }
 
-    // lastMessages.reverse();
-
     return cherkoeTgParser.convertMessagesToEvents(lastMessages);
   }
 
