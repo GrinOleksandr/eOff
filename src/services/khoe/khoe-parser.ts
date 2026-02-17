@@ -103,6 +103,8 @@ export class KhoeParser {
   };
 
   convertNewsToEvents(news: KhoeNewsItem[]) {
+    this.daysScheduleData = {};
+
     news.forEach((item) => {
       if (item.text) {
         const parsedMessage: IParsedMessage | null = this.parseNewsItemText(item);
