@@ -274,6 +274,8 @@ export class CherkoeTgParser {
   };
 
   convertMessagesToEvents(messages: TotalList<Api.Message>): ISchedule {
+    this.daysScheduleData = {};
+
     messages.forEach((message) => {
       if (message.message) {
         const parsedMessage: IParsedMessage | null = cherkoeTgParser.parseMessage(message.message);
