@@ -118,7 +118,16 @@ const getTargetDate = (message: string): null | ITargetDateObject => {
   } else if (message.toUpperCase().includes(nextMonth.name.toUpperCase())) {
     target = nextMonth;
   } else {
-    return null;
+    // ponytail: wrong-month typo fallback ("6 липня" posted on Oct 6), only trusts day == today/tomorrow
+    const upper = message.toUpperCase();
+    const month = MONTH_NAMES.find((name) => upper.includes(` ${name.toUpperCase()}`));
+    const dayMatch = month && upper.split(` ${month.toUpperCase()}`)[0].trim().match(/\d+$/);
+    if (!dayMatch) return null;
+    const today = getNewKyivDate();
+    const match = [today, today.clone().add(1, 'day')].find((d) => d.date() === parseInt(dayMatch[0]));
+    if (!match) return null;
+    const rawDateObj = { index: match.month() + 1, name: MONTH_NAMES[match.month()], year: match.year(), day: match.date() };
+    return { targetDate: getFormattedDate(match), rawDateObj };
   }
 
   const targetDayString: string = message.toUpperCase().split(` ${target.name.toUpperCase()}`)[0].trim();

@@ -5,6 +5,7 @@ import { TotalList } from 'telegram/Helpers';
 import { Api } from 'telegram';
 import { EoffEvent, ISchedule } from '../../common/types-and-interfaces';
 import * as cheerio from 'cheerio';
+import { response } from 'express';
 
 export class CherkoeService {
   constructor() {}
@@ -28,6 +29,7 @@ export class CherkoeService {
     const url = `https://t.me/s/${channelUsername}`;
 
     try {
+      console.log('scv_parsing_response', url);
       const response = await fetch(url, {
         headers: {
           'User-Agent':
