@@ -15,6 +15,7 @@ import {
   parseQueueNumbers,
   sortOutputEvents,
 } from '../../common/utils';
+import { buildQueueStatuses, IChannelMessage, isEmergencyActiveToday } from '../../common/emergency';
 
 export class KhoeParser {
   private daysScheduleData: { [index: string]: IEoffEvent[] } = {};
@@ -102,7 +103,7 @@ export class KhoeParser {
     return { targetDate, eventsList };
   };
 
-  convertNewsToEvents(news: KhoeNewsItem[]) {
+  convertNewsToEvents(news: KhoeNewsItem[], emergencyMessages: IChannelMessage[] = []): ISchedule {
     this.daysScheduleData = {};
 
     news.forEach((item) => {
@@ -118,7 +119,7 @@ export class KhoeParser {
     });
 
     const { todayDate, tomorrowDate } = getTodayAndTomorrowDate();
-    const result: ISchedule = { events: [], hasTodayData: false, hasTomorrowData: false };
+    const result: ISchedule = { events: [], hasTodayData: false, hasTomorrowData: false, queueStatuses: [] };
 
     if (this.daysScheduleData[todayDate]) {
       result.events = [...result.events, ...this.daysScheduleData[todayDate]];
@@ -131,6 +132,13 @@ export class KhoeParser {
     }
 
     result.events.sort(sortOutputEvents);
+
+    // Emergency cutoffs (ГАВ) come from the Telegram channel and only add a flag, schedule stays as is
+    result.queueStatuses = buildQueueStatuses(
+      result.hasTodayData,
+      result.hasTomorrowData,
+      isEmergencyActiveToday(emergencyMessages, todayDate)
+    );
 
     log('final_res', result);
     return result;

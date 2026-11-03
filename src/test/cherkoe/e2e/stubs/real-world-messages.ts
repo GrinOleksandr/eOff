@@ -1,4 +1,5 @@
 import { ELECTRICITY_PROVIDER, ELECTRICITY_STATUS, ISchedule } from '../../../../common/types-and-interfaces';
+import { buildQueueStatuses } from '../../../../common/emergency';
 
 /**
  * Real-world message samples from Cherkasy Oblast Energy Company
@@ -345,4 +346,5 @@ export const jan15InitialExpectedResult: ISchedule = {
   ],
   hasTodayData: false,
   hasTomorrowData: true,
+  queueStatuses: buildQueueStatuses(false, true, false),
 };

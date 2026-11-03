@@ -255,23 +255,36 @@ const getAxiosMethod = (method: string) => {
 async function fetchWithUkrProxy(url: string, method: string = 'GET', options = {}) {
   const ukrProxyUrl = config.ukrProxy.url;
   const ukrProxyApiKey = config.ukrProxy.apiKey;
+  const viaProxy = Boolean(ukrProxyUrl && ukrProxyApiKey);
 
-  if (ukrProxyUrl && ukrProxyApiKey) {
-    return axios.post(
-      ukrProxyUrl,
-      { url, method },
-      {
-        headers: {
-          'x-api-key': ukrProxyApiKey,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+  try {
+    if (ukrProxyUrl && ukrProxyApiKey) {
+      return await axios.post(
+        ukrProxyUrl,
+        { url, method },
+        {
+          headers: {
+            'x-api-key': ukrProxyApiKey,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+    }
+
+    const axiosCall = getAxiosMethod(method);
+
+    return await axiosCall(url, options);
+  } catch (e: any) {
+    log('fetchWithUkrProxy_failed', {
+      url,
+      method,
+      viaProxy,
+      requestUrl: e.config?.url,
+      status: e.response?.status,
+      body: String(e.response?.data ?? '').slice(0, 500),
+    });
+    throw e;
   }
-
-  const axiosCall = getAxiosMethod(method);
-
-  return axiosCall(url, options);
 }
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

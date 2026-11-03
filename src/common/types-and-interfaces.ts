@@ -21,10 +21,23 @@ export interface IEoffEvent {
   provider: ELECTRICITY_PROVIDER; // "CHERKOE"
 }
 
+export enum QUEUE_STATUS {
+  WAITING = 'WaitingForSchedule', // no schedule yet
+  APPLIES = 'ScheduleApplies', // regular hourly schedule (ГПВ)
+  EMERGENCY = 'EmergencyOff', // emergency cutoffs (ГАВ), schedule in events may still apply
+}
+
+export interface IQueueStatus {
+  queue: string; // e.g. "1.1"
+  todayStatus: QUEUE_STATUS;
+  tomorrowStatus: QUEUE_STATUS;
+}
+
 export interface ISchedule {
   events: IEoffEvent[];
   hasTodayData: boolean;
   hasTomorrowData: boolean;
+  queueStatuses: IQueueStatus[];
 }
 
 export interface IConfig {
@@ -33,6 +46,7 @@ export interface IConfig {
     apiHash: string;
     stringSession: StringSession | string;
     cherkoeChannel: EntityLike;
+    khoeChannel: EntityLike;
     MESSAGES_LIMIT: number;
     messageSource: string;
   };

@@ -17,6 +17,7 @@ import {
   ITargetDateObject,
   ParsedScheduleString,
 } from '../../common/types-and-interfaces';
+import { buildQueueStatuses, isEmergencyActiveToday } from '../../common/emergency';
 
 function getMessageTimeObjNow(messageTime: number): { dateStr: string; totalMinutes: number } {
   const time = new Date(messageTime);
@@ -294,7 +295,7 @@ export class CherkoeTgParser {
     });
 
     const { todayDate, tomorrowDate } = getTodayAndTomorrowDate();
-    const result: ISchedule = { events: [], hasTodayData: false, hasTomorrowData: false };
+    const result: ISchedule = { events: [], hasTodayData: false, hasTomorrowData: false, queueStatuses: [] };
 
     if (this.daysScheduleData[todayDate]) {
       result.events = [...result.events, ...this.daysScheduleData[todayDate]];
@@ -307,6 +308,13 @@ export class CherkoeTgParser {
     }
 
     result.events.sort(sortOutputEvents);
+
+    // Emergency cutoffs (ГАВ) only add a flag, the hourly schedule in events stays as is
+    result.queueStatuses = buildQueueStatuses(
+      result.hasTodayData,
+      result.hasTomorrowData,
+      isEmergencyActiveToday(messages, todayDate)
+    );
 
     console.log('scv_final_res', result);
     return result;

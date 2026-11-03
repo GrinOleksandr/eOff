@@ -8,6 +8,7 @@ const config: IConfig = {
     apiHash: process.env.TELEGRAM_API_HASH || '',
     stringSession: new StringSession(process.env.TELEGRAM_SESSION_STRING || ''), // Empty string for new session
     cherkoeChannel: process.env.TELEGRAM_CHERKOE_CHANNEL_NAME || 'pat_cherkasyoblenergo', //channel to listen
+    khoeChannel: process.env.TELEGRAM_KHOE_CHANNEL_NAME || 'kharkivenergy', //Kharkiv channel, used for emergency cutoffs (ГАВ)
     MESSAGES_LIMIT: parseInt(process.env.MESSAGES_LIMIT || '') || 30,
     messageSource: process.env.TELEGRAM_MESSAGE_SOURCE || 'TG_CLIENT',
   },
