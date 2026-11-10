@@ -4,6 +4,7 @@ import { cherkoeController, khoeController } from './controllers';
 import cors from 'cors-ts';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import { requireClientAuthKey } from './common/clientAuth';
 
 export class App {
   app = express();
@@ -21,6 +22,9 @@ export class App {
     this.app.get('/health', (req, res) => {
       res.status(200).json({ status: 'ok' });
     });
+
+    // everything registered below requires the client auth key
+    this.app.use(requireClientAuthKey);
 
     this.app.use((req: { method: string; url: any }, res: any, next: () => void) => {
       console.log(`${req.method.toUpperCase()} ${req.url}`);
