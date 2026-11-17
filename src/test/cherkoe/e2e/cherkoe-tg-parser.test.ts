@@ -6,8 +6,10 @@ import { MONTH_NAMES } from '../../../common/utils';
 const sut = new CherkoeTgParser();
 
 describe.each(regularMessages)('Parse Regular Messages', (testMessage) => {
+  beforeEach(() => jest.useFakeTimers({ now: new Date('2025-12-15T12:00:00+02:00') }));
+  afterEach(() => jest.useRealTimers());
+
   it(`${testMessage.messageNumber}`, async () => {
-    jest.spyOn(utilsModule, 'getCurrentMonth').mockReturnValue({ index: 9, name: MONTH_NAMES[11], year: 2024 });
 
     const parsedMessage = sut.parseMessage(testMessage.message);
 
@@ -16,8 +18,10 @@ describe.each(regularMessages)('Parse Regular Messages', (testMessage) => {
 });
 
 describe.each(messagesWithMinutes)('Parse Messages with minutes', (testMessage) => {
+  beforeEach(() => jest.useFakeTimers({ now: new Date('2025-10-21T12:00:00+03:00') }));
+  afterEach(() => jest.useRealTimers());
+
   it(`${testMessage.messageNumber}`, async () => {
-    jest.spyOn(utilsModule, 'getCurrentMonth').mockReturnValue({ index: 10, name: MONTH_NAMES[9], year: 2025 });
 
     const parsedMessage = sut.parseMessage(testMessage.message);
 

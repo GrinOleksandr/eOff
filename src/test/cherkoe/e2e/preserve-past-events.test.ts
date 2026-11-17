@@ -7,11 +7,12 @@ const sut = new CherkoeTgParser();
 
 describe('Preserve Past events', () => {
   it(`Should success`, async () => {
-    jest.spyOn(utilsModule, 'getCurrentMonth').mockReturnValue({ index: 12, name: MONTH_NAMES[11], year: 2025 });
+    jest.useFakeTimers({ now: new Date('2025-12-11T20:00:00+02:00') });
 
     // @ts-ignore
     const parsedMessage: ISchedule = sut.convertMessagesToEvents(messages);
 
     expect(parsedMessage).toEqual(expectedResult);
+    jest.useRealTimers();
   });
 });

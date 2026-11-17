@@ -36,21 +36,18 @@ describe('CherkoeService.getSchedule() - Comprehensive E2E Tests', () => {
   beforeEach(() => {
     // Create a fresh instance for each test to avoid state pollution
     sut = new parserModule.CherkoeTgParser();
+    // Month/year for getTargetDate come from the clock; each test still mocks today/tomorrow
+    jest.useFakeTimers({ now: new Date('2026-01-15T12:00:00+02:00') });
   });
 
   afterEach(() => {
+    jest.useRealTimers();
     jest.restoreAllMocks();
   });
 
   describe('Basic Schedule Parsing', () => {
     it('should parse initial schedule with new queue format (1.1, 1.2, 2.1, etc.)', () => {
       // Mock date to January 14, 2026
-      jest.spyOn(utilsModule, 'getCurrentMonth').mockReturnValue({
-        index: 0,
-        name: MONTH_NAMES[0],
-        year: 2026,
-      });
-      jest.spyOn(utilsModule, 'getNewKyivDate').mockReturnValue(utilsModule.toKyivDate('2026-01-14 23:31:00'));
       jest.spyOn(utilsModule, 'getTodayAndTomorrowDate').mockReturnValue({
         todayDate: '2026-01-14',
         tomorrowDate: '2026-01-15',
@@ -99,12 +96,6 @@ describe('CherkoeService.getSchedule() - Comprehensive E2E Tests', () => {
     });
 
     it('should handle schedules with time in minutes format (08:30, 14:30, etc.)', () => {
-      jest.spyOn(utilsModule, 'getCurrentMonth').mockReturnValue({
-        index: 0,
-        name: MONTH_NAMES[0],
-        year: 2026,
-      });
-      jest.spyOn(utilsModule, 'getNewKyivDate').mockReturnValue(utilsModule.toKyivDate('2026-01-15 22:40:00'));
       jest.spyOn(utilsModule, 'getTodayAndTomorrowDate').mockReturnValue({
         todayDate: '2026-01-15',
         tomorrowDate: '2026-01-16',
@@ -146,12 +137,6 @@ describe('CherkoeService.getSchedule() - Comprehensive E2E Tests', () => {
     });
 
     it('should handle partial schedules where some groups have no outages', () => {
-      jest.spyOn(utilsModule, 'getCurrentMonth').mockReturnValue({
-        index: 0,
-        name: MONTH_NAMES[0],
-        year: 2026,
-      });
-      jest.spyOn(utilsModule, 'getNewKyivDate').mockReturnValue(utilsModule.toKyivDate('2026-01-18 22:05:00'));
       jest.spyOn(utilsModule, 'getTodayAndTomorrowDate').mockReturnValue({
         todayDate: '2026-01-18',
         tomorrowDate: '2026-01-19',
@@ -183,13 +168,7 @@ describe('CherkoeService.getSchedule() - Comprehensive E2E Tests', () => {
 
   describe('Multiple Schedule Updates', () => {
     it('should handle multiple updates to the same schedule (preserving past events)', () => {
-      jest.spyOn(utilsModule, 'getCurrentMonth').mockReturnValue({
-        index: 0,
-        name: MONTH_NAMES[0],
-        year: 2026,
-      });
       // Current time is 17:30 on Jan 15
-      jest.spyOn(utilsModule, 'getNewKyivDate').mockReturnValue(utilsModule.toKyivDate('2026-01-15 17:30:00'));
       jest.spyOn(utilsModule, 'getTodayAndTomorrowDate').mockReturnValue({
         todayDate: '2026-01-15',
         tomorrowDate: '2026-01-16',
@@ -222,14 +201,8 @@ describe('CherkoeService.getSchedule() - Comprehensive E2E Tests', () => {
     });
 
     it('should correctly merge schedules when receiving multiple updates throughout the day', () => {
-      jest.spyOn(utilsModule, 'getCurrentMonth').mockReturnValue({
-        index: 0,
-        name: MONTH_NAMES[0],
-        year: 2026,
-      });
 
       // Simulate receiving 3 updates: initial (01:50), emergency announcement (10:23), and reduced (17:30)
-      jest.spyOn(utilsModule, 'getNewKyivDate').mockReturnValue(utilsModule.toKyivDate('2026-01-15 18:00:00'));
       jest.spyOn(utilsModule, 'getTodayAndTomorrowDate').mockReturnValue({
         todayDate: '2026-01-15',
         tomorrowDate: '2026-01-16',
@@ -255,12 +228,6 @@ describe('CherkoeService.getSchedule() - Comprehensive E2E Tests', () => {
 
   describe('Non-Schedule Messages', () => {
     it('should ignore emergency shutdown announcements without schedule data', () => {
-      jest.spyOn(utilsModule, 'getCurrentMonth').mockReturnValue({
-        index: 0,
-        name: MONTH_NAMES[0],
-        year: 2026,
-      });
-      jest.spyOn(utilsModule, 'getNewKyivDate').mockReturnValue(utilsModule.toKyivDate('2026-01-15 10:23:00'));
       jest.spyOn(utilsModule, 'getTodayAndTomorrowDate').mockReturnValue({
         todayDate: '2026-01-15',
         tomorrowDate: '2026-01-16',
@@ -276,12 +243,6 @@ describe('CherkoeService.getSchedule() - Comprehensive E2E Tests', () => {
     });
 
     it('should ignore power limitation announcements without schedule data', () => {
-      jest.spyOn(utilsModule, 'getCurrentMonth').mockReturnValue({
-        index: 0,
-        name: MONTH_NAMES[0],
-        year: 2026,
-      });
-      jest.spyOn(utilsModule, 'getNewKyivDate').mockReturnValue(utilsModule.toKyivDate('2026-01-15 19:28:00'));
       jest.spyOn(utilsModule, 'getTodayAndTomorrowDate').mockReturnValue({
         todayDate: '2026-01-15',
         tomorrowDate: '2026-01-16',
@@ -297,12 +258,6 @@ describe('CherkoeService.getSchedule() - Comprehensive E2E Tests', () => {
     });
 
     it('should ignore informational messages with video links', () => {
-      jest.spyOn(utilsModule, 'getCurrentMonth').mockReturnValue({
-        index: 0,
-        name: MONTH_NAMES[0],
-        year: 2026,
-      });
-      jest.spyOn(utilsModule, 'getNewKyivDate').mockReturnValue(utilsModule.toKyivDate('2026-01-15 23:15:00'));
       jest.spyOn(utilsModule, 'getTodayAndTomorrowDate').mockReturnValue({
         todayDate: '2026-01-15',
         tomorrowDate: '2026-01-16',
@@ -320,12 +275,6 @@ describe('CherkoeService.getSchedule() - Comprehensive E2E Tests', () => {
 
   describe('Mixed Message Scenarios', () => {
     it('should correctly process a mix of schedule and non-schedule messages', () => {
-      jest.spyOn(utilsModule, 'getCurrentMonth').mockReturnValue({
-        index: 0,
-        name: MONTH_NAMES[0],
-        year: 2026,
-      });
-      jest.spyOn(utilsModule, 'getNewKyivDate').mockReturnValue(utilsModule.toKyivDate('2026-01-15 20:00:00'));
       jest.spyOn(utilsModule, 'getTodayAndTomorrowDate').mockReturnValue({
         todayDate: '2026-01-15',
         tomorrowDate: '2026-01-16',
@@ -359,12 +308,6 @@ describe('CherkoeService.getSchedule() - Comprehensive E2E Tests', () => {
     });
 
     it('should handle schedules for multiple consecutive days', () => {
-      jest.spyOn(utilsModule, 'getCurrentMonth').mockReturnValue({
-        index: 0,
-        name: MONTH_NAMES[0],
-        year: 2026,
-      });
-      jest.spyOn(utilsModule, 'getNewKyivDate').mockReturnValue(utilsModule.toKyivDate('2026-01-18 22:05:00'));
       jest.spyOn(utilsModule, 'getTodayAndTomorrowDate').mockReturnValue({
         todayDate: '2026-01-18',
         tomorrowDate: '2026-01-19',
@@ -393,11 +336,6 @@ describe('CherkoeService.getSchedule() - Comprehensive E2E Tests', () => {
 
   describe('Edge Cases', () => {
     it('should handle empty message list', () => {
-      jest.spyOn(utilsModule, 'getCurrentMonth').mockReturnValue({
-        index: 0,
-        name: MONTH_NAMES[0],
-        year: 2026,
-      });
       jest.spyOn(utilsModule, 'getTodayAndTomorrowDate').mockReturnValue({
         todayDate: '2026-01-15',
         tomorrowDate: '2026-01-16',
@@ -412,11 +350,6 @@ describe('CherkoeService.getSchedule() - Comprehensive E2E Tests', () => {
     });
 
     it('should handle messages with only non-schedule content', () => {
-      jest.spyOn(utilsModule, 'getCurrentMonth').mockReturnValue({
-        index: 0,
-        name: MONTH_NAMES[0],
-        year: 2026,
-      });
       jest.spyOn(utilsModule, 'getTodayAndTomorrowDate').mockReturnValue({
         todayDate: '2026-01-15',
         tomorrowDate: '2026-01-16',
@@ -437,11 +370,6 @@ describe('CherkoeService.getSchedule() - Comprehensive E2E Tests', () => {
     });
 
     it('should correctly parse schedules with all 12 sub-queues', () => {
-      jest.spyOn(utilsModule, 'getCurrentMonth').mockReturnValue({
-        index: 0,
-        name: MONTH_NAMES[0],
-        year: 2026,
-      });
       jest.spyOn(utilsModule, 'getTodayAndTomorrowDate').mockReturnValue({
         todayDate: '2026-01-18',
         tomorrowDate: '2026-01-19',
@@ -456,11 +384,6 @@ describe('CherkoeService.getSchedule() - Comprehensive E2E Tests', () => {
     });
 
     it('should handle 24:00 end time correctly', () => {
-      jest.spyOn(utilsModule, 'getCurrentMonth').mockReturnValue({
-        index: 0,
-        name: MONTH_NAMES[0],
-        year: 2026,
-      });
       jest.spyOn(utilsModule, 'getTodayAndTomorrowDate').mockReturnValue({
         todayDate: '2026-01-14',
         tomorrowDate: '2026-01-15',
@@ -481,11 +404,6 @@ describe('CherkoeService.getSchedule() - Comprehensive E2E Tests', () => {
     });
 
     it('should handle consecutive time slots for the same queue', () => {
-      jest.spyOn(utilsModule, 'getCurrentMonth').mockReturnValue({
-        index: 0,
-        name: MONTH_NAMES[0],
-        year: 2026,
-      });
       jest.spyOn(utilsModule, 'getTodayAndTomorrowDate').mockReturnValue({
         todayDate: '2026-01-14',
         tomorrowDate: '2026-01-15',
@@ -512,11 +430,6 @@ describe('CherkoeService.getSchedule() - Comprehensive E2E Tests', () => {
 
   describe('Data Integrity', () => {
     it('should ensure all events have required fields', () => {
-      jest.spyOn(utilsModule, 'getCurrentMonth').mockReturnValue({
-        index: 0,
-        name: MONTH_NAMES[0],
-        year: 2026,
-      });
       jest.spyOn(utilsModule, 'getTodayAndTomorrowDate').mockReturnValue({
         todayDate: '2026-01-14',
         tomorrowDate: '2026-01-15',
@@ -544,11 +457,6 @@ describe('CherkoeService.getSchedule() - Comprehensive E2E Tests', () => {
     });
 
     it('should ensure events are sorted by date and time', () => {
-      jest.spyOn(utilsModule, 'getCurrentMonth').mockReturnValue({
-        index: 0,
-        name: MONTH_NAMES[0],
-        year: 2026,
-      });
       jest.spyOn(utilsModule, 'getTodayAndTomorrowDate').mockReturnValue({
         todayDate: '2026-01-18',
         tomorrowDate: '2026-01-19',
@@ -578,11 +486,6 @@ describe('CherkoeService.getSchedule() - Comprehensive E2E Tests', () => {
     });
 
     it('should not have duplicate events', () => {
-      jest.spyOn(utilsModule, 'getCurrentMonth').mockReturnValue({
-        index: 0,
-        name: MONTH_NAMES[0],
-        year: 2026,
-      });
       jest.spyOn(utilsModule, 'getTodayAndTomorrowDate').mockReturnValue({
         todayDate: '2026-01-14',
         tomorrowDate: '2026-01-15',
@@ -602,11 +505,6 @@ describe('CherkoeService.getSchedule() - Comprehensive E2E Tests', () => {
 
   describe('Performance and Scalability', () => {
     it('should handle a large number of messages efficiently', () => {
-      jest.spyOn(utilsModule, 'getCurrentMonth').mockReturnValue({
-        index: 0,
-        name: MONTH_NAMES[0],
-        year: 2026,
-      });
       jest.spyOn(utilsModule, 'getTodayAndTomorrowDate').mockReturnValue({
         todayDate: '2026-01-15',
         tomorrowDate: '2026-01-16',

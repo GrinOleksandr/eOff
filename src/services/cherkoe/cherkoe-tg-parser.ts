@@ -1,5 +1,6 @@
 import {
   convertToEvents,
+  findScheduleConflicts,
   getTargetDate,
   getTodayAndTomorrowDate,
   groupByQueue,
@@ -222,35 +223,58 @@ export class CherkoeTgParser {
     console.log('scv_parsedLines', parsedLines);
     const regex: RegExp = /^\d+\.(?:\d+|І{1,2})\s*.*$/;
 
-    // Filter lines that match the pattern
-    let filteredLines: string[] = parsedLines.filter((line) => regex.test(line));
-    console.log('scv_filteredLines', filteredLines);
+    // A message may hold several schedule blocks, e.g. region-wide + a sub-region "individual" one
+    // repeating some queues with other hours. Segments = runs of schedule lines split by any other line;
+    // neighbouring segments with no shared queues form one block (a note between 3.2 and 4.1 doesn't split it).
+    type ScheduleLine = { queue: string; ranges: RegExpMatchArray[] };
+    const segments: ScheduleLine[][] = [[]];
+    parsedLines.forEach((line) => {
+      const queue = regex.test(line) ? parseQueueNumbers(line)?.[0] : undefined;
+      const ranges = [...line.matchAll(/(\d{2}:\d{2})\s*[–—\-−]\s*(\d{2}:\d{2})/g)];
+      if (queue && ranges.length) segments[segments.length - 1].push({ queue, ranges });
+      else if (segments[segments.length - 1].length) segments.push([]);
+    });
+
+    const queuesOf = (block: ScheduleLine[]) => new Set(block.map((l) => l.queue));
+    const blocks: ScheduleLine[][] = [];
+    segments
+      .filter((s) => s.length)
+      .forEach((segment) => {
+        const last = blocks[blocks.length - 1];
+        const lastQueues = last && queuesOf(last);
+        if (lastQueues && segment.every((l) => !lastQueues.has(l.queue))) last.push(...segment);
+        else blocks.push(segment);
+      });
+
+    if (blocks.some((b) => queuesOf(b).size !== b.length)) {
+      console.error('cherkoe: ignoring message, same queue listed twice in one schedule block');
+      return null;
+    }
+
+    // Region-wide block = the one covering the most queues; a tie means we can't tell which one it is.
+    const sizes = blocks.map((b) => b.length);
+    const maxSize = Math.max(0, ...sizes);
+    if (blocks.length > 1) console.warn('cherkoe: multiple schedule blocks, queue counts:', sizes);
+    if (sizes.filter((s) => s === maxSize).length > 1) {
+      console.error('cherkoe: ignoring message, several equally complete schedule blocks:', sizes);
+      return null;
+    }
+    const scheduleLines: ScheduleLine[] = blocks[sizes.indexOf(maxSize)] ?? [];
+    console.log('scv_scheduleLines', scheduleLines);
 
     const offlineHours: ParsedScheduleString[] = [];
 
-    filteredLines.forEach((line) => {
-      const queues: string[] | null = parseQueueNumbers(line);
+    scheduleLines.forEach(({ queue, ranges }) => {
+      ranges.forEach((timeMatch) => {
+        let [_, startTime, endTime] = timeMatch;
 
-      const allTimeMatches = [...line.matchAll(/(\d{2}:\d{2})\s*[–—\-−]\s*(\d{2}:\d{2})/g)];
+        // Only convert 00: to 24:00 if startTime is not also 00: (midnight crossing)
+        // Events never cross midnight, so cap at exactly 24:00
+        if (endTime.startsWith('00:') && !startTime.startsWith('00:')) {
+          endTime = '24:00';
+        }
 
-      if (!queues || !allTimeMatches?.length) {
-        console.log('scv_no-time_matches', allTimeMatches);
-        console.log('scv_no-time_matches_queues', queues);
-        return;
-      }
-
-      queues.forEach((queue) => {
-        allTimeMatches.forEach((timeMatch) => {
-          let [_, startTime, endTime] = timeMatch;
-
-          // Only convert 00: to 24:00 if startTime is not also 00: (midnight crossing)
-          // Events never cross midnight, so cap at exactly 24:00
-          if (endTime.startsWith('00:') && !startTime.startsWith('00:')) {
-            endTime = '24:00';
-          }
-
-          offlineHours.push({ queue, startTime, endTime });
-        });
+        offlineHours.push({ queue, startTime, endTime });
       });
     });
 
@@ -268,6 +292,11 @@ export class CherkoeTgParser {
 
     const groupedByQueue: GroupByQueueResult = groupByQueue(parsedSchedule);
     console.log('scv_groupedByQueue', groupedByQueue);
+    const conflicts = findScheduleConflicts(groupedByQueue);
+    if (conflicts.length) {
+      console.error(`cherkoe: ignoring message for ${targetDate}, overlapping intervals:`, conflicts);
+      return null;
+    }
     const eventsList: IEoffEvent[] | void = convertToEvents(groupedByQueue, targetDate, this.provider);
     console.log('scv_eventsList', eventsList);
     if (!eventsList) return null;

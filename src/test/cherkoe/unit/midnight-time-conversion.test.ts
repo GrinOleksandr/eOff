@@ -6,10 +6,11 @@ const sut = new CherkoeTgParser();
 
 describe('Cherkoe Parser - Midnight Time Conversion', () => {
   beforeEach(() => {
-    jest.spyOn(utilsModule, 'getCurrentMonth').mockReturnValue({ index: 0, name: MONTH_NAMES[0], year: 2026 });
+    jest.useFakeTimers({ now: new Date('2026-01-15T10:00:00+02:00') });
   });
 
   afterEach(() => {
+    jest.useRealTimers();
     jest.restoreAllMocks();
   });
 

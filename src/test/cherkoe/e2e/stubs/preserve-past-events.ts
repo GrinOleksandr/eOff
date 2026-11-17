@@ -1,3 +1,5 @@
+import { buildQueueStatuses } from '../../../../common/emergency';
+
 const today_2am = 1765411200;
 const today_4am = 1765418400;
 
@@ -114,4 +116,5 @@ export const expectedResult = {
   ],
   hasTodayData: true,
   hasTomorrowData: false,
+  queueStatuses: buildQueueStatuses(true, false, false),
 };

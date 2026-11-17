@@ -9,6 +9,7 @@ import {
 } from '../../common/types-and-interfaces';
 import {
   convertToEvents,
+  findScheduleConflicts,
   getTodayAndTomorrowDate,
   groupByQueue,
   log,
@@ -97,6 +98,11 @@ export class KhoeParser {
 
     const groupedByQueue: GroupByQueueResult = groupByQueue(parsedSchedule);
     log('groupedByQueue', groupedByQueue);
+    const conflicts = findScheduleConflicts(groupedByQueue);
+    if (conflicts.length) {
+      console.error(`khoe: ignoring news for ${targetDate}, overlapping intervals:`, conflicts);
+      return null;
+    }
     const eventsList: IEoffEvent[] | void = convertToEvents(groupedByQueue, targetDate, this.provider);
     log('eventsList', eventsList);
     if (!eventsList) return null;

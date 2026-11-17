@@ -95,8 +95,8 @@ async function getMessagesByTelegramWebsite(channel: EntityLike): Promise<TotalL
       messages.push(mockMessage);
     });
 
-    // Limit to configured number of messages
-    const limitedMessages = messages.slice(0, config.telegram.MESSAGES_LIMIT);
+    // Limit to configured number of messages; page is oldest→newest, so keep the newest
+    const limitedMessages = messages.slice(-config.telegram.MESSAGES_LIMIT);
 
     // Create a TotalList-like object
     const totalList = Object.assign(limitedMessages, {

@@ -158,6 +158,21 @@ const groupByQueue = (data: ParsedScheduleString[]): GroupByQueueResult =>
     return acc;
   }, {});
 
+// Overlapping intervals within one queue = broken source data; callers should ignore the whole message.
+// Touching (10:00-12:00, 12:00-14:00) and zero-length (00:00-00:00) intervals are fine.
+const findScheduleConflicts = (scheduleData: GroupByQueueResult): string[] =>
+  Object.entries(scheduleData).flatMap(([queue, intervals]) => {
+    const sorted = [...intervals].sort((a, b) => a.startTime.localeCompare(b.startTime) || a.endTime.localeCompare(b.endTime));
+    const conflicts: string[] = [];
+    let maxEnd = '';
+    let maxInterval = '';
+    sorted.forEach(({ startTime, endTime }) => {
+      if (startTime < maxEnd) conflicts.push(`${queue}: ${startTime}-${endTime} overlaps ${maxInterval}`);
+      if (endTime > maxEnd) [maxEnd, maxInterval] = [endTime, `${startTime}-${endTime}`];
+    });
+    return conflicts;
+  });
+
 const convertToEvents = (
   scheduleData: GroupByQueueResult,
   date: string | null,
@@ -316,6 +331,7 @@ export {
   getTargetDate,
   log,
   groupByQueue,
+  findScheduleConflicts,
   convertToEvents,
   parseQueueNumbers,
   fetchWithUkrProxy,

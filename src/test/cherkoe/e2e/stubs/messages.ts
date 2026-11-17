@@ -49,7 +49,7 @@ export const regularMessages: TestMessageData[] = [
     expectedResult: {
       eventsList: [
         {
-          date: '2025-09-16',
+          date: '2025-12-16',
           electricity: 'off',
           endTime: '16:30',
           provider: 'CHERKOE',
@@ -57,7 +57,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '13:00',
         },
         {
-          date: '2025-09-16',
+          date: '2025-12-16',
           electricity: 'off',
           endTime: '16:30',
           provider: 'CHERKOE',
@@ -65,7 +65,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '13:00',
         },
         {
-          date: '2025-09-16',
+          date: '2025-12-16',
           electricity: 'off',
           endTime: '16:30',
           provider: 'CHERKOE',
@@ -73,7 +73,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '15:00',
         },
         {
-          date: '2025-09-16',
+          date: '2025-12-16',
           electricity: 'off',
           endTime: '16:30',
           provider: 'CHERKOE',
@@ -81,7 +81,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '13:00',
         },
         {
-          date: '2025-09-16',
+          date: '2025-12-16',
           electricity: 'off',
           endTime: '09:30',
           provider: 'CHERKOE',
@@ -89,7 +89,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '07:00',
         },
         {
-          date: '2025-09-16',
+          date: '2025-12-16',
           electricity: 'off',
           endTime: '19:00',
           provider: 'CHERKOE',
@@ -97,7 +97,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '16:30',
         },
         {
-          date: '2025-09-16',
+          date: '2025-12-16',
           electricity: 'off',
           endTime: '09:30',
           provider: 'CHERKOE',
@@ -105,7 +105,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '07:00',
         },
         {
-          date: '2025-09-16',
+          date: '2025-12-16',
           electricity: 'off',
           endTime: '19:00',
           provider: 'CHERKOE',
@@ -113,7 +113,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '16:30',
         },
         {
-          date: '2025-09-16',
+          date: '2025-12-16',
           electricity: 'off',
           endTime: '09:30',
           provider: 'CHERKOE',
@@ -121,7 +121,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '08:00',
         },
         {
-          date: '2025-09-16',
+          date: '2025-12-16',
           electricity: 'off',
           endTime: '17:00',
           provider: 'CHERKOE',
@@ -129,7 +129,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '16:30',
         },
         {
-          date: '2025-09-16',
+          date: '2025-12-16',
           electricity: 'off',
           endTime: '20:00',
           provider: 'CHERKOE',
@@ -137,7 +137,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '19:00',
         },
         {
-          date: '2025-09-16',
+          date: '2025-12-16',
           electricity: 'off',
           endTime: '09:30',
           provider: 'CHERKOE',
@@ -145,7 +145,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '08:00',
         },
         {
-          date: '2025-09-16',
+          date: '2025-12-16',
           electricity: 'off',
           endTime: '20:00',
           provider: 'CHERKOE',
@@ -153,7 +153,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '16:30',
         },
         {
-          date: '2025-09-16',
+          date: '2025-12-16',
           electricity: 'off',
           endTime: '13:00',
           provider: 'CHERKOE',
@@ -161,7 +161,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '09:30',
         },
         {
-          date: '2025-09-16',
+          date: '2025-12-16',
           electricity: 'off',
           endTime: '13:00',
           provider: 'CHERKOE',
@@ -169,7 +169,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '09:30',
         },
         {
-          date: '2025-09-16',
+          date: '2025-12-16',
           electricity: 'off',
           endTime: '13:00',
           provider: 'CHERKOE',
@@ -177,7 +177,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '09:30',
         },
         {
-          date: '2025-09-16',
+          date: '2025-12-16',
           electricity: 'off',
           endTime: '12:00',
           provider: 'CHERKOE',
@@ -185,7 +185,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '09:30',
         },
       ],
-      targetDate: '2025-09-16',
+      targetDate: '2025-12-16',
     },
   },
   {
@@ -202,7 +202,7 @@ export const regularMessages: TestMessageData[] = [
     //@ts-ignore
     expectedResult: {
       eventsList: [],
-      targetDate: '2025-09-18',
+      targetDate: '2025-12-18',
     },
   },
   {
@@ -238,7 +238,7 @@ export const regularMessages: TestMessageData[] = [
     expectedResult: {
       eventsList: [
         {
-          date: '2025-09-25',
+          date: '2025-12-25',
           electricity: 'off',
           endTime: '10:30',
           provider: 'CHERKOE',
@@ -246,7 +246,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '07:00',
         },
         {
-          date: '2025-09-25',
+          date: '2025-12-25',
           electricity: 'off',
           endTime: '21:00',
           provider: 'CHERKOE',
@@ -254,7 +254,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '17:30',
         },
         {
-          date: '2025-09-25',
+          date: '2025-12-25',
           electricity: 'off',
           endTime: '10:30',
           provider: 'CHERKOE',
@@ -262,7 +262,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '07:00',
         },
         {
-          date: '2025-09-25',
+          date: '2025-12-25',
           electricity: 'off',
           endTime: '21:00',
           provider: 'CHERKOE',
@@ -270,7 +270,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '17:30',
         },
         {
-          date: '2025-09-25',
+          date: '2025-12-25',
           electricity: 'off',
           endTime: '10:30',
           provider: 'CHERKOE',
@@ -278,7 +278,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '07:00',
         },
         {
-          date: '2025-09-25',
+          date: '2025-12-25',
           electricity: 'off',
           endTime: '21:00',
           provider: 'CHERKOE',
@@ -286,7 +286,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '14:00',
         },
         {
-          date: '2025-09-25',
+          date: '2025-12-25',
           electricity: 'off',
           endTime: '10:30',
           provider: 'CHERKOE',
@@ -294,7 +294,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '07:00',
         },
         {
-          date: '2025-09-25',
+          date: '2025-12-25',
           electricity: 'off',
           endTime: '21:00',
           provider: 'CHERKOE',
@@ -302,7 +302,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '14:00',
         },
         {
-          date: '2025-09-25',
+          date: '2025-12-25',
           electricity: 'off',
           endTime: '14:00',
           provider: 'CHERKOE',
@@ -310,15 +310,15 @@ export const regularMessages: TestMessageData[] = [
           startTime: '10:30',
         },
         {
-          date: '2025-09-25',
+          date: '2025-12-25',
           electricity: 'off',
-          endTime: '23:59',
+          endTime: '24:00',
           provider: 'CHERKOE',
           queue: '3.1',
           startTime: '17:30',
         },
         {
-          date: '2025-09-25',
+          date: '2025-12-25',
           electricity: 'off',
           endTime: '14:00',
           provider: 'CHERKOE',
@@ -326,15 +326,15 @@ export const regularMessages: TestMessageData[] = [
           startTime: '10:30',
         },
         {
-          date: '2025-09-25',
+          date: '2025-12-25',
           electricity: 'off',
-          endTime: '23:59',
+          endTime: '24:00',
           provider: 'CHERKOE',
           queue: '3.2',
           startTime: '17:30',
         },
         {
-          date: '2025-09-25',
+          date: '2025-12-25',
           electricity: 'off',
           endTime: '14:00',
           provider: 'CHERKOE',
@@ -342,15 +342,15 @@ export const regularMessages: TestMessageData[] = [
           startTime: '07:00',
         },
         {
-          date: '2025-09-25',
+          date: '2025-12-25',
           electricity: 'off',
-          endTime: '23:59',
+          endTime: '24:00',
           provider: 'CHERKOE',
           queue: '4.1',
           startTime: '21:00',
         },
         {
-          date: '2025-09-25',
+          date: '2025-12-25',
           electricity: 'off',
           endTime: '14:00',
           provider: 'CHERKOE',
@@ -358,15 +358,15 @@ export const regularMessages: TestMessageData[] = [
           startTime: '07:00',
         },
         {
-          date: '2025-09-25',
+          date: '2025-12-25',
           electricity: 'off',
-          endTime: '23:59',
+          endTime: '24:00',
           provider: 'CHERKOE',
           queue: '4.2',
           startTime: '21:00',
         },
         {
-          date: '2025-09-25',
+          date: '2025-12-25',
           electricity: 'off',
           endTime: '07:00',
           provider: 'CHERKOE',
@@ -374,7 +374,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '06:00',
         },
         {
-          date: '2025-09-25',
+          date: '2025-12-25',
           electricity: 'off',
           endTime: '17:30',
           provider: 'CHERKOE',
@@ -382,15 +382,15 @@ export const regularMessages: TestMessageData[] = [
           startTime: '14:00',
         },
         {
-          date: '2025-09-25',
+          date: '2025-12-25',
           electricity: 'off',
-          endTime: '23:59',
+          endTime: '24:00',
           provider: 'CHERKOE',
           queue: '5.1',
           startTime: '21:00',
         },
         {
-          date: '2025-09-25',
+          date: '2025-12-25',
           electricity: 'off',
           endTime: '07:00',
           provider: 'CHERKOE',
@@ -398,7 +398,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '06:00',
         },
         {
-          date: '2025-09-25',
+          date: '2025-12-25',
           electricity: 'off',
           endTime: '17:30',
           provider: 'CHERKOE',
@@ -406,15 +406,15 @@ export const regularMessages: TestMessageData[] = [
           startTime: '14:00',
         },
         {
-          date: '2025-09-25',
+          date: '2025-12-25',
           electricity: 'off',
-          endTime: '23:59',
+          endTime: '24:00',
           provider: 'CHERKOE',
           queue: '5.2',
           startTime: '21:00',
         },
         {
-          date: '2025-09-25',
+          date: '2025-12-25',
           electricity: 'off',
           endTime: '17:30',
           provider: 'CHERKOE',
@@ -422,7 +422,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '10:30',
         },
         {
-          date: '2025-09-25',
+          date: '2025-12-25',
           electricity: 'off',
           endTime: '17:30',
           provider: 'CHERKOE',
@@ -430,7 +430,7 @@ export const regularMessages: TestMessageData[] = [
           startTime: '10:30',
         },
       ],
-      targetDate: '2025-09-25',
+      targetDate: '2025-12-25',
     },
   },
   // {
