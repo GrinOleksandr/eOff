@@ -24,7 +24,7 @@ export class App {
     });
 
     // everything registered below requires the client auth key
-    this.app.use(requireClientAuthKey);
+    // this.app.use(requireClientAuthKey); //todo temporary commented
 
     this.app.use((req: { method: string; url: any }, res: any, next: () => void) => {
       console.log(`${req.method.toUpperCase()} ${req.url}`);
