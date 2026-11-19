@@ -17,6 +17,11 @@ const config: IConfig = {
     apiKey: process.env.UKR_PROXY_API_KEY,
     url: process.env.UKR_PROXY_URL,
   },
+  alerts: {
+    // Telegram bot that reports ignored (broken) messages; disabled in tests so they never send real alerts
+    botToken: process.env.NODE_ENV === 'test' ? undefined : process.env.ALERT_BOT_TOKEN,
+    chatId: process.env.ALERT_CHAT_ID,
+  },
 };
 
 export default config;

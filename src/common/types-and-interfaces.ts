@@ -54,6 +54,10 @@ export interface IConfig {
     apiKey?: string;
     url?: string;
   };
+  alerts: {
+    botToken?: string;
+    chatId?: string;
+  };
 }
 
 export interface ITargetDateObject {

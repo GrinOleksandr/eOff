@@ -1,3 +1,5 @@
+import { buildQueueStatuses } from '../../../../common/emergency';
+
 const yesterday_20_01 = 1765742508;
 const today_8_13 = 1765786428;
 const today_14_55 = 1765810548;
@@ -114,65 +116,31 @@ export const messages = [
 ];
 
 /** EXPECTED RESULTS */
+// Today = 15 Dec. Past events from earlier messages are kept unless a newer message overlaps them,
+// e.g. 5.2: 04-06 and 08-10 kept from earlier messages, 12-14 replaced by the newer 12-15.
+const expectedHours: Record<string, string[]> = {
+  '1.1': ['00:00-02:00', '04:00-06:00', '08:00-10:00', '14:00-16:00', '20:00-22:00'],
+  '1.2': ['00:00-02:00', '04:00-06:00', '08:00-10:00', '14:00-16:00', '19:00-22:00'],
+  '2.1': ['00:00-02:00', '04:00-06:00', '09:00-10:00', '12:00-14:00', '15:00-18:00', '22:00-24:00'],
+  '2.2': ['00:00-02:00', '04:00-06:00', '08:00-10:00', '12:00-14:00', '16:00-18:00', '20:00-22:00'],
+  '3.1': ['02:00-04:00', '06:00-08:00', '10:00-12:00', '14:00-16:00', '18:00-20:00', '22:00-24:00'],
+  '3.2': ['02:00-04:00', '10:00-12:00', '14:00-16:00', '18:00-21:00'],
+  '4.1': ['02:00-04:00', '06:00-08:00', '10:00-12:00', '14:00-16:00', '18:00-20:00'],
+  '4.2': ['02:00-04:00', '06:00-08:00', '10:00-12:00', '14:00-16:00', '18:00-20:00'],
+  '5.1': ['06:00-08:00', '10:00-12:00', '16:00-19:00', '22:00-24:00'],
+  '5.2': ['04:00-06:00', '08:00-10:00', '12:00-15:00', '16:00-19:00'],
+  '6.1': ['02:00-04:00', '12:00-14:00', '16:00-18:00', '20:00-22:00'],
+  '6.2': ['00:00-02:00', '06:00-08:00', '12:00-14:00', '16:00-18:00', '22:00-24:00'],
+};
+
 export const expectedResult = {
-  events: [
-    {
-      date: '2025-12-11',
-      electricity: 'off',
-      endTime: '05:00',
-      provider: 'CHERKOE',
-      queue: '6.1',
-      startTime: '02:00',
-    },
-    {
-      date: '2025-12-11',
-      electricity: 'off',
-      endTime: '12:00',
-      provider: 'CHERKOE',
-      queue: '6.1',
-      startTime: '08:00',
-    },
-    {
-      date: '2025-12-11',
-      electricity: 'off',
-      endTime: '18:00',
-      provider: 'CHERKOE',
-      queue: '6.1',
-      startTime: '14:00',
-    },
-    {
-      date: '2025-12-11',
-      electricity: 'off',
-      endTime: '24:00',
-      provider: 'CHERKOE',
-      queue: '6.1',
-      startTime: '20:00',
-    },
-    {
-      date: '2025-12-11',
-      electricity: 'off',
-      endTime: '03:00',
-      provider: 'CHERKOE',
-      queue: '6.2',
-      startTime: '00:00',
-    },
-    {
-      date: '2025-12-11',
-      electricity: 'off',
-      endTime: '16:00',
-      provider: 'CHERKOE',
-      queue: '6.2',
-      startTime: '12:00',
-    },
-    {
-      date: '2025-12-11',
-      electricity: 'off',
-      endTime: '22:00',
-      provider: 'CHERKOE',
-      queue: '6.2',
-      startTime: '18:00',
-    },
-  ],
+  events: Object.entries(expectedHours).flatMap(([queue, ranges]) =>
+    ranges.map((range) => {
+      const [startTime, endTime] = range.split('-');
+      return { date: '2025-12-15', electricity: 'off', endTime, provider: 'CHERKOE', queue, startTime };
+    })
+  ),
   hasTodayData: true,
   hasTomorrowData: false,
+  queueStatuses: buildQueueStatuses(true, false, false),
 };

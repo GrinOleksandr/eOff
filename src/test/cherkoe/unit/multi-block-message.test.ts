@@ -1,6 +1,7 @@
 import { CherkoeTgParser } from '../../../services/cherkoe/cherkoe-tg-parser';
 import { KhoeParser } from '../../../services/khoe/khoe-parser';
 import * as utils from '../../../common/utils';
+import config from '../../../config';
 import { IEoffEvent } from '../../../common/types-and-interfaces';
 import {
   duplicateQueueInBlock,
@@ -104,6 +105,48 @@ describe('Cherkoe parser - multi-block messages', () => {
     expect(withBroken).toEqual(validOnly);
     expect(withBroken.hasTomorrowData).toBe(true);
     expect(hoursOf(withBroken.events, '1.1')).toEqual(['00:00-02:00', '06:00-08:00', '12:00-14:00', '17:00-19:00']);
+  });
+});
+
+describe('notifyError - Telegram alerts', () => {
+  const fetchMock = jest.fn();
+
+  beforeEach(() => {
+    config.alerts = { botToken: 'test-token', chatId: '123' };
+    fetchMock.mockReset().mockResolvedValue({ ok: true });
+    global.fetch = fetchMock as any;
+  });
+
+  afterEach(() => {
+    config.alerts = {};
+  });
+
+  it('sends a broken message alert to the chat once, not on every re-read', async () => {
+    jest.useFakeTimers({ now: new Date('2026-11-17T12:00:00+02:00') });
+    sut.parseMessage(overlappingRangesInLine);
+    sut.parseMessage(overlappingRangesInLine);
+    jest.useRealTimers();
+    await Promise.resolve();
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(url).toBe('https://api.telegram.org/bottest-token/sendMessage');
+    const body = JSON.parse(init.body);
+    expect(body.chat_id).toBe('123');
+    expect(body.text).toContain('cherkoe: ignoring message for 2026-11-18, overlapping intervals');
+  });
+
+  it('retries on the next call when sending failed', async () => {
+    fetchMock.mockRejectedValueOnce(new Error('network down'));
+    await utils.notifyError('retry me');
+    await utils.notifyError('retry me');
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('does nothing when the bot is not configured', async () => {
+    config.alerts = {};
+    await utils.notifyError('no bot');
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });
 

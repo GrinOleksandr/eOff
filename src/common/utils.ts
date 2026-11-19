@@ -173,6 +173,29 @@ const findScheduleConflicts = (scheduleData: GroupByQueueResult): string[] =>
     return conflicts;
   });
 
+// ponytail: in-memory dedupe, a restart may re-send an alert once
+const sentAlerts = new Set<string>();
+
+// Logs a reason a message was ignored and sends it once to the alerts Telegram chat (the channel is re-read every cycle).
+const notifyError = async (reason: string, source = ''): Promise<void> => {
+  console.error(reason);
+  const { botToken, chatId } = config.alerts;
+  const text = `⚠️ ${reason}${source ? `\n\n${source.slice(0, 500)}` : ''}`;
+  if (!botToken || !chatId || sentAlerts.has(text)) return;
+  sentAlerts.add(text);
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text: text.slice(0, 4000) }),
+    });
+    if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
+  } catch (e) {
+    sentAlerts.delete(text); // retry on the next cycle
+    console.error('notifyError: failed to send alert', e);
+  }
+};
+
 const convertToEvents = (
   scheduleData: GroupByQueueResult,
   date: string | null,
@@ -332,6 +355,7 @@ export {
   log,
   groupByQueue,
   findScheduleConflicts,
+  notifyError,
   convertToEvents,
   parseQueueNumbers,
   fetchWithUkrProxy,

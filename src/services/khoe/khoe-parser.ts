@@ -13,6 +13,7 @@ import {
   getTodayAndTomorrowDate,
   groupByQueue,
   log,
+  notifyError,
   parseQueueNumbers,
   sortOutputEvents,
 } from '../../common/utils';
@@ -100,7 +101,10 @@ export class KhoeParser {
     log('groupedByQueue', groupedByQueue);
     const conflicts = findScheduleConflicts(groupedByQueue);
     if (conflicts.length) {
-      console.error(`khoe: ignoring news for ${targetDate}, overlapping intervals:`, conflicts);
+      void notifyError(
+        `khoe: ignoring news for ${targetDate}, overlapping intervals:\n${conflicts.join('\n')}`,
+        [news.url, ...(news.text ?? [])].join('\n')
+      );
       return null;
     }
     const eventsList: IEoffEvent[] | void = convertToEvents(groupedByQueue, targetDate, this.provider);

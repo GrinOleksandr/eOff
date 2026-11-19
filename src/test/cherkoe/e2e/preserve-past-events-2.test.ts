@@ -7,8 +7,7 @@ import { EoffEvent } from '../../../common/types-and-interfaces';
 const sut = new CherkoeTgParser();
 
 describe('Preserve Past events', () => {
-  // TODO: stale - expected result has 2025-12-11 dates for a 15 Dec message and is incomplete
-  it.skip(`Should success`, async () => {
+  it(`Should success`, async () => {
     jest.useFakeTimers({ now: new Date('2025-12-15T20:00:00+02:00') });
 
     // @ts-ignore

@@ -4,6 +4,7 @@ import {
   getTargetDate,
   getTodayAndTomorrowDate,
   groupByQueue,
+  notifyError,
   parseQueueNumbers,
   sortOutputEvents,
 } from '../../common/utils';
@@ -247,7 +248,7 @@ export class CherkoeTgParser {
       });
 
     if (blocks.some((b) => queuesOf(b).size !== b.length)) {
-      console.error('cherkoe: ignoring message, same queue listed twice in one schedule block');
+      void notifyError('cherkoe: ignoring message, same queue listed twice in one schedule block', message);
       return null;
     }
 
@@ -256,7 +257,7 @@ export class CherkoeTgParser {
     const maxSize = Math.max(0, ...sizes);
     if (blocks.length > 1) console.warn('cherkoe: multiple schedule blocks, queue counts:', sizes);
     if (sizes.filter((s) => s === maxSize).length > 1) {
-      console.error('cherkoe: ignoring message, several equally complete schedule blocks:', sizes);
+      void notifyError(`cherkoe: ignoring message, several equally complete schedule blocks: ${sizes.join(', ')}`, message);
       return null;
     }
     const scheduleLines: ScheduleLine[] = blocks[sizes.indexOf(maxSize)] ?? [];
@@ -294,7 +295,7 @@ export class CherkoeTgParser {
     console.log('scv_groupedByQueue', groupedByQueue);
     const conflicts = findScheduleConflicts(groupedByQueue);
     if (conflicts.length) {
-      console.error(`cherkoe: ignoring message for ${targetDate}, overlapping intervals:`, conflicts);
+      void notifyError(`cherkoe: ignoring message for ${targetDate}, overlapping intervals:\n${conflicts.join('\n')}`, message);
       return null;
     }
     const eventsList: IEoffEvent[] | void = convertToEvents(groupedByQueue, targetDate, this.provider);
