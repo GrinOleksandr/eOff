@@ -10,6 +10,7 @@ import {
   ParsedScheduleString,
 } from './types-and-interfaces';
 import axios from 'axios';
+import type { Request, Response } from 'express';
 
 export interface DateObj {
   year: number;
@@ -176,25 +177,46 @@ const findScheduleConflicts = (scheduleData: GroupByQueueResult): string[] =>
 // ponytail: in-memory dedupe, a restart may re-send an alert once
 const sentAlerts = new Set<string>();
 
-// Logs a reason a message was ignored and sends it once to the alerts Telegram chat (the channel is re-read every cycle).
-const notifyError = async (reason: string, source = ''): Promise<void> => {
-  console.error(reason);
-  const { botToken, chatId } = config.alerts;
-  const text = `⚠️ ${reason}${source ? `\n\n${source.slice(0, 500)}` : ''}`;
-  if (!botToken || !chatId || sentAlerts.has(text)) return;
-  sentAlerts.add(text);
+// Logs a problem and sends it once to the alerts Telegram chat (the channel is re-read on every request).
+// Never rejects: callers fire-and-forget it with `void`, and an unhandled rejection would crash Node.
+const notifyError = async (reason: string, source = '', sourceLimit = 500): Promise<void> => {
+  let text = '';
   try {
+    console.error(reason);
+    const { botToken, chatId } = config.alerts;
+    text = `⚠️ ${reason}${source ? `\n\n${source.slice(0, sourceLimit)}` : ''}`;
+    if (!botToken || !chatId || sentAlerts.has(text)) return;
+    sentAlerts.add(text);
     const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ chat_id: chatId, text: text.slice(0, 4000) }),
+      signal: AbortSignal.timeout(10_000),
     });
     if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
   } catch (e) {
-    sentAlerts.delete(text); // retry on the next cycle
+    sentAlerts.delete(text); // retry next time
     console.error('notifyError: failed to send alert', e);
   }
 };
+
+// Express 4 ignores promises returned by handlers, so a thrown error becomes an unhandled rejection
+// and Node 24 exits the process. This turns it into a 500 plus an alert.
+const withErrorAlert =
+  (name: string, handler: (req: Request, res: Response) => Promise<unknown>) =>
+  async (req: Request, res: Response): Promise<void> => {
+    try {
+      await handler(req, res);
+    } catch (e: any) {
+      // awaited: serverless may freeze the function right after the response (never rejects, 10s timeout)
+      await notifyError(`${name} failed: ${e?.message ?? e}`);
+      try {
+        if (!res.headersSent) res.status(500).send({ error: 'internal error' });
+      } catch (sendError) {
+        console.error('withErrorAlert: failed to send 500', sendError);
+      }
+    }
+  };
 
 const convertToEvents = (
   scheduleData: GroupByQueueResult,
@@ -356,6 +378,7 @@ export {
   groupByQueue,
   findScheduleConflicts,
   notifyError,
+  withErrorAlert,
   convertToEvents,
   parseQueueNumbers,
   fetchWithUkrProxy,

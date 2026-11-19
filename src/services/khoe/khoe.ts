@@ -1,7 +1,7 @@
 import { KhoeNewsItem } from '../../common/types-and-interfaces';
 import { khoeParser } from './khoe-parser';
 import { khoeApi } from './khoe-api';
-import { getTargetDate, log } from '../../common/utils';
+import { getTargetDate, log, notifyError } from '../../common/utils';
 import { getChannelMessages } from '../../common/telegram';
 import { IChannelMessage } from '../../common/emergency';
 import config from '../../config';
@@ -15,6 +15,7 @@ export class KhoeService {
       return await getChannelMessages(config.telegram.khoeChannel);
     } catch (e: any) {
       log('khoe_emergency_messages_failed', e?.message);
+      void notifyError(`khoe: emergency (ГАВ) feed unavailable, flag is off: ${e?.message}`);
       return [];
     }
   }

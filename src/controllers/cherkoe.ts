@@ -2,7 +2,7 @@ import express, { Request, Response, Router } from 'express';
 import { cherkoeService } from '../services/cherkoe/cherkoe';
 import axios from 'axios';
 import { getDtekData } from '../services/cherkoe/parse-kyiv-obl';
-import { fetchWithUkrProxy } from '../common/utils';
+import { fetchWithUkrProxy, withErrorAlert } from '../common/utils';
 import { scrapeVOE } from '../services/cherkoe/parse-vinnytsya';
 
 export class CherkoeController {
@@ -10,10 +10,10 @@ export class CherkoeController {
 
   constructor() {
     this.router.get('/', this.healthCheck);
-    this.router.get('/cherkoe', this.getSchedule);
-    this.router.get('/cherkoe/message', this.getMessage);
+    this.router.get('/cherkoe', withErrorAlert('GET /cherkoe', this.getSchedule));
+    this.router.get('/cherkoe/message', withErrorAlert('GET /cherkoe/message', this.getMessage));
     this.router.get('/get-html', this.getHtml);
-    this.router.get('/voe', this.getVoeData);
+    this.router.get('/voe', withErrorAlert('GET /voe', this.getVoeData));
   }
 
   async healthCheck(req: Request, res: Response) {

@@ -282,6 +282,14 @@ export class CherkoeTgParser {
     return offlineHours;
   };
 
+  // A today/tomorrow message with time ranges but no recognised schedule lines = likely a new format
+  private alertIfUnrecognisedSchedule = (message: string, targetDate: string): void => {
+    const { todayDate, tomorrowDate } = getTodayAndTomorrowDate();
+    if (![todayDate, tomorrowDate].includes(targetDate)) return;
+    if (!/\d{2}:\d{2}\s*[–—\-−]\s*\d{2}:\d{2}/.test(message)) return;
+    void notifyError(`cherkoe: message for ${targetDate} has time ranges but no schedule lines were recognised`, message);
+  };
+
   parseMessage = (message: string): IParsedMessage | null => {
     const targetDateResult: null | ITargetDateObject = getTargetDate(message);
     if (!targetDateResult) return null;
@@ -290,6 +298,7 @@ export class CherkoeTgParser {
     const parsedSchedule: ParsedScheduleString[] | null = this.parseSchedule(message);
     console.log('scv_parsedSchedule', parsedSchedule);
     if (!parsedSchedule) return null;
+    if (!parsedSchedule.length) this.alertIfUnrecognisedSchedule(message, targetDate);
 
     const groupedByQueue: GroupByQueueResult = groupByQueue(parsedSchedule);
     console.log('scv_groupedByQueue', groupedByQueue);

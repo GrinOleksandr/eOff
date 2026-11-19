@@ -95,6 +95,8 @@ export class KhoeParser {
     log('TargetDate', targetDate);
     const parsedSchedule: ParsedScheduleString[] | null = this.parseSchedule(news);
     log('parsedSchedule', parsedSchedule);
+    // The news already passed the hourly-outages title filter, so no lines = likely a new page format
+    if (!parsedSchedule?.length) void notifyError(`khoe: schedule news for ${targetDate} has no recognisable lines`, news.url);
     if (!parsedSchedule) return null;
 
     const groupedByQueue: GroupByQueueResult = groupByQueue(parsedSchedule);
