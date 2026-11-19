@@ -83,10 +83,29 @@ describe('withErrorAlert', () => {
 
 describe('401 alert', () => {
   const SECRET = 'secret-client-key';
+  const SECRET_2 = 'second-client-key';
 
   beforeEach(() => {
     process.env.CLIENT_AUTH_KEY = SECRET;
+    process.env.ZORESLAV_AUTH_KEY = SECRET_2;
     resetAuthFailures();
+  });
+
+  it('accepts either client key, rejects anything else', () => {
+    for (const key of [SECRET, SECRET_2]) {
+      const next = jest.fn();
+      requireClientAuthKey(mockReq('1.2.3.4', key), mockRes(), next);
+      expect(next).toHaveBeenCalledTimes(1);
+    }
+    expect(reject('1.2.3.4', 'secret-client-kez').status).toHaveBeenCalledWith(401);
+  });
+
+  it('an unset key var matches nothing, not an empty header', () => {
+    delete process.env.ZORESLAV_AUTH_KEY;
+    const next = jest.fn();
+    requireClientAuthKey(mockReq('1.2.3.4', SECRET), mockRes(), next);
+    expect(next).toHaveBeenCalledTimes(1);
+    expect(reject('1.2.3.4', '').status).toHaveBeenCalledWith(401);
   });
 
   const reject = (ip: string, key?: string, ua?: string) => {

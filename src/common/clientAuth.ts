@@ -2,14 +2,20 @@ import { timingSafeEqual } from 'crypto';
 import { NextFunction, Request, Response } from 'express';
 import { notifyError, toKyivDate } from './utils';
 
-/** Rejects requests whose `x-api-key` header doesn't match CLIENT_AUTH_KEY.
- * Fails closed: if CLIENT_AUTH_KEY is unset, every request is rejected. */
-export function requireClientAuthKey(req: Request, res: Response, next: NextFunction) {
-  const expected = Buffer.from(process.env.CLIENT_AUTH_KEY || '');
-  const received = Buffer.from(req.get('x-api-key') || '');
+// Each var holds one client's key, all with equal access. One var per client, so a key can be revoked on its own.
+const CLIENT_KEY_ENV_VARS = ['CLIENT_AUTH_KEY', 'ZORESLAV_AUTH_KEY'];
 
+const matchesKey = (received: Buffer, envVar: string): boolean => {
+  const expected = Buffer.from(process.env[envVar] || '');
   // timingSafeEqual throws on different lengths, so check that first
-  const isValid = expected.length > 0 && received.length === expected.length && timingSafeEqual(received, expected);
+  return expected.length > 0 && received.length === expected.length && timingSafeEqual(received, expected);
+};
+
+/** Rejects requests whose `x-api-key` header doesn't match any of CLIENT_KEY_ENV_VARS.
+ * Fails closed: unset vars match nothing, so with none set every request is rejected. */
+export function requireClientAuthKey(req: Request, res: Response, next: NextFunction) {
+  const received = Buffer.from(req.get('x-api-key') || '');
+  const isValid = CLIENT_KEY_ENV_VARS.some((envVar) => matchesKey(received, envVar));
 
   if (!isValid) {
     const alert = recordAuthFailure(req);
